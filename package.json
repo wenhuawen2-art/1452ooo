@@ -1,0 +1,25 @@
+{
+  "name": "suixing-roadtrip",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "deploy:plan": "npm run build && tcb deploy --dry-run",
+    "deploy": "npm run build && tcb deploy --only functions,hosting",
+    "cloudbase:secure": "node scripts/configure-cloudbase.mjs",
+    "start:legacy": "node legacy-server/server.mjs",
+    "test": "npm run build && node --test tests/*.test.mjs tests/*.test.cjs",
+    "backup:legacy": "node legacy-server/backup.mjs"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "dependencies": {
+    "@cloudbase/js-sdk": "3.9.3"
+  },
+  "devDependencies": {
+    "@cloudbase/cli": "3.8.1",
+    "esbuild": "0.25.9"
+  }
+}

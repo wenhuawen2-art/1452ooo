@@ -1,0 +1,17 @@
+data/
+node_modules/
+dist/
+.cache/
+.cloudbase-bootstrap.json
+.tcb/
+.cloudbase/
+output/
+*.log
+.playwright-cli/
+.env
+.env.*
+!.env.example
+backups/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm

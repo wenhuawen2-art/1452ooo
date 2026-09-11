@@ -1,0 +1,50 @@
+{
+  "$schema": "https://static.cloudbase.net/cli/cloudbaserc.schema.json",
+  "version": "2.1",
+  "envId": "zdata-d4g6l75lwebf2dbb0",
+  "region": "ap-shanghai",
+  "functionRoot": "cloudfunctions",
+  "functionDefaultConfig": {
+    "type": "Event",
+    "runtime": "Nodejs20.19",
+    "handler": "index.main",
+    "timeout": 20,
+    "memorySize": 256,
+    "installDependency": true
+  },
+  "functions": [
+    {
+      "name": "suixing-api",
+      "description": "随行旅行协作 API",
+      "dir": "cloudfunctions/suixing-api"
+    },
+    {
+      "name": "suixing-backup",
+      "description": "随行每日数据库快照",
+      "dir": "cloudfunctions/suixing-backup",
+      "timeout": 60,
+      "triggers": [
+        {
+          "name": "suixing-daily-backup",
+          "type": "timer",
+          "config": "0 15 3 * * * *"
+        }
+      ]
+    }
+  ],
+  "hosting": [
+    {
+      "name": "suixing-web",
+      "root": ".",
+      "framework": "static",
+      "installCommand": "",
+      "buildCommand": "npm run build",
+      "outputDir": "dist",
+      "deployPath": "/",
+      "entryFile": ["index.html"],
+      "verify": true,
+      "safe": true,
+      "prune": true
+    }
+  ]
+}
