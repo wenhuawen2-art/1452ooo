@@ -803,7 +803,7 @@ a:active { transform: scale(.975); }
 .check-main:active .checkbox { transform: scale(.9); }
 .check-main .checkbox { transition: transform .16s ease, background-color .16s ease, border-color .16s ease; }
 .date-strip {
-  margin-inline: -20px;
+  margin-inline: -18px;
   padding-inline: 20px;
   scroll-snap-type: x proximity;
 }
