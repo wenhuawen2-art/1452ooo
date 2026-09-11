@@ -2,6 +2,8 @@
 
 手机优先的多人旅行清单网站。网页使用 CloudBase 匿名身份，无需注册；云函数负责成员鉴权，文档数据库保存旅行，静态托管提供 HTTPS 公网入口。
 
+界面按 iOS 的信息层级和触控习惯整理：系统字体、分组卡片、半透明底部导航、安全区适配、至少 44px 的主要触控区域，并支持系统深色模式和减少动态效果。
+
 ## 当前线上地址
 
 https://zdata-d4g6l75lwebf2dbb0-1485288642.tcloudbaseapp.com/
@@ -27,6 +29,8 @@ npm.cmd run deploy:plan
 npm.cmd run deploy
 npm.cmd run cloudbase:secure
 ```
+
+`npm.cmd run deploy` 会依次构建网页、覆盖发布两个云函数，并用安全发布模式上传静态网站；上传失败会回滚本次静态资源。
 
 首次使用先运行 `node_modules\.bin\tcb.cmd login --flow web`，在腾讯云官方页面完成授权。项目不需要 SecretId、SecretKey 或 API Key。
 

@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "deploy:plan": "npm run build && tcb deploy --dry-run",
-    "deploy": "npm run build && tcb deploy --only functions,hosting",
+    "deploy": "node scripts/deploy-cloudbase.mjs",
     "cloudbase:secure": "node scripts/configure-cloudbase.mjs",
     "start:legacy": "node legacy-server/server.mjs",
     "test": "npm run build && node --test tests/*.test.mjs tests/*.test.cjs",

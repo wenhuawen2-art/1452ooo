@@ -141,7 +141,7 @@ function show(title, html) {
   if (!modal.open) modal.showModal();
 }
 const field = (label, name, value = "", type = "text", required = false) =>
-  `<label class="field">${label}<input name="${name}" type="${type}" value="${esc(value)}" ${required ? "required" : ""} ${type === "text" ? 'maxlength="200"' : ""}></label>`;
+  `<label class="field">${label}<input name="${name}" type="${type}" value="${esc(value)}" autocomplete="off" ${required ? "required" : ""} ${type === "text" ? 'maxlength="200"' : ""}></label>`;
 const select = (label, name, values, current) =>
   `<label class="field">${label}<select name="${name}">${values.map((v) => `<option ${v === current ? "selected" : ""}>${esc(v)}</option>`).join("")}</select></label>`;
 const note = (label, name, value = "") =>
@@ -626,7 +626,10 @@ document.addEventListener("submit", async (ev) => {
     modal.close();
     render();
   } catch (e) {
-    f.querySelector(".error").textContent = e.message;
+    f.querySelector(".error").textContent =
+      e.message === "保存失败，请稍后重试"
+        ? "没有加入成功，请检查邀请链接后重试。"
+        : e.message;
     f.dataset.revision = trip?.revision ?? 0;
   } finally {
     submit.disabled = false;

@@ -85,7 +85,12 @@ async function join(uid, input) {
     if (!invite?.active) fail(404, "邀请已失效或旅行已归档");
     const trip = await loadTrip(transaction, invite.tripId);
     if (trip.archived) fail(404, "邀请已失效或旅行已归档");
-    let link = await first(transaction.collection("trip_members").doc(memberKey(uid, trip.id)));
+    let link = await first(
+      transaction
+        .collection("trip_members")
+        .where({ uid, tripId: trip.id })
+        .limit(1),
+    );
     if (!link) {
       const member = addMember(trip, input.nickname);
       link = { uid, tripId: trip.id, memberId: member.id, createdAt: Date.now() };

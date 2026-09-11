@@ -3,6 +3,8 @@ $env:HOST = '127.0.0.1'
 $env:PORT = '3000'
 $env:DATA_DIR = 'C:\Suixing\data'
 $env:BACKUP_DIR = 'C:\Suixing\backups'
+$env:READ_ONLY = '1'
+$env:CLOUDBASE_SITE = 'https://zdata-d4g6l75lwebf2dbb0-1485288642.tcloudbaseapp.com/'
 Set-Location -LiteralPath 'C:\Suixing\app'
 while ($true) {
     $log = 'C:\Suixing\logs\app-' + (Get-Date -Format 'yyyy-MM-dd') + '.log'
