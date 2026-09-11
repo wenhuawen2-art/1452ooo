@@ -61,9 +61,10 @@ let trip = null,
   selected = nowDay(),
   busy = false,
   connection = true;
-const authFragment = new URLSearchParams(location.hash.slice(1));
-let invite = authFragment.get("invite"),
-  recovery = authFragment.get("recover");
+const authQuery = new URLSearchParams(location.search),
+  authFragment = new URLSearchParams(location.hash.slice(1));
+let invite = authQuery.get("invite") || authFragment.get("invite"),
+  recovery = authQuery.get("recover") || authFragment.get("recover");
 if (invite || recovery) history.replaceState(null, "", location.pathname);
 function toast(s) {
   $("#toast").textContent = s;
@@ -496,7 +497,7 @@ document.addEventListener("click", async (ev) => {
         await copy(b.dataset.value);
         break;
       case "invite":
-        await copy(location.origin + "/#invite=" + trip.invite);
+        await copy(location.origin + "/?invite=" + trip.invite);
         break;
       case "toggle":
       case "review":
@@ -528,7 +529,7 @@ document.addEventListener("click", async (ev) => {
         const selfRecovery = id === trip.me;
         show(
           "恢复身份链接",
-          `<p>${selfRecovery ? "请把链接保存到只有自己能访问的地方，换手机时在新设备打开。" : "把此链接单独发送给对应成员，在新手机上打开。"}</p><p class="muted">链接 24 小时有效，仅可使用一次。成功恢复后，旧设备上的这趟旅行身份会失效。</p><div class="link-output">${esc(location.origin + "/#recover=" + v.code)}</div><button class="btn full" data-action="copy" data-value="${esc(location.origin + "/#recover=" + v.code)}">复制恢复链接</button>`,
+          `<p>${selfRecovery ? "请把链接保存到只有自己能访问的地方，换手机时在新设备打开。" : "把此链接单独发送给对应成员，在新手机上打开。"}</p><p class="muted">链接 24 小时有效，仅可使用一次。成功恢复后，旧设备上的这趟旅行身份会失效。</p><div class="link-output">${esc(location.origin + "/?recover=" + v.code)}</div><button class="btn full" data-action="copy" data-value="${esc(location.origin + "/?recover=" + v.code)}">复制恢复链接</button>`,
         );
         break;
       }
