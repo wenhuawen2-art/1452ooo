@@ -332,6 +332,11 @@ test("旅行、共享与归档端到端", async () => {
       .status,
     404,
   );
+  r = await action({ action: "recovery", member: guestId }, guest);
+  assert.equal(r.status, 200);
+  assert.ok(r.code);
+  r = await action({ action: "recovery", member: t.creator }, guest);
+  assert.equal(r.status, 403);
   r = await action({ action: "recovery", member: guestId });
   const code = r.code;
   r = await req("recover", { code }, "");

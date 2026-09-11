@@ -290,7 +290,7 @@ function checklist() {
   const categories = trip.categories.filter((c) =>
     scope === "公共" ? !c.owner : c.owner === trip.me,
   );
-  return `<div class="page-heading"><div><span class="eyebrow">READY TO GO</span><h1>准备齐全，安心上路。</h1><p class="muted">勾选即确认，完成的物品会留在原位。</p></div></div><div class="segment">${["公共", "我的"].map((s) => `<button class="${scope === s ? "active" : ""}" data-action="scope" data-value="${s}">${s === "公共" ? "一起准备" : "我的物品"}</button>`).join("")}</div><div class="row"><span class="muted">已准备 <strong>${p.done}</strong> / ${p.total} 项</span><button class="text-btn" data-action="category" data-write>新建分类 +</button></div>${bar(p.done, p.total)}${gap(nowDay(), trip.start) <= 1 ? reviewSummary() : ""}${categories
+  return `<div class="page-heading"><div><span class="eyebrow">READY TO GO</span><h1>准备再齐全，也不要忘了检查。</h1><p class="muted">勾选即确认，完成的物品会留在原位。</p></div></div><div class="segment">${["公共", "我的"].map((s) => `<button class="${scope === s ? "active" : ""}" data-action="scope" data-value="${s}">${s === "公共" ? "一起准备" : "我的物品"}</button>`).join("")}</div><div class="row"><span class="muted">已准备 <strong>${p.done}</strong> / ${p.total} 项</span><button class="text-btn" data-action="category" data-write>新建分类 +</button></div>${bar(p.done, p.total)}${gap(nowDay(), trip.start) <= 1 ? reviewSummary() : ""}${categories
     .map(
       (c) =>
         `<section class="check-group"><div class="section-head category-head"><div><h2>${esc(c.name)}</h2><span class="muted">${items.filter((i) => i.categoryId === c.id).length} 项</span></div><button class="text-btn" data-action="item" data-category="${c.id}" aria-label="在${esc(c.name)}中新增条目" data-write>新增条目 +</button></div><div class="card check-card">${
@@ -371,14 +371,14 @@ function members() {
   const own = trip.me === trip.creator;
   show(
     "一起出发的人",
-    `<p class="muted">公共清单一起确认，个人物品各自准备。</p>${own && !trip.archived ? `<button class="btn full" data-action="invite">${icon("users")} 复制邀请链接</button><p class="muted">链接仅分享给同行人。对方打开后填写昵称即可加入。</p>` : ""}<div class="members">${trip.members.map((m) => `<div><div class="row"><span><span class="avatar">${esc(m.name.slice(0, 1))}</span>${esc(m.name)} ${m.id === trip.creator ? '<span class="pill">创建者</span>' : ""}</span></div>${own && !trip.archived ? `<div class="small-actions"><button data-action="recovery" data-id="${m.id}">换手机 · 恢复身份</button>${m.id !== trip.creator ? `<button data-action="removeMember" data-id="${m.id}">移除成员</button>` : ""}</div>` : ""}</div>`).join("")}</div>${own && !trip.archived ? '<div class="subtle"><button class="text-btn" data-action="rotate">使旧邀请失效，生成新链接</button></div>' : ""}`,
+    `<p class="muted">公共清单一起确认，个人物品各自准备。</p><div class="identity-note"><strong>你的身份会保存在这台设备</strong><span>正常关闭网页后再打开仍可继续使用。换手机、使用无痕模式或清除浏览器数据前，请先生成自己的恢复链接。</span></div>${own && !trip.archived ? `<button class="btn full" data-action="invite">${icon("users")} 复制邀请链接</button><p class="muted">链接仅分享给同行人。对方打开后填写昵称即可加入。</p>` : ""}<div class="members">${trip.members.map((m) => `<div><div class="row"><span><span class="avatar">${esc(m.name.slice(0, 1))}</span>${esc(m.name)} ${m.id === trip.creator ? '<span class="pill">创建者</span>' : ""}</span></div>${(own || m.id === trip.me) && !trip.archived ? `<div class="small-actions"><button data-action="recovery" data-id="${m.id}">${m.id === trip.me ? "保存我的恢复链接" : "为此成员生成恢复链接"}</button>${own && m.id !== trip.creator ? `<button data-action="removeMember" data-id="${m.id}">移除成员</button>` : ""}</div>` : ""}</div>`).join("")}</div>${own && !trip.archived ? '<div class="subtle"><button class="text-btn" data-action="rotate">使旧邀请失效，生成新链接</button></div>' : ""}`,
   );
 }
 async function settings() {
   trips = await api("trips");
   show(
     "旅行与设置",
-    `<p class="muted">${esc(trip.name)} · ${trip.archived ? "已归档" : "当前旅行"}</p><div class="stack"><button class="btn secondary full" data-action="create">新建旅行</button>${!trip.archived ? '<button class="btn secondary full" data-action="edit-trip">编辑名称与出发归来时间</button>' : ""}${trip.me === trip.creator ? '<button class="btn secondary full" data-action="export-trip">下载旅行备份</button>' : ""}${trip.me === trip.creator && !trip.archived ? '<button class="btn danger full" data-action="archive">归档当前旅行</button>' : ""}</div><div class="section-head"><h3>我的旅行</h3></div>${trips.map((t) => `<button class="archive-item" data-action="switch" data-id="${t.id}"><strong>${esc(t.name)}</strong><span>${pretty(day(t.start))} — ${pretty(day(t.end))} · ${t.archived ? "已归档" : "进行中"}</span></button>`).join("")}<p class="muted">所有时间按北京时间显示。更换设备前，请让创建者生成身份恢复链接。</p>`,
+    `<p class="muted">${esc(trip.name)} · ${trip.archived ? "已归档" : "当前旅行"}</p><div class="stack"><button class="btn secondary full" data-action="create">新建旅行</button>${!trip.archived ? '<button class="btn secondary full" data-action="edit-trip">编辑名称与出发归来时间</button>' : ""}${trip.me === trip.creator ? '<button class="btn secondary full" data-action="export-trip">下载旅行备份</button>' : ""}${trip.me === trip.creator && !trip.archived ? '<button class="btn danger full" data-action="archive">归档当前旅行</button>' : ""}</div><div class="section-head"><h3>我的旅行</h3></div>${trips.map((t) => `<button class="archive-item" data-action="switch" data-id="${t.id}"><strong>${esc(t.name)}</strong><span>${pretty(day(t.start))} — ${pretty(day(t.end))} · ${t.archived ? "已归档" : "进行中"}</span></button>`).join("")}<p class="muted">所有时间按北京时间显示。正常关闭网页不会丢失身份；换设备或清除浏览器数据前，请在“同行成员”中保存自己的恢复链接。</p>`,
   );
   if (trip.me === trip.creator) {
     const area = document.createElement("div");
@@ -525,9 +525,10 @@ document.addEventListener("click", async (ev) => {
         break;
       case "recovery": {
         const v = await mutate({ action: "recovery", member: id });
+        const selfRecovery = id === trip.me;
         show(
           "恢复身份链接",
-          `<p>把此链接发送给对应成员，在新手机上打开。</p><p class="muted">链接 24 小时有效，仅可使用一次。恢复后旧设备将退出。请妥善保存创建者自己的恢复链接。</p><div class="link-output">${esc(location.origin + "/#recover=" + v.code)}</div><button class="btn full" data-action="copy" data-value="${esc(location.origin + "/#recover=" + v.code)}">复制恢复链接</button>`,
+          `<p>${selfRecovery ? "请把链接保存到只有自己能访问的地方，换手机时在新设备打开。" : "把此链接单独发送给对应成员，在新手机上打开。"}</p><p class="muted">链接 24 小时有效，仅可使用一次。成功恢复后，旧设备上的这趟旅行身份会失效。</p><div class="link-output">${esc(location.origin + "/#recover=" + v.code)}</div><button class="btn full" data-action="copy" data-value="${esc(location.origin + "/#recover=" + v.code)}">复制恢复链接</button>`,
         );
         break;
       }
@@ -657,7 +658,7 @@ async function boot() {
         form(
           "join",
           field("你的昵称", "nickname", "", "text", true) +
-            '<p class="muted">加入后可以共同编辑行程、住宿和公共清单。</p>',
+            '<p class="muted">无需注册。昵称仅用于同行展示；加入后可以共同编辑行程、住宿和公共清单。本机浏览器会记住你的身份。</p>',
         ),
       );
     if (recovery)

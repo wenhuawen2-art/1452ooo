@@ -147,8 +147,9 @@ function mutateTrip(trip, member, input) {
       effects.removedMember = input.member;
       break;
     case "recovery":
-      owner();
       if (!trip.members.some((entry) => entry.id === input.member)) fail(404, "成员不存在");
+      if (member.id !== trip.creator && input.member !== member.id)
+        fail(403, "只能生成自己的恢复链接");
       effects.recoveryMember = input.member;
       break;
     case "category": {

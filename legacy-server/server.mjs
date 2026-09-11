@@ -340,8 +340,9 @@ const server = http.createServer(async (req, res) => {
         t.recoveries = t.recoveries.filter((x) => x.member !== b.member);
         break;
       case "recovery":
-        owner();
         if (!t.members.some((x) => x.id === b.member)) fail(404, "成员不存在");
+        if (m.id !== t.creator && b.member !== m.id)
+          fail(403, "只能生成自己的恢复链接");
         const code = id();
         t.recoveries = t.recoveries.filter((x) => x.member !== b.member);
         t.recoveries.push({

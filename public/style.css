@@ -956,8 +956,9 @@ body { background: var(--bg); }
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: #11151c;
-  box-shadow: 0 8px 24px #1c25352c;
+  color: #337fce;
+  background: #eaf4ff;
+  box-shadow: inset 0 0 0 1px #cfe4fa, 0 8px 24px #397fc018;
 }
 .brand small { color: #9ba0aa; }
 .icon-btn {
@@ -1026,6 +1027,7 @@ h3 { font-size: 17px; letter-spacing: -.25px; }
 #app[data-view="today"] .page-heading h1,
 #app[data-view="today"] .page-heading .eyebrow { color: #fff; }
 #app[data-view="today"] .brand-mark {
+  color: #fff;
   background: #ffffff36;
   box-shadow: inset 0 0 0 1px #ffffff70;
 }
@@ -1174,9 +1176,16 @@ h3 { font-size: 17px; letter-spacing: -.25px; }
 }
 .check-row { min-height: 74px; border-color: #eceef2; }
 .checkbox {
-  width: 27px;
-  height: 27px;
+  flex: 0 0 28px;
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  min-height: 28px;
+  aspect-ratio: 1 / 1;
+  align-self: center;
+  padding: 0;
   border: 2px solid #d2d6dd;
+  border-radius: 50%;
 }
 .done .checkbox {
   border-color: #428fe8;
@@ -1189,6 +1198,19 @@ h3 { font-size: 17px; letter-spacing: -.25px; }
 .hotel { border-left: 0; }
 .hotel-heading > .icon { color: #327fdb; background: #eaf3ff; border-radius: 50%; }
 .avatar { color: #2d7dcc; background: #e9f3ff; }
+.identity-note {
+  display: grid;
+  gap: 5px;
+  margin: 14px 0 18px;
+  padding: 14px 15px;
+  border-radius: 17px;
+  color: #285d96;
+  background: #edf6ff;
+  box-shadow: inset 0 0 0 1px #d8eaff;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.identity-note span { color: #60758d; }
 .archive-item {
   border: 0;
   border-radius: 20px;
