@@ -142,8 +142,12 @@ function show(title, html) {
   modal.innerHTML = `<div class="modal-head"><h2>${esc(title)}</h2><button data-action="close" aria-label="关闭">${icon("close")}</button></div><div class="modal-body">${html}</div>`;
   if (!modal.open) modal.showModal();
 }
-const pickerTypes = new Set(["date", "time", "datetime-local"]);
+const pickerTypes = new Set(["date", "time", "datetime-local", "range"]);
 const pickerDisplay = (value, type) => {
+  if (type === "range") {
+    const [start, end] = String(value || "").split("|");
+    return start && end ? `${start.replaceAll("-", "/")} → ${end.replaceAll("-", "/")}` : "选择出发和归来日期";
+  }
   if (!value) return type === "time" ? "选择时间" : "选择日期";
   if (type === "datetime-local") {
     const [d, t] = value.split("T");
@@ -155,6 +159,10 @@ const field = (label, name, value = "", type = "text", required = false) =>
   pickerTypes.has(type)
     ? `<label class="field picker-field">${label}<input class="picker-input" name="${name}" type="text" value="${esc(pickerDisplay(value, type))}" data-value="${esc(value)}" data-picker="${type}" autocomplete="off" readonly ${required ? "required" : ""}></label>`
     : `<label class="field">${label}<input name="${name}" type="${type}" value="${esc(value)}" autocomplete="off" ${required ? "required" : ""} ${type === "text" ? 'maxlength="200"' : ""}></label>`;
+const dateRangeField = (label, start, end, required = true) => {
+  const value = `${start}|${end}`;
+  return `<label class="field picker-field range-field">${label}<input class="picker-input" name="travelDates" type="text" value="${esc(pickerDisplay(value, "range"))}" data-picker="range" data-start="${esc(start)}" data-end="${esc(end)}" data-start-name="${start === end ? "" : "startDate"}" data-end-name="${end === start ? "" : "endDate"}" autocomplete="off" readonly ${required ? "required" : ""}><input type="hidden" name="startDate" value="${esc(start)}"><input type="hidden" name="endDate" value="${esc(end)}"></label>`;
+};
 const select = (label, name, values, current) =>
   `<label class="field">${label}<select name="${name}">${values.map((v) => `<option ${v === current ? "selected" : ""}>${esc(v)}</option>`).join("")}</select></label>`;
 const note = (label, name, value = "") =>
@@ -167,6 +175,11 @@ const pad2 = (n) => String(n).padStart(2, "0");
 const dateOnly = (value) => String(value || "").slice(0, 10);
 function parsePickerState(input) {
   const type = input.dataset.picker;
+  if (type === "range") {
+    const start = new Date(`${input.dataset.start}T12:00:00`);
+    const end = input.dataset.end ? new Date(`${input.dataset.end}T12:00:00`) : null;
+    return { input, type, start, end, date: start, month: new Date(start.getFullYear(), start.getMonth(), 1), stage: "date" };
+  }
   const value = input.dataset.value || "";
   const dateValue = type === "datetime-local" ? dateOnly(value) : type === "date" ? value : nowDay();
   const date = /^\d{4}-\d{2}-\d{2}$/.test(dateValue)
@@ -193,6 +206,8 @@ function pickerDateView() {
   const y = s.month.getFullYear();
   const m = s.month.getMonth();
   const selected = pickerDateKey(s.date);
+  const rangeStart = s.type === "range" && s.start ? pickerDateKey(s.start) : "";
+  const rangeEnd = s.type === "range" && s.end ? pickerDateKey(s.end) : "";
   const firstDay = new Date(y, m, 1).getDay();
   const count = new Date(y, m + 1, 0).getDate();
   const cells = [];
@@ -201,9 +216,14 @@ function pickerDateView() {
     const d = new Date(y, m, n);
     const key = pickerDateKey(d);
     const outside = d.getMonth() !== m;
-    cells.push(`<button type="button" class="picker-day ${outside ? "outside" : ""} ${key === selected ? "selected" : ""}" data-picker-date="${key}">${d.getDate()}</button>`);
+    const inRange = rangeStart && rangeEnd && key > rangeStart && key < rangeEnd;
+    const selectedClass = s.type === "range"
+      ? `${key === rangeStart ? "range-start selected" : ""} ${key === rangeEnd ? "range-end selected" : ""} ${inRange ? "in-range" : ""}`
+      : key === selected ? "selected" : "";
+    cells.push(`<button type="button" class="picker-day ${outside ? "outside" : ""} ${selectedClass}" data-picker-date="${key}">${d.getDate()}</button>`);
   }
-  picker.innerHTML = `<div class="picker-sheet"><div class="picker-top"><button type="button" class="picker-cancel" data-picker-action="cancel">取消</button><strong>请选择日期</strong><button type="button" class="picker-close" data-picker-action="cancel" aria-label="关闭">${icon("close")}</button></div><div class="picker-month"><button type="button" data-picker-action="prev" aria-label="上个月">‹</button><strong>${y}年${m + 1}月</strong><button type="button" data-picker-action="next" aria-label="下个月">›</button></div><div class="picker-weekdays">${pickerWeekdays.map((d) => `<span>${d}</span>`).join("")}</div><div class="picker-grid">${cells.join("")}</div><button type="button" class="picker-confirm" data-picker-action="confirm-date">${s.type === "datetime-local" ? "下一步：选择时间" : "确认"}</button></div>`;
+  const rangeSummary = s.type === "range" ? `<div class="picker-range-summary"><span>出发<strong>${s.start ? pickerDateKey(s.start).replaceAll("-", "/") : "请选择"}</strong></span><em>${s.start && s.end ? `共 ${Math.round((s.end - s.start) / 86400000)} 天` : "请选择归来日期"}</em><span>归来<strong>${s.end ? pickerDateKey(s.end).replaceAll("-", "/") : "请选择"}</strong></span></div>` : "";
+  picker.innerHTML = `<div class="picker-sheet"><div class="picker-top"><button type="button" class="picker-cancel" data-picker-action="cancel">取消</button><strong>${s.type === "range" ? "选择出行日期" : "请选择日期"}</strong><button type="button" class="picker-close" data-picker-action="cancel" aria-label="关闭">${icon("close")}</button></div><div class="picker-month"><button type="button" data-picker-action="prev" aria-label="上个月">‹</button><strong>${y}年${m + 1}月</strong><button type="button" data-picker-action="next" aria-label="下个月">›</button></div><div class="picker-weekdays">${pickerWeekdays.map((d) => `<span>${d}</span>`).join("")}</div><div class="picker-grid">${cells.join("")}</div>${rangeSummary}<button type="button" class="picker-confirm" data-picker-action="confirm-date">${s.type === "datetime-local" ? "下一步：选择时间" : "确认"}</button></div>`;
 }
 function pickerTimeView() {
   const s = pickerState;
@@ -223,6 +243,20 @@ function openPicker(input) {
 function commitPicker() {
   const s = pickerState;
   if (!s) return;
+  if (s.type === "range") {
+    if (!s.start || !s.end) return;
+    const start = pickerDateKey(s.start), end = pickerDateKey(s.end);
+    s.input.dataset.start = start;
+    s.input.dataset.end = end;
+    s.input.value = pickerDisplay(`${start}|${end}`, "range");
+    const startInput = s.input.form?.querySelector('input[name="startDate"]');
+    const endInput = s.input.form?.querySelector('input[name="endDate"]');
+    if (startInput) startInput.value = start;
+    if (endInput) endInput.value = end;
+    picker.close();
+    pickerState = null;
+    return;
+  }
   const date = pickerDateKey(s.date);
   const value = s.type === "date" ? date : s.type === "time" ? `${pad2(s.hour)}:${pad2(s.minute)}` : `${date}T${pad2(s.hour)}:${pad2(s.minute)}`;
   s.input.dataset.value = value;
@@ -236,6 +270,18 @@ picker.addEventListener("click", (event) => {
   const target = event.target.closest("[data-picker-action], [data-picker-date], [data-picker-hour], [data-picker-minute]");
   if (!target || !pickerState) return;
   if (target.dataset.pickerDate) {
+    if (pickerState.type === "range") {
+      const next = new Date(`${target.dataset.pickerDate}T12:00:00`);
+      if (!pickerState.start || pickerState.end || next < pickerState.start) {
+        pickerState.start = next;
+        pickerState.end = null;
+      } else {
+        pickerState.end = next;
+      }
+      pickerState.date = next;
+      pickerDateView();
+      return;
+    }
     const next = new Date(`${target.dataset.pickerDate}T12:00:00`);
     pickerState.date = next;
     pickerDateView();
@@ -417,11 +463,13 @@ function checklist() {
     )}<div class="section-head"><h2>同行人的准备</h2><button class="text-btn" data-action="members">管理同行人 →</button></div><div class="card members">${trip.progress.map((p) => `<div class="member"><div class="row"><span><span class="avatar">${esc(p.name.slice(0, 1))}</span>${esc(p.name)}${p.id === trip.me ? "（我）" : ""}</span><span class="muted">${p.done}/${p.total} 已准备</span></div>${bar(p.done, p.total)}<div class="muted">关键项复核 ${p.reviewed}/${p.keys}</div></div>`).join("")}</div>`;
 }
 function tripForm(edit = false) {
+  const start = edit ? trip.start : addDay(nowDay(), 7) + "T08:00";
+  const end = edit ? trip.end : addDay(nowDay(), 10) + "T18:00";
   show(
     edit ? "编辑旅行" : "开启一段新旅程",
     form(
       edit ? "trip" : "create",
-      `${field("旅行名称", "name", edit ? trip.name : "", "text", true)}${edit ? "" : field("你的昵称", "nickname", trip?.members.find((m) => m.id === trip.me)?.name || "", "text", true)}${field("出发时间（北京时间）", "start", edit ? trip.start : addDay(nowDay(), 7) + "T08:00", "datetime-local", true)}${field("归来时间（北京时间）", "end", edit ? trip.end : addDay(nowDay(), 10) + "T18:00", "datetime-local", true)}${!edit && trips.length ? `<label class="field">复用已有清单<select name="reuse"><option value="">使用精简默认清单</option>${trips.map((t) => `<option value="${t.id}">${esc(t.name)}</option>`).join("")}</select></label><p class="muted">仅复用公共清单和你的个人清单，完成与复核状态都会清零。</p>` : ""}${edit ? '<p class="muted">修改时间后，请同步更新已添加的手机日历。</p>' : ""}`,
+      `${field("旅行名称", "name", edit ? trip.name : "", "text", true)}${edit ? "" : field("你的昵称", "nickname", trip?.members.find((m) => m.id === trip.me)?.name || "", "text", true)}${dateRangeField("出行日期", day(start), day(end))}<div class="form-grid">${field("出发时间（北京时间）", "startTime", start.slice(11, 16), "time", true)}${field("归来时间（北京时间）", "endTime", end.slice(11, 16), "time", true)}</div>${!edit && trips.length ? `<label class="field">复用已有清单<select name="reuse"><option value="">使用精简默认清单</option>${trips.map((t) => `<option value="${t.id}">${esc(t.name)}</option>`).join("")}</select></label><p class="muted">仅复用公共清单和你的个人清单，完成与复核状态都会清零。</p>` : ""}${edit ? '<p class="muted">修改日期或时间后，请同步更新已添加的手机日历。</p>' : ""}`,
     ),
   );
 }
@@ -705,6 +753,10 @@ document.addEventListener("submit", async (ev) => {
     data[input.name] = input.dataset.value || "";
   });
   try {
+    if ((kind === "create" || kind === "trip") && data.startDate && data.endDate) {
+      data.start = `${data.startDate}T${data.startTime || "08:00"}`;
+      data.end = `${data.endDate}T${data.endTime || "18:00"}`;
+    }
     if (kind === "deleteTrip") {
       await api("trips/" + trip.id, {
         action: "deleteTrip",

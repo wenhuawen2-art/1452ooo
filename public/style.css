@@ -1274,6 +1274,26 @@ h3 { font-size: 17px; letter-spacing: -.25px; }
 }
 .picker-day.outside { color: #aeb4be; }
 .picker-day.selected { background: #3b5bd6; color: #fff; font-weight: 700; }
+.picker-day.in-range { border-radius: 0; background: #dce8ff; color: #2856c9; }
+.picker-day.range-start { border-radius: 9px 0 0 9px; }
+.picker-day.range-end { border-radius: 0 9px 9px 0; }
+.picker-range-summary {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px 10px;
+  border-radius: 14px;
+  background: #f4f7fc;
+  color: #6f7784;
+  font-size: 11px;
+  text-align: center;
+}
+.picker-range-summary span { display: grid; gap: 3px; }
+.picker-range-summary strong { color: #171a20; font-size: 14px; font-weight: 650; }
+.picker-range-summary em { color: #3b5bd6; font-style: normal; white-space: nowrap; }
+.range-field .picker-input { font-variant-numeric: tabular-nums; }
 .picker-confirm {
   width: 100%;
   min-height: 46px;
