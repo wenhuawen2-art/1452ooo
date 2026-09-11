@@ -153,6 +153,7 @@ function brand() {
   return `<header class="topbar"><div class="brand"><span class="brand-mark">${icon("road")}</span><span>随行<small>ON THE ROAD</small></span></div>${trip ? `<div class="top-actions"><button class="icon-btn" data-action="members" aria-label="同行成员">${icon("users")}</button><button class="icon-btn" data-action="settings" aria-label="旅行设置">${icon("more")}</button></div>` : '<span class="eyebrow">轻装出发</span>'}</header>`;
 }
 function render() {
+  app.dataset.view = trip ? tab : "welcome";
   const oldDateScroll = $(".date-strip")?.scrollLeft;
   if (!trip) {
     app.innerHTML = `<main class="shell">${brand()}<section class="welcome"><span class="eyebrow">把准备留下，把风景带走</span><h1>下一程，<br>从容出发。</h1><p class="welcome-lead">路线、住宿、随身物品。<br>出门需要记住的事，都放在这里。</p><div class="hero card"><span class="pill">你的自驾随身助手</span><svg class="route-art" viewBox="0 0 400 70"><path d="M5 50C65 50 55 10 115 20S200 75 255 35 335 10 390 25"/><circle cx="5" cy="50" r="4"/><circle cx="390" cy="25" r="5"/></svg><div class="hero-foot"><span>准备好，就出发。</span>${icon("arrow")}</div></div><button class="btn full" data-action="create">${icon("plus")} 创建我的旅行</button>${[
