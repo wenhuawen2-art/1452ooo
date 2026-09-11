@@ -16,7 +16,8 @@ async function ensureAuth() {
 }
 const $ = (s) => document.querySelector(s),
   app = $("#app"),
-  modal = $("#modal");
+  modal = $("#modal"),
+  picker = $("#picker");
 const paths = {
   road: "M4 20 9 4m6 0 5 16M12 5v3m0 4v3m0 4v1",
   sun: "M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0",
@@ -141,8 +142,19 @@ function show(title, html) {
   modal.innerHTML = `<div class="modal-head"><h2>${esc(title)}</h2><button data-action="close" aria-label="关闭">${icon("close")}</button></div><div class="modal-body">${html}</div>`;
   if (!modal.open) modal.showModal();
 }
+const pickerTypes = new Set(["date", "time", "datetime-local"]);
+const pickerDisplay = (value, type) => {
+  if (!value) return type === "time" ? "选择时间" : "选择日期";
+  if (type === "datetime-local") {
+    const [d, t] = value.split("T");
+    return `${d.replaceAll("-", "/")} ${t || "00:00"}`;
+  }
+  return type === "date" ? value.replaceAll("-", "/") : value;
+};
 const field = (label, name, value = "", type = "text", required = false) =>
-  `<label class="field">${label}<input name="${name}" type="${type}" value="${esc(value)}" autocomplete="off" ${required ? "required" : ""} ${type === "text" ? 'maxlength="200"' : ""}></label>`;
+  pickerTypes.has(type)
+    ? `<label class="field picker-field">${label}<input class="picker-input" name="${name}" type="text" value="${esc(pickerDisplay(value, type))}" data-value="${esc(value)}" data-picker="${type}" autocomplete="off" readonly ${required ? "required" : ""}></label>`
+    : `<label class="field">${label}<input name="${name}" type="${type}" value="${esc(value)}" autocomplete="off" ${required ? "required" : ""} ${type === "text" ? 'maxlength="200"' : ""}></label>`;
 const select = (label, name, values, current) =>
   `<label class="field">${label}<select name="${name}">${values.map((v) => `<option ${v === current ? "selected" : ""}>${esc(v)}</option>`).join("")}</select></label>`;
 const note = (label, name, value = "") =>
@@ -150,6 +162,104 @@ const note = (label, name, value = "") =>
 function form(kind, fields, id = "", del = "") {
   return `<form data-form="${kind}" data-id="${id}" data-revision="${trip?.revision ?? 0}">${fields}<p class="error" role="alert"></p><div class="form-actions">${del ? `<button type="button" class="btn danger" data-action="${del}" data-id="${id}">删除</button>` : ""}<button class="btn" type="submit">${kind === "create" ? "创建旅行" : kind === "join" ? "加入旅行" : kind === "recover" ? "恢复我的身份" : "保存"}</button></div></form>`;
 }
+let pickerState = null;
+const pad2 = (n) => String(n).padStart(2, "0");
+const dateOnly = (value) => String(value || "").slice(0, 10);
+function parsePickerState(input) {
+  const type = input.dataset.picker;
+  const value = input.dataset.value || "";
+  const dateValue = type === "datetime-local" ? dateOnly(value) : type === "date" ? value : nowDay();
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(dateValue)
+    ? new Date(`${dateValue}T12:00:00`)
+    : new Date(`${nowDay()}T12:00:00`);
+  const timeValue = type === "datetime-local" ? value.slice(11, 16) : type === "time" ? value : "";
+  const [hour = "0", minute = "0"] = timeValue.split(":");
+  return {
+    input,
+    type,
+    date,
+    month: new Date(date.getFullYear(), date.getMonth(), 1),
+    hour: Number(hour) || 0,
+    minute: Number(minute) || 0,
+    stage: type === "time" ? "time" : "date",
+  };
+}
+const pickerWeekdays = ["日", "一", "二", "三", "四", "五", "六"];
+function pickerDateKey(date) {
+  return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+}
+function pickerDateView() {
+  const s = pickerState;
+  const y = s.month.getFullYear();
+  const m = s.month.getMonth();
+  const selected = pickerDateKey(s.date);
+  const firstDay = new Date(y, m, 1).getDay();
+  const count = new Date(y, m + 1, 0).getDate();
+  const cells = [];
+  for (let i = 0; i < 42; i += 1) {
+    const n = i - firstDay + 1;
+    const d = new Date(y, m, n);
+    const key = pickerDateKey(d);
+    const outside = d.getMonth() !== m;
+    cells.push(`<button type="button" class="picker-day ${outside ? "outside" : ""} ${key === selected ? "selected" : ""}" data-picker-date="${key}">${d.getDate()}</button>`);
+  }
+  picker.innerHTML = `<div class="picker-sheet"><div class="picker-top"><button type="button" class="picker-cancel" data-picker-action="cancel">取消</button><strong>请选择日期</strong><button type="button" class="picker-close" data-picker-action="cancel" aria-label="关闭">${icon("close")}</button></div><div class="picker-month"><button type="button" data-picker-action="prev" aria-label="上个月">‹</button><strong>${y}年${m + 1}月</strong><button type="button" data-picker-action="next" aria-label="下个月">›</button></div><div class="picker-weekdays">${pickerWeekdays.map((d) => `<span>${d}</span>`).join("")}</div><div class="picker-grid">${cells.join("")}</div><button type="button" class="picker-confirm" data-picker-action="confirm-date">${s.type === "datetime-local" ? "下一步：选择时间" : "确认"}</button></div>`;
+}
+function pickerTimeView() {
+  const s = pickerState;
+  const hours = Array.from({ length: 24 }, (_, n) => `<button type="button" class="picker-wheel-item ${n === s.hour ? "selected" : ""}" data-picker-hour="${n}">${n} 时</button>`).join("");
+  const minutes = Array.from({ length: 60 }, (_, n) => `<button type="button" class="picker-wheel-item ${n === s.minute ? "selected" : ""}" data-picker-minute="${n}">${n} 分</button>`).join("");
+  picker.innerHTML = `<div class="picker-sheet picker-time-sheet"><div class="picker-top"><button type="button" class="picker-cancel" data-picker-action="cancel">取消</button><strong>选择时间</strong><button type="button" class="picker-cancel picker-blue" data-picker-action="confirm-time">确定</button></div><div class="picker-wheels"><div class="picker-wheel" data-picker-wheel="hour">${hours}</div><div class="picker-wheel" data-picker-wheel="minute">${minutes}</div></div></div>`;
+  requestAnimationFrame(() => {
+    picker.querySelector(`[data-picker-hour="${s.hour}"]`)?.scrollIntoView({ block: "center" });
+    picker.querySelector(`[data-picker-minute="${s.minute}"]`)?.scrollIntoView({ block: "center" });
+  });
+}
+function openPicker(input) {
+  pickerState = parsePickerState(input);
+  if (!picker.open) picker.showModal();
+  pickerState.stage === "time" ? pickerTimeView() : pickerDateView();
+}
+function commitPicker() {
+  const s = pickerState;
+  if (!s) return;
+  const date = pickerDateKey(s.date);
+  const value = s.type === "date" ? date : s.type === "time" ? `${pad2(s.hour)}:${pad2(s.minute)}` : `${date}T${pad2(s.hour)}:${pad2(s.minute)}`;
+  s.input.dataset.value = value;
+  s.input.value = pickerDisplay(value, s.type);
+  s.input.dispatchEvent(new Event("change", { bubbles: true }));
+  picker.close();
+  pickerState = null;
+}
+picker.addEventListener("cancel", () => { pickerState = null; });
+picker.addEventListener("click", (event) => {
+  const target = event.target.closest("[data-picker-action], [data-picker-date], [data-picker-hour], [data-picker-minute]");
+  if (!target || !pickerState) return;
+  if (target.dataset.pickerDate) {
+    const next = new Date(`${target.dataset.pickerDate}T12:00:00`);
+    pickerState.date = next;
+    pickerDateView();
+  } else if (target.dataset.pickerHour != null) {
+    pickerState.hour = Number(target.dataset.pickerHour);
+    pickerTimeView();
+  } else if (target.dataset.pickerMinute != null) {
+    pickerState.minute = Number(target.dataset.pickerMinute);
+    pickerTimeView();
+  } else if (target.dataset.pickerAction === "prev" || target.dataset.pickerAction === "next") {
+    pickerState.month.setMonth(pickerState.month.getMonth() + (target.dataset.pickerAction === "next" ? 1 : -1));
+    pickerDateView();
+  } else if (target.dataset.pickerAction === "confirm-date") {
+    if (pickerState.type === "datetime-local") {
+      pickerState.stage = "time";
+      pickerTimeView();
+    } else commitPicker();
+  } else if (target.dataset.pickerAction === "confirm-time") {
+    commitPicker();
+  } else if (target.dataset.pickerAction === "cancel") {
+    picker.close();
+    pickerState = null;
+  }
+});
 function brand() {
   return `<header class="topbar"><div class="brand"><span class="brand-mark">${icon("road")}</span><span>随行<small>ON THE ROAD</small></span></div>${trip ? `<div class="top-actions"><button class="icon-btn" data-action="members" aria-label="同行成员">${icon("users")}</button><button class="icon-btn" data-action="settings" aria-label="旅行设置">${icon("more")}</button></div>` : '<span class="eyebrow">轻装出发</span>'}</header>`;
 }
@@ -436,6 +546,13 @@ function downloadCalendar(events) {
   toast("日历文件已生成，请打开并确认导入；修改时间后需更新日历。");
 }
 document.addEventListener("click", async (ev) => {
+  const pickerInput = ev.target.closest("[data-picker]");
+  if (pickerInput) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    openPicker(pickerInput);
+    return;
+  }
   const b = ev.target.closest("[data-action]");
   if (!b || b.disabled) return;
   const a = b.dataset.action,
@@ -584,6 +701,9 @@ document.addEventListener("submit", async (ev) => {
   submit.disabled = true;
   const data = Object.fromEntries(new FormData(f)),
     kind = f.dataset.form;
+  f.querySelectorAll("[data-picker]").forEach((input) => {
+    data[input.name] = input.dataset.value || "";
+  });
   try {
     if (kind === "deleteTrip") {
       await api("trips/" + trip.id, {

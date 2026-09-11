@@ -1211,6 +1211,107 @@ h3 { font-size: 17px; letter-spacing: -.25px; }
   line-height: 1.55;
 }
 .identity-note span { color: #60758d; }
+.picker-field { position: relative; }
+.picker-field::after {
+  content: "›";
+  position: absolute;
+  right: 16px;
+  bottom: 13px;
+  color: #8e98a8;
+  font-size: 24px;
+  line-height: 1;
+  pointer-events: none;
+}
+.picker-input { cursor: pointer; padding-right: 42px !important; }
+#picker {
+  width: min(390px, calc(100% - 24px));
+  max-height: min(760px, calc(100dvh - 24px));
+  overflow: hidden;
+  background: #fff;
+}
+#picker::backdrop { background: #17203372; backdrop-filter: blur(10px); }
+.picker-sheet { padding: 8px 12px 18px; background: #fff; }
+.picker-top {
+  display: grid;
+  grid-template-columns: 64px 1fr 64px;
+  align-items: center;
+  min-height: 52px;
+  text-align: center;
+}
+.picker-top strong { font-size: 17px; color: #16181d; }
+.picker-cancel,
+.picker-close {
+  min-height: 40px;
+  color: #6d7480;
+  background: transparent;
+  border: 0;
+  padding: 0 4px;
+  font-size: 14px;
+}
+.picker-blue { color: #3b5bd6; }
+.picker-close { display: grid; place-items: center; justify-self: end; width: 42px; }
+.picker-close .icon { width: 20px; height: 20px; }
+.picker-month {
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
+  align-items: center;
+  text-align: center;
+  min-height: 44px;
+}
+.picker-month button { background: transparent; border: 0; color: #222832; font-size: 29px; line-height: 1; }
+.picker-month strong { font-size: 15px; }
+.picker-weekdays,
+.picker-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.picker-weekdays { color: #7e8590; font-size: 12px; text-align: center; padding: 8px 0 4px; }
+.picker-day {
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #1d2026;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.picker-day.outside { color: #aeb4be; }
+.picker-day.selected { background: #3b5bd6; color: #fff; font-weight: 700; }
+.picker-confirm {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 13px;
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  background: #3b5bd6;
+  font-size: 15px;
+  font-weight: 650;
+}
+.picker-wheels { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 4px 4px 18px; }
+.picker-wheel {
+  height: 250px;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  overscroll-behavior: contain;
+  padding: 100px 0;
+  scrollbar-width: none;
+  background: linear-gradient(#fff 0%, #fff0 18%, #f3f4f6 50%, #fff0 82%, #fff 100%);
+}
+.picker-wheel::-webkit-scrollbar { display: none; }
+.picker-wheel-item {
+  display: block;
+  width: 100%;
+  height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #898e97;
+  font-size: 16px;
+  scroll-snap-align: center;
+}
+.picker-wheel-item.selected { color: #191b20; background: #f0f1f3; font-weight: 700; }
+@media (max-width: 600px) {
+  #picker[open] { width: 100%; max-width: none; max-height: calc(100dvh - 12px); margin: 12px 0 0; align-self: end; border-radius: 30px 30px 0 0; }
+  #picker .picker-sheet { padding-bottom: calc(18px + env(safe-area-inset-bottom)); }
+}
 .archive-item {
   border: 0;
   border-radius: 20px;
