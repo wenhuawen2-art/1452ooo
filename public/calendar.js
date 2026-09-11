@@ -48,8 +48,11 @@ export const calendarFile = (events) =>
   [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
+    "METHOD:PUBLISH",
     "PRODID:-//Suixing//Roadtrip//ZH",
     "CALSCALE:GREGORIAN",
+    "X-WR-CALNAME:随行提醒",
+    "X-WR-TIMEZONE:Asia/Shanghai",
     ...events,
     "END:VCALENDAR",
     "",

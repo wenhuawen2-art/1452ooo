@@ -92,6 +92,8 @@ test("住宿按夜判断，7/3/1 节点，日历北京时间转 UTC", () => {
     calendar("买票", "2026-10-01T09:00", "ticket"),
     /DTSTART:20261001T010000Z/,
   );
+  assert.match(calendar("买票", "2026-10-01T09:00", "ticket"), /METHOD:PUBLISH/);
+  assert.match(calendar("买票", "2026-10-01T09:00", "ticket"), /TRIGGER:PT0M/);
   const long = calendar(
     "很长的中文旅行提醒".repeat(12),
     "2026-10-01T09:00",
