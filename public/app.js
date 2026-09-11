@@ -277,7 +277,7 @@ function route() {
   const days = Array.from({ length: gap(trip.start, trip.end) + 1 }, (_, i) =>
     addDay(trip.start, i),
   );
-  return `<div class="page-heading"><div><span class="eyebrow">THE JOURNEY</span><h1>每一站，都心中有数。</h1><p class="muted">${esc(trip.name)} · ${pretty(day(trip.start))} — ${pretty(day(trip.end))}</p><p class="muted">${trip.start.slice(11)} 出发 · ${trip.end.slice(11)} 归来</p></div><button class="icon-btn" data-action="edit-trip" aria-label="编辑旅行" data-write>${icon("edit")}</button></div><div class="date-strip" aria-label="选择行程日期">${days.map((d) => `<button class="date-btn ${selected === d ? "active" : ""}" data-action="date" data-value="${d}" ${selected === d ? 'aria-current="date"' : ""}><span>${weekday(d)}</span><strong>${Number(d.slice(8))}</strong><span>${Number(d.slice(5, 7))} 月</span></button>`).join("")}</div><div class="section-head"><h2>${pretty(selected)} · 第 ${gap(trip.start, selected) + 1} 天</h2><button class="text-btn" data-action="event" data-date="${selected}" data-write>添加安排 +</button></div>${eventsCard(selected)}${hotelCard(selected)}`;
+  return `<div class="date-strip" aria-label="选择行程日期">${days.map((d) => `<button class="date-btn ${selected === d ? "active" : ""}" data-action="date" data-value="${d}" ${selected === d ? 'aria-current="date"' : ""}><span>${weekday(d)}</span><strong>${Number(d.slice(8))}</strong><span>${Number(d.slice(5, 7))} 月</span></button>`).join("")}</div><div class="section-head"><h2>${pretty(selected)} · 第 ${gap(trip.start, selected) + 1} 天</h2><button class="text-btn" data-action="event" data-date="${selected}" data-write>添加安排 +</button></div>${eventsCard(selected)}${hotelCard(selected)}`;
 }
 function itemRow(i) {
   const reviewing = gap(nowDay(), trip.start) <= 1;
@@ -291,7 +291,7 @@ function checklist() {
   const categories = trip.categories.filter((c) =>
     scope === "公共" ? !c.owner : c.owner === trip.me,
   );
-  return `<div class="page-heading"><div><span class="eyebrow">READY TO GO</span><h1>准备再齐全，也不要忘了检查。</h1><p class="muted">勾选即确认，完成的物品会留在原位。</p></div></div><div class="segment">${["公共", "我的"].map((s) => `<button class="${scope === s ? "active" : ""}" data-action="scope" data-value="${s}">${s === "公共" ? "一起准备" : "我的物品"}</button>`).join("")}</div><div class="row"><span class="muted">已准备 <strong>${p.done}</strong> / ${p.total} 项</span><button class="text-btn" data-action="category" data-write>新建分类 +</button></div>${bar(p.done, p.total)}${gap(nowDay(), trip.start) <= 1 ? reviewSummary() : ""}${categories
+  return `<div class="segment">${["公共", "我的"].map((s) => `<button class="${scope === s ? "active" : ""}" data-action="scope" data-value="${s}">${s === "公共" ? "一起准备" : "我的物品"}</button>`).join("")}</div><div class="row"><span class="muted">已准备 <strong>${p.done}</strong> / ${p.total} 项</span><button class="text-btn" data-action="category" data-write>新建分类 +</button></div>${bar(p.done, p.total)}${gap(nowDay(), trip.start) <= 1 ? reviewSummary() : ""}${categories
     .map(
       (c) =>
         `<section class="check-group"><div class="section-head category-head"><div><h2>${esc(c.name)}</h2><span class="muted">${items.filter((i) => i.categoryId === c.id).length} 项</span></div><button class="text-btn" data-action="item" data-category="${c.id}" aria-label="在${esc(c.name)}中新增条目" data-write>新增条目 +</button></div><div class="card check-card">${
