@@ -3,13 +3,14 @@ const assert = require("node:assert/strict");
 const { createTrip, addMember, viewTrip, mutateTrip } = require("../shared/domain.cjs");
 const { checklistTemplates } = require("../shared/templates.cjs");
 const { periodForStart, splitEventByPeriods } = require("../shared/schedule.cjs");
+const { avatars, normalizeMembers } = require("../shared/avatars.cjs");
 
 test("CloudBase shared domain keeps public and personal checklist data isolated", () => {
   const { trip, member: owner } = createTrip({
-    name: "川西小环线", nickname: "文华",
+    name: "川西小环线", nickname: "文华", avatarId: "avatar-01",
     start: "2026-10-01T08:00", end: "2026-10-05T18:00",
   });
-  const guest = addMember(trip, "同行人");
+  const guest = addMember(trip, "同行人", "avatar-02");
   const ownerView = viewTrip(trip, owner, "invite-token");
   const guestView = viewTrip(trip, guest);
   assert.equal(ownerView.invite, "invite-token");
@@ -20,7 +21,7 @@ test("CloudBase shared domain keeps public and personal checklist data isolated"
 
 test("CloudBase shared domain validates full schedule period and revision", () => {
   const { trip, member } = createTrip({
-    name: "测试旅行", nickname: "创建者",
+    name: "测试旅行", nickname: "创建者", avatarId: "avatar-01",
     start: "2026-10-01T08:00", end: "2026-10-03T18:00",
   });
   mutateTrip(trip, member, {
@@ -49,7 +50,7 @@ test("schedule periods derive from start time and split spanning events", () => 
 
 test("CloudBase shared domain resets review after a checklist toggle", () => {
   const { trip, member } = createTrip({
-    name: "测试旅行", nickname: "创建者",
+    name: "测试旅行", nickname: "创建者", avatarId: "avatar-01",
     start: "2026-10-01T08:00", end: "2026-10-03T18:00",
   });
   const item = trip.items.find((entry) => entry.key && entry.owner === member.id);
@@ -63,7 +64,7 @@ test("CloudBase shared domain resets review after a checklist toggle", () => {
 test("CloudBase shared domain imports editable templates into the selected checklist once", () => {
   assert.equal(checklistTemplates.length, 5);
   const { trip, member: owner } = createTrip({
-    name: "模板测试", nickname: "创建者",
+    name: "模板测试", nickname: "创建者", avatarId: "avatar-01",
     start: "2026-10-01T08:00", end: "2026-10-03T18:00",
   });
   mutateTrip(trip, owner, {
@@ -90,8 +91,34 @@ test("CloudBase shared domain imports editable templates into the selected check
     action: "importTemplate", revision: trip.revision,
     templateId: "vehicle-check", scope: "公共",
   });
-  const guest = addMember(trip, "同行人");
+  const guest = addMember(trip, "同行人", "avatar-02");
   const guestView = viewTrip(trip, guest);
   assert.ok(guestView.categories.some((entry) => entry.templateId === "vehicle-check"));
   assert.ok(!guestView.categories.some((entry) => entry.templateId === "travel-documents"));
+});
+
+test("avatar choice is required, unique while available, and reusable after sixteen members", () => {
+  assert.equal(avatars.length, 16);
+  assert.throws(() => createTrip({ name: "无头像", nickname: "甲", start: "2026-10-01T08:00", end: "2026-10-02T18:00" }), /请选择头像/);
+  const { trip } = createTrip({ name: "头像规则", nickname: "甲", avatarId: "avatar-01", start: "2026-10-01T08:00", end: "2026-10-02T18:00" });
+  assert.throws(() => addMember(trip, "乙", "avatar-01"), /头像刚被/);
+  for (let index = 2; index <= 16; index += 1) addMember(trip, `成员${index}`, `avatar-${String(index).padStart(2, "0")}`);
+  assert.equal(addMember(trip, "第十七人", "avatar-01").avatarId, "avatar-01");
+});
+
+test("profile changes update member references and legacy confirmations are matched safely", () => {
+  const { trip, member } = createTrip({ name: "资料测试", nickname: "旧名字", avatarId: "avatar-01", start: "2026-10-01T08:00", end: "2026-10-02T18:00" });
+  const item = trip.items.find((entry) => !entry.owner);
+  item.done = true; item.by = "旧名字"; delete item.byMemberId;
+  normalizeMembers(trip);
+  assert.equal(item.byMemberId, member.id);
+  mutateTrip(trip, member, { action: "profile", revision: trip.revision, name: "新名字", avatarId: "avatar-03" });
+  assert.equal(member.avatarId, "avatar-03");
+  assert.equal(item.by, "新名字");
+  const guest = addMember(trip, "同名", "avatar-02");
+  addMember(trip, "同名", "avatar-04");
+  const ambiguous = trip.items.find((entry) => entry.owner === guest.id);
+  ambiguous.by = "同名"; delete ambiguous.byMemberId;
+  normalizeMembers(trip);
+  assert.equal(ambiguous.byMemberId, undefined);
 });

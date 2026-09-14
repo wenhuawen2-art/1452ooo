@@ -2,9 +2,11 @@ import cloudbase from "@cloudbase/js-sdk";
 import { calendarEvent, calendarFile } from "./calendar.js";
 import templatePackage from "../shared/templates.cjs";
 import schedulePackage from "../shared/schedule.cjs";
+import avatarPackage from "../shared/avatars.cjs";
 
 const { checklistTemplates } = templatePackage;
 const { schedulePeriods, splitEventByPeriods } = schedulePackage;
+const { avatars } = avatarPackage;
 
 const cloud = cloudbase.init({ env: "zdata-d4g6l75lwebf2dbb0" });
 const auth = cloud.auth({ persistence: "local" });
@@ -90,6 +92,7 @@ async function api(path, data) {
     if (path === "trips") [operation, payload] = ["listTrips", {}];
     else if (path === "create") [operation, payload] = ["createTrip", data];
     else if (path === "join") [operation, payload] = ["joinTrip", data];
+    else if (path === "invite-preview") [operation, payload] = ["previewInvite", data];
     else if (path === "recover") [operation, payload] = ["recoverMember", data];
     else if (path.startsWith("trips/")) {
       operation = data ? "mutateTrip" : "getTrip";
@@ -176,6 +179,23 @@ const note = (label, name, value = "") =>
   `<label class="field">${label}<textarea name="${name}" maxlength="2000">${esc(value)}</textarea></label>`;
 function form(kind, fields, id = "", del = "") {
   return `<form data-form="${kind}" data-id="${id}" data-revision="${trip?.revision ?? 0}">${fields}<p class="error" role="alert"></p><div class="form-actions">${del ? `<button type="button" class="btn danger" data-action="${del}" data-id="${id}">删除</button>` : ""}<button class="btn" type="submit">${kind === "create" ? "创建旅行" : kind === "join" ? "加入旅行" : kind === "recover" ? "恢复我的身份" : "保存"}</button></div></form>`;
+}
+const avatarInfo = (avatarId) => avatars.find((entry) => entry.id === avatarId);
+function avatarImage(member, className = "") {
+  const info = avatarInfo(member?.avatarId);
+  return info
+    ? `<img class="member-avatar ${className}" src="${info.src}" alt="" loading="lazy" decoding="async">`
+    : `<span class="member-avatar avatar-fallback ${className}" aria-hidden="true">?</span>`;
+}
+function memberChip(member, className = "") {
+  if (!member) return "";
+  return `<span class="member-chip ${className}">${avatarImage(member)}<span>${esc(member.name)}</span></span>`;
+}
+function avatarPicker(selectedId = "", usedIds = [], allowDuplicates = false) {
+  return `<fieldset class="avatar-picker"><legend>选择头像</legend><input type="hidden" name="avatarId" value="${esc(selectedId)}"><div class="avatar-grid">${avatars.map((entry) => {
+    const unavailable = !allowDuplicates && usedIds.includes(entry.id) && entry.id !== selectedId;
+    return `<button type="button" class="avatar-option ${entry.id === selectedId ? "selected" : ""}" data-action="choose-avatar" data-value="${entry.id}" aria-label="${entry.name}${unavailable ? "，已被选择" : ""}" aria-pressed="${entry.id === selectedId}" ${unavailable ? "disabled" : ""}><img src="${entry.src}" alt="" loading="lazy"><span>${entry.name}</span><i aria-hidden="true">✓</i></button>`;
+  }).join("")}</div><p class="muted">同一趟旅行会优先使用不同头像。</p></fieldset>`;
 }
 let pickerState = null;
 const pad2 = (n) => String(n).padStart(2, "0");
@@ -314,7 +334,7 @@ picker.addEventListener("click", (event) => {
   }
 });
 function brand() {
-  return `<header class="topbar"><div class="brand"><span class="brand-mark">${icon("road")}</span><span>随行<small>ON THE ROAD</small></span></div>${trip ? `<div class="top-actions"><button class="icon-btn" data-action="members" aria-label="同行成员">${icon("users")}</button><button class="icon-btn" data-action="settings" aria-label="旅行设置">${icon("more")}</button></div>` : '<span class="eyebrow">轻装出发</span>'}</header>`;
+  return `<header class="topbar"><div class="brand"><span class="brand-mark">${icon("road")}</span><span>随行<small>ON THE ROAD</small></span></div>${trip ? memberChip(trip.members.find((member) => member.id === trip.me), "top-member") : '<span class="eyebrow">轻装出发</span>'}</header>`;
 }
 function render() {
   app.dataset.view = trip ? tab : "welcome";
@@ -334,10 +354,11 @@ function render() {
       )}<p class="muted">已有同行邀请？请直接打开朋友发来的邀请链接。</p></section></main>`;
     return;
   }
-  app.innerHTML = `${!navigator.onLine || !connection ? '<div class="offline-bar" role="alert">连接已断开 · 当前内容尚未更新，联网后才能保存</div>' : ""}<main class="shell">${brand()}${trip.archived ? '<div class="notice">这趟旅行已归档，内容仅供查看。<button class="text-btn" data-action="create">新建旅行</button></div>' : ""}${tab === "today" ? today() : tab === "route" ? route() : checklist()}</main><nav class="bottom-nav" aria-label="主要导航">${[
+  app.innerHTML = `${!navigator.onLine || !connection ? '<div class="offline-bar" role="alert">连接已断开 · 当前内容尚未更新，联网后才能保存</div>' : ""}<main class="shell">${brand()}${trip.archived ? '<div class="notice">这趟旅行已归档，内容仅供查看。<button class="text-btn" data-action="create">新建旅行</button></div>' : ""}${tab === "today" ? today() : tab === "route" ? route() : tab === "list" ? checklist() : memberCenter()}</main><nav class="bottom-nav" aria-label="主要导航">${[
     ["today", "sun", "今天"],
     ["route", "map", "行程"],
     ["list", "list", "清单"],
+    ["people", "users", "成员"],
   ]
     .map(
       ([v, i, t]) =>
@@ -447,7 +468,9 @@ function route() {
 }
 function itemRow(i) {
   const reviewing = gap(nowDay(), trip.start) <= 1;
-  return `<div class="check-row ${i.done ? "done" : ""}"><button class="check-main" data-action="toggle" data-id="${i.id}" role="checkbox" aria-checked="${i.done}" data-write><span class="checkbox">${i.done ? icon("check") : ""}</span><span><span class="item-title">${esc(i.title)}</span><span class="item-meta">${i.key ? '<span class="key-dot">● 关键项</span>' : ""}${i.done ? (i.owner ? "已准备" : esc(i.by || "同行人") + " 已确认") : ""}${i.remind ? `<br>${pretty(day(i.remind))} ${i.remind.slice(11)} 提醒` : ""}${i.linkedDate ? ` · 关联 ${pretty(i.linkedDate)} 行程` : ""}</span></span></button><div class="item-actions">${i.key && i.done && reviewing ? `<button class="review-btn ${i.reviewed ? "checked" : ""}" data-action="review" data-id="${i.id}" data-write>${i.reviewed ? "已复核" : "再确认"}</button>` : ""}<button class="item-action edit" data-action="item" data-id="${i.id}" aria-label="编辑 ${esc(i.title)}" title="编辑" data-write>${icon("edit")}</button><button class="item-action delete" data-action="deleteItem" data-id="${i.id}" aria-label="删除 ${esc(i.title)}" title="删除" data-write>${icon("trash")}</button></div></div>`;
+  const member = trip.members.find((entry) => entry.id === (i.owner || i.byMemberId));
+  const confirmed = i.done ? `<span class="item-confirmer">${avatarImage(member, "tiny")}${esc(member?.name || i.by || "原确认人")}<span>${i.owner ? "已准备" : "已确认"}</span></span>` : "";
+  return `<div class="check-row ${i.done ? "done" : ""}"><button class="check-main" data-action="toggle" data-id="${i.id}" role="checkbox" aria-checked="${i.done}" data-write><span class="checkbox">${i.done ? icon("check") : ""}</span><span class="item-copy"><span class="item-title-line"><span class="item-title">${esc(i.title)}</span>${i.key ? '<span class="key-badge">关键项</span>' : ""}</span><span class="item-meta">${confirmed}${i.remind ? `<span>${pretty(day(i.remind))} ${i.remind.slice(11)} 提醒</span>` : ""}${i.linkedDate ? `<span>关联 ${pretty(i.linkedDate)} 行程</span>` : ""}</span></span></button><div class="item-actions">${i.key && i.done && reviewing ? `<button class="review-btn ${i.reviewed ? "checked" : ""}" data-action="review" data-id="${i.id}" data-write>${i.reviewed ? "已复核" : "再确认"}</button>` : ""}<button class="item-action edit" data-action="item" data-id="${i.id}" aria-label="编辑 ${esc(i.title)}" title="编辑" data-write>${icon("edit")}</button><button class="item-action delete" data-action="deleteItem" data-id="${i.id}" aria-label="删除 ${esc(i.title)}" title="删除" data-write>${icon("trash")}</button></div></div>`;
 }
 function checklist() {
   const items = trip.items.filter((i) =>
@@ -470,7 +493,7 @@ function checklist() {
     )
     .join(
       "",
-    )}<div class="section-head"><h2>同行人的准备</h2><button class="text-btn" data-action="members">管理同行人 →</button></div><div class="card members">${trip.progress.map((p) => `<div class="member"><div class="row"><span><span class="avatar">${esc(p.name.slice(0, 1))}</span>${esc(p.name)}${p.id === trip.me ? "（我）" : ""}</span><span class="muted">${p.done}/${p.total} 已准备</span></div>${bar(p.done, p.total)}<div class="muted">关键项复核 ${p.reviewed}/${p.keys}</div></div>`).join("")}</div>`;
+    )}<div class="section-head"><h2>同行人的准备</h2><button class="text-btn" data-action="tab" data-value="people">查看成员 →</button></div><div class="card members">${trip.progress.map((p) => `<div class="member"><div class="row"><span>${memberChip(p)}${p.id === trip.me ? '<span class="pill">我</span>' : ""}</span><span class="muted">${p.done}/${p.total} 已准备</span></div>${bar(p.done, p.total)}<div class="muted">关键项复核 ${p.reviewed}/${p.keys}</div></div>`).join("")}</div>`;
 }
 function tripForm(edit = false) {
   const start = edit ? trip.start : addDay(nowDay(), 7) + "T08:00";
@@ -479,7 +502,7 @@ function tripForm(edit = false) {
     edit ? "编辑旅行" : "开启一段新旅程",
     form(
       edit ? "trip" : "create",
-      `${field("旅行名称", "name", edit ? trip.name : "", "text", true)}${edit ? "" : field("你的昵称", "nickname", trip?.members.find((m) => m.id === trip.me)?.name || "", "text", true)}${dateRangeField("出行日期", day(start), day(end))}<div class="form-grid">${field("出发时间（北京时间）", "startTime", start.slice(11, 16), "time", true)}${field("归来时间（北京时间）", "endTime", end.slice(11, 16), "time", true)}</div>${!edit && trips.length ? `<label class="field">复用已有清单<select name="reuse"><option value="">使用精简默认清单</option>${trips.map((t) => `<option value="${t.id}">${esc(t.name)}</option>`).join("")}</select></label><p class="muted">仅复用公共清单和你的个人清单，完成与复核状态都会清零。</p>` : ""}${edit ? '<p class="muted">修改日期或时间后，请同步更新已添加的手机日历。</p>' : ""}`,
+      `${field("旅行名称", "name", edit ? trip.name : "", "text", true)}${edit ? "" : field("你的昵称", "nickname", trip?.members.find((m) => m.id === trip.me)?.name || "", "text", true)}${edit ? "" : avatarPicker()}${dateRangeField("出行日期", day(start), day(end))}<div class="form-grid">${field("出发时间（北京时间）", "startTime", start.slice(11, 16), "time", true)}${field("归来时间（北京时间）", "endTime", end.slice(11, 16), "time", true)}</div>${!edit && trips.length ? `<label class="field">复用已有清单<select name="reuse"><option value="">使用精简默认清单</option>${trips.map((t) => `<option value="${t.id}">${esc(t.name)}</option>`).join("")}</select></label><p class="muted">仅复用公共清单和你的个人清单，完成与复核状态都会清零。</p>` : ""}${edit ? '<p class="muted">修改日期或时间后，请同步更新已添加的手机日历。</p>' : ""}`,
     ),
   );
 }
@@ -573,6 +596,21 @@ async function settings() {
     modal.querySelector(".modal-body").append(area);
   }
 }
+function profileForm() {
+  const me = trip.members.find((member) => member.id === trip.me);
+  const used = trip.members.filter((member) => member.id !== trip.me).map((member) => member.avatarId);
+  const allUsed = trip.members.map((member) => member.avatarId);
+  const allowDuplicates = avatars.every((avatar) => allUsed.includes(avatar.id));
+  show("编辑我的资料", form("profile", `${field("昵称", "name", me.name, "text", true)}${avatarPicker(me.avatarId, used, allowDuplicates)}`));
+}
+function memberCenter() {
+  const me = trip.members.find((member) => member.id === trip.me);
+  const own = trip.me === trip.creator;
+  return `<div class="page-heading"><span class="eyebrow">PERSON & TRIP</span><h1>成员与旅行</h1></div>
+    <section class="member-section"><div class="section-head"><h2>我的资料</h2><button class="text-btn" data-action="profile" data-write>编辑资料</button></div><div class="card profile-card">${avatarImage(me, "profile-avatar")}<div><h2>${esc(me.name)}</h2><p class="muted">${own ? "旅行创建者" : "同行成员"} · 身份保存在这台设备</p></div></div></section>
+    <section class="member-section"><div class="section-head"><h2>同行成员</h2><span class="muted">${trip.members.length} 人</span></div>${own && !trip.archived ? `<button class="btn full" data-action="invite">${icon("users")} 复制私密邀请链接</button><p class="muted">同行人打开后填写昵称并选择头像即可加入。</p>` : ""}<div class="card member-list">${trip.members.map((member) => `<div class="member-manage"><div class="member-manage-main">${avatarImage(member, "list-avatar")}<div><strong>${esc(member.name)}</strong>${member.id === trip.creator ? '<span class="pill">创建者</span>' : ""}<small>${member.id === trip.me ? "这是我" : "同行成员"}</small></div></div>${(own || member.id === trip.me) && !trip.archived ? `<div class="small-actions"><button data-action="recovery" data-id="${member.id}">${member.id === trip.me ? "身份恢复" : "生成恢复链接"}</button>${own && member.id !== trip.creator ? `<button class="danger-link" data-action="removeMember" data-id="${member.id}">移除</button>` : ""}</div>` : ""}</div>`).join("")}</div>${own && !trip.archived ? '<button class="text-btn rotate-link" data-action="rotate">更换邀请链接，使旧链接失效</button>' : ""}</section>
+    <section class="member-section"><div class="section-head"><h2>旅行管理</h2></div><div class="management-grid"><button class="card management-button" data-action="create">${icon("plus")}<span>新建旅行</span></button>${!trip.archived ? `<button class="card management-button" data-action="edit-trip">${icon("edit")}<span>编辑旅行</span></button>` : ""}${own ? `<button class="card management-button" data-action="export-trip">${icon("arrow")}<span>导出备份</span></button>` : ""}${own && !trip.archived ? `<button class="card management-button danger-text" data-action="archive">${icon("more")}<span>归档旅行</span></button>` : ""}</div><div class="trip-switch-list">${trips.map((entry) => `<button class="archive-item ${entry.id === trip.id ? "current" : ""}" data-action="switch" data-id="${entry.id}"><strong>${esc(entry.name)}</strong><span>${pretty(day(entry.start))} — ${pretty(day(entry.end))} · ${entry.archived ? "已归档" : entry.id === trip.id ? "当前旅行" : "进行中"}</span></button>`).join("")}</div>${own ? '<div class="danger-zone"><button class="btn danger full" data-action="delete-trip">删除整趟旅行</button><p class="muted">删除需要两次确认并输入旅行名称。</p></div>' : ""}</section>`;
+}
 function deleteItemPrompt(id) {
   const item = trip.items.find((entry) => entry.id === id);
   if (!item) return;
@@ -662,8 +700,22 @@ document.addEventListener("click", async (ev) => {
         break;
       case "tab":
         tab = b.dataset.value;
+        if (tab === "people") trips = await api("trips");
         render();
         window.scrollTo(0, 0);
+        break;
+      case "choose-avatar": {
+        const grid = b.closest(".avatar-picker");
+        grid.querySelector('input[name="avatarId"]').value = b.dataset.value;
+        grid.querySelectorAll(".avatar-option").forEach((option) => {
+          const selected = option === b;
+          option.classList.toggle("selected", selected);
+          option.setAttribute("aria-pressed", String(selected));
+        });
+        break;
+      }
+      case "profile":
+        profileForm();
         break;
       case "scope":
         scope = b.dataset.value;
@@ -753,7 +805,7 @@ document.addEventListener("click", async (ev) => {
           )
         ) {
           await mutate({ action: a, id, member: id });
-          modal.close();
+          if (modal.open) modal.close();
           toast("已完成");
         }
         break;
@@ -771,7 +823,7 @@ document.addEventListener("click", async (ev) => {
         localStorage.setItem("suixing-trip", id);
         selected = clampDay();
         tab = "today";
-        modal.close();
+        if (modal.open) modal.close();
         render();
         break;
       case "cal-item": {
@@ -821,6 +873,8 @@ document.addEventListener("submit", async (ev) => {
     data[input.name] = input.dataset.value || "";
   });
   try {
+    if ((kind === "create" || kind === "join" || kind === "profile") && !data.avatarId)
+      throw Error("请选择一个头像");
     if ((kind === "create" || kind === "trip") && data.startDate && data.endDate) {
       data.start = `${data.startDate}T${data.startTime || "08:00"}`;
       data.end = `${data.endDate}T${data.endTime || "18:00"}`;
@@ -893,15 +947,18 @@ async function boot() {
       selected = clampDay();
     }
     render();
-    if (invite)
+    if (invite) {
+      const preview = await api("invite-preview", { invite });
       show(
-        "加入同行旅行",
+        `加入 · ${preview.tripName}`,
         form(
           "join",
           field("你的昵称", "nickname", "", "text", true) +
+            avatarPicker("", preview.usedAvatarIds, preview.allowDuplicates) +
             '<p class="muted">无需注册。昵称仅用于同行展示；加入后可以共同编辑行程、住宿和公共清单。本机浏览器会记住你的身份。</p>',
         ),
       );
+    }
     if (recovery)
       show(
         "在这台手机恢复身份",

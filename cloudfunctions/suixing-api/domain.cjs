@@ -1,6 +1,7 @@
 const { randomBytes } = require("node:crypto");
 const { getChecklistTemplate } = require("./templates.cjs");
 const { periodForStart } = require("./schedule.cjs");
+const { isAvatarId, normalizeMembers, avatarSelection } = require("./avatars.cjs");
 
 const id = () => randomBytes(24).toString("hex");
 const day = (value) => String(value || "").slice(0, 10);
@@ -43,7 +44,8 @@ function defaultItems(owner) {
     ["我的", "携带物品", "换洗衣物与洗漱用品", false],
   ].map(([scope, category, title, key]) => ({
     id: id(), owner: scope === "我的" ? owner : null, category, title, key,
-    done: false, reviewed: false, by: null, reviewBy: null, remind: "", linkedDate: "",
+    done: false, reviewed: false, by: null, byMemberId: null,
+    reviewBy: null, reviewByMemberId: null, remind: "", linkedDate: "",
   }));
 }
 
@@ -65,13 +67,14 @@ function ensureCategories(trip) {
     item.categoryId = category.id;
     item.category = category.name;
   }
-  trip.schemaVersion = 3;
+  trip.schemaVersion = Math.max(Number(trip.schemaVersion) || 0, 4);
   return trip;
 }
 
 function createTrip(input, reuseTrip, reuseMember) {
   validateDates(input.start, input.end);
-  const member = { id: id(), name: text(input.nickname, 40) };
+  if (!isAvatarId(input.avatarId)) fail(400, "请选择头像");
+  const member = { id: id(), name: text(input.nickname, 40), avatarId: input.avatarId };
   const trip = ensureCategories({
     id: id(), name: text(input.name), start: input.start, end: input.end,
     creator: member.id, members: [member], items: defaultItems(member.id),
@@ -91,14 +94,18 @@ function createTrip(input, reuseTrip, reuseMember) {
       .filter((item) => !item.owner || item.owner === reuseMember.id)
       .map((item) => ({ ...item, id: id(), owner: item.owner ? member.id : null,
         categoryId: categoryMap.get(item.categoryId), done: false, reviewed: false,
-        by: null, reviewBy: null, remind: "", linkedDate: "" }));
+        by: null, byMemberId: null, reviewBy: null, reviewByMemberId: null, remind: "", linkedDate: "" }));
     ensureCategories(trip);
   }
   return { trip, member };
 }
 
-function addMember(trip, nickname) {
-  const member = { id: id(), name: text(nickname, 40) };
+function addMember(trip, nickname, avatarId) {
+  normalizeMembers(trip);
+  const choice = avatarSelection(trip, null, avatarId);
+  if (!choice.valid) fail(400, "请选择头像");
+  if (!choice.available) fail(409, "这个头像刚被同行人选走，请换一个");
+  const member = { id: id(), name: text(nickname, 40), avatarId };
   trip.members.push(member);
   trip.items.push(...defaultItems(member.id).filter((item) => item.owner));
   ensureCategories(trip);
@@ -108,6 +115,7 @@ function addMember(trip, nickname) {
 }
 
 function viewTrip(trip, member, invite) {
+  normalizeMembers(trip);
   return {
     ...trip,
     invite: member.id === trip.creator ? invite : undefined,
@@ -116,7 +124,7 @@ function viewTrip(trip, member, invite) {
     categories: trip.categories.filter((category) => !category.owner || category.owner === member.id),
     progress: trip.members.map((entry) => {
       const items = trip.items.filter((item) => item.owner === entry.id);
-      return { id: entry.id, name: entry.name, total: items.length,
+      return { id: entry.id, name: entry.name, avatarId: entry.avatarId, total: items.length,
         done: items.filter((item) => item.done).length,
         keys: items.filter((item) => item.key).length,
         reviewed: items.filter((item) => item.key && item.reviewed).length };
@@ -125,11 +133,25 @@ function viewTrip(trip, member, invite) {
 }
 
 function mutateTrip(trip, member, input) {
+  normalizeMembers(trip);
   if (input.revision !== trip.revision) fail(409, "同行人刚刚更新了内容，请查看最新状态后重试");
   const owner = () => { if (member.id !== trip.creator) fail(403, "只有创建者可以操作"); };
   if (trip.archived) fail(400, "已归档旅行只可查看");
   const effects = {};
   switch (input.action) {
+    case "profile": {
+      const nextName = text(input.name, 40);
+      const choice = avatarSelection(trip, member.id, input.avatarId);
+      if (!choice.valid) fail(400, "请选择头像");
+      if (!choice.available) fail(409, "这个头像刚被同行人选走，请换一个");
+      member.name = nextName;
+      member.avatarId = input.avatarId;
+      for (const item of trip.items) {
+        if (item.byMemberId === member.id) item.by = nextName;
+        if (item.reviewByMemberId === member.id) item.reviewBy = nextName;
+      }
+      break;
+    }
     case "trip":
       validateDates(input.start, input.end);
       if (trip.events.some((event) => event.date < day(input.start) || event.date > day(input.end)) ||
@@ -180,7 +202,7 @@ function mutateTrip(trip, member, input) {
       trip.items.push(...template.items.map((entry) => ({
         id: id(), owner: categoryOwner, category: category.name, categoryId: category.id,
         title: entry.title, key: !!entry.key, done: false, reviewed: false,
-        by: null, reviewBy: null, remind: "", linkedDate: "",
+        by: null, byMemberId: null, reviewBy: null, reviewByMemberId: null, remind: "", linkedDate: "",
       })));
       effects.importedCategoryId = category.id;
       break;
@@ -197,8 +219,8 @@ function mutateTrip(trip, member, input) {
       if (values.remind && !validTime(values.remind)) fail(400, "提醒时间无效");
       if (values.linkedDate && (!validDate(values.linkedDate) || values.linkedDate < day(trip.start) || values.linkedDate > day(trip.end)))
         fail(400, "关联日期须在旅行内");
-      if (existing) Object.assign(existing, values, { reviewed: false, reviewBy: null });
-      else trip.items.push({ id: id(), owner: itemOwner, ...values, done: false, reviewed: false, by: null, reviewBy: null });
+      if (existing) Object.assign(existing, values, { reviewed: false, reviewBy: null, reviewByMemberId: null });
+      else trip.items.push({ id: id(), owner: itemOwner, ...values, done: false, reviewed: false, by: null, byMemberId: null, reviewBy: null, reviewByMemberId: null });
       break;
     }
     case "toggle": case "review": case "deleteItem": {
@@ -207,11 +229,11 @@ function mutateTrip(trip, member, input) {
       if (item.owner && item.owner !== member.id) fail(403, "只能确认自己的清单");
       if (input.action === "deleteItem") trip.items = trip.items.filter((entry) => entry.id !== item.id);
       else if (input.action === "toggle") {
-        item.done = !item.done; item.by = item.done ? member.name : null;
-        item.reviewed = false; item.reviewBy = null;
+        item.done = !item.done; item.by = item.done ? member.name : null; item.byMemberId = item.done ? member.id : null;
+        item.reviewed = false; item.reviewBy = null; item.reviewByMemberId = null;
       } else {
         if (!item.done || !item.key) fail(400, "请先完成关键项目的准备");
-        item.reviewed = !item.reviewed; item.reviewBy = item.reviewed ? member.name : null;
+        item.reviewed = !item.reviewed; item.reviewBy = item.reviewed ? member.name : null; item.reviewByMemberId = item.reviewed ? member.id : null;
       }
       break;
     }

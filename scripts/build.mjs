@@ -6,7 +6,9 @@ await mkdir("dist", { recursive: true });
 await Promise.all([
   cp("public/index.html", "dist/index.html"),
   cp("public/style.css", "dist/style.css"),
+  cp("public/avatars", "dist/avatars", { recursive: true }),
   cp("shared/domain.cjs", "cloudfunctions/suixing-api/domain.cjs"),
+  cp("shared/avatars.cjs", "cloudfunctions/suixing-api/avatars.cjs"),
   cp("shared/templates.cjs", "cloudfunctions/suixing-api/templates.cjs"),
   cp("shared/schedule.cjs", "cloudfunctions/suixing-api/schedule.cjs"),
 ]);

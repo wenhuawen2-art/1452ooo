@@ -1,6 +1,7 @@
 const cloudbase = require("@cloudbase/node-sdk");
 const { createHash } = require("node:crypto");
 const { id, fail, createTrip, addMember, viewTrip, mutateTrip } = require("./domain.cjs");
+const { avatarIds, normalizeMembers } = require("./avatars.cjs");
 
 const app = cloudbase.init({});
 const db = app.database();
@@ -92,13 +93,23 @@ async function join(uid, input) {
         .limit(1),
     );
     if (!link) {
-      const member = addMember(trip, input.nickname);
+      const member = addMember(trip, input.nickname, input.avatarId);
       link = { uid, tripId: trip.id, memberId: member.id, createdAt: Date.now() };
       await transaction.collection("trip_members").doc(memberKey(uid, trip.id)).set(link);
       await transaction.collection("trips").doc(trip.id).set(trip);
     }
     return { trip: viewTrip(trip, trip.members.find((entry) => entry.id === link.memberId), input.invite) };
   });
+}
+
+async function previewInvite(input) {
+  if (typeof input.invite !== "string" || !/^[a-f0-9]{48}$/.test(input.invite)) fail(404, "邀请已失效或旅行已归档");
+  const invite = await first(collections.invites.where({ token: input.invite, active: true }).limit(1));
+  if (!invite?.active) fail(404, "邀请已失效或旅行已归档");
+  const trip = normalizeMembers(await loadTrip(db, invite.tripId));
+  if (trip.archived) fail(404, "邀请已失效或旅行已归档");
+  const usedAvatarIds = [...new Set(trip.members.map((member) => member.avatarId))];
+  return { tripName: trip.name, usedAvatarIds, allowDuplicates: avatarIds.every((id) => usedAvatarIds.includes(id)) };
 }
 
 async function get(uid, input) {
@@ -193,6 +204,7 @@ exports.main = async (event, context) => {
     const result = operation === "listTrips" ? await listTrips(uid)
       : operation === "createTrip" ? await create(uid, data)
       : operation === "joinTrip" ? await join(uid, data)
+      : operation === "previewInvite" ? await previewInvite(data)
       : operation === "recoverMember" ? await recover(uid, data)
       : operation === "getTrip" ? await get(uid, data)
       : operation === "mutateTrip" ? await mutate(uid, data)
