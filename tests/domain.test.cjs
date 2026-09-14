@@ -62,7 +62,11 @@ test("CloudBase shared domain resets review after a checklist toggle", () => {
 });
 
 test("CloudBase shared domain imports editable templates into the selected checklist once", () => {
-  assert.equal(checklistTemplates.length, 5);
+  assert.equal(checklistTemplates.length, 13);
+  assert.deepEqual(
+    ["road-trip-comfort", "electronics-navigation", "clothing-toiletries", "lodging-checkin", "camping-outdoor", "family-travel", "pet-travel", "long-drive-safety"].every((id) => checklistTemplates.some((template) => template.id === id)),
+    true,
+  );
   const { trip, member: owner } = createTrip({
     name: "模板测试", nickname: "创建者", avatarId: "avatar-01",
     start: "2026-10-01T08:00", end: "2026-10-03T18:00",
