@@ -1,4 +1,5 @@
 const { randomBytes } = require("node:crypto");
+const { getChecklistTemplate } = require("./templates.cjs");
 
 const id = () => randomBytes(24).toString("hex");
 const day = (value) => String(value || "").slice(0, 10);
@@ -157,6 +158,30 @@ function mutateTrip(trip, member, input) {
       if (trip.categories.some((category) => category.owner === categoryOwner && category.name === name))
         fail(400, "这个清单里已有同名分类");
       trip.categories.push({ id: id(), name, owner: categoryOwner });
+      break;
+    }
+    case "importTemplate": {
+      if (!["公共", "我的"].includes(input.scope)) fail(400, "请选择要导入的清单");
+      const template = getChecklistTemplate(input.templateId);
+      if (!template) fail(404, "清单模板不存在");
+      const categoryOwner = input.scope === "我的" ? member.id : null;
+      if (trip.categories.some((category) => category.owner === categoryOwner && category.templateId === template.id))
+        fail(400, "这个模板已经导入到当前清单");
+      let categoryName = template.name;
+      if (trip.categories.some((category) => category.owner === categoryOwner && category.name === categoryName)) {
+        categoryName = `${template.name}（模板）`;
+        let suffix = 2;
+        while (trip.categories.some((category) => category.owner === categoryOwner && category.name === categoryName))
+          categoryName = `${template.name}（模板 ${suffix++}）`;
+      }
+      const category = { id: id(), name: categoryName, owner: categoryOwner, templateId: template.id };
+      trip.categories.push(category);
+      trip.items.push(...template.items.map((entry) => ({
+        id: id(), owner: categoryOwner, category: category.name, categoryId: category.id,
+        title: entry.title, key: !!entry.key, done: false, reviewed: false,
+        by: null, reviewBy: null, remind: "", linkedDate: "",
+      })));
+      effects.importedCategoryId = category.id;
       break;
     }
     case "item": {

@@ -1,5 +1,8 @@
 import cloudbase from "@cloudbase/js-sdk";
 import { calendarEvent, calendarFile } from "./calendar.js";
+import templatePackage from "../shared/templates.cjs";
+
+const { checklistTemplates } = templatePackage;
 
 const cloud = cloudbase.init({ env: "zdata-d4g6l75lwebf2dbb0" });
 const auth = cloud.auth({ persistence: "local" });
@@ -34,6 +37,7 @@ const paths = {
   edit: "m16 3 5 5-12 12-6 1 1-6L16 3m-2 2 5 5",
   trash: "M4 7h16M9 7V4h6v3m3 0-1 14H7L6 7m4 4v6m4-6v6",
   calendar: "M4 5h16v16H4V5m3-3v6m10-6v6M4 11h16",
+  template: "M4 4h7v7H4V4m9 0h7v7h-7V4M4 13h7v7H4v-7m9 0h7v7h-7v-7",
 };
 const icon = (n) =>
   `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="${paths[n] || paths.road}"/></svg>`;
@@ -455,7 +459,7 @@ function checklist() {
   const categories = trip.categories.filter((c) =>
     scope === "公共" ? !c.owner : c.owner === trip.me,
   );
-  return `<div class="segment">${["公共", "我的"].map((s) => `<button class="${scope === s ? "active" : ""}" data-action="scope" data-value="${s}">${s === "公共" ? "一起准备" : "我的物品"}</button>`).join("")}</div><div class="row"><span class="muted">已准备 <strong>${p.done}</strong> / ${p.total} 项</span><button class="text-btn" data-action="category" data-write>新建分类 +</button></div>${bar(p.done, p.total)}${gap(nowDay(), trip.start) <= 1 ? reviewSummary() : ""}${categories
+  return `<div class="segment">${["公共", "我的"].map((s) => `<button class="${scope === s ? "active" : ""}" data-action="scope" data-value="${s}">${s === "公共" ? "一起准备" : "我的物品"}</button>`).join("")}</div><div class="row checklist-summary"><span class="muted">已准备 <strong>${p.done}</strong> / ${p.total} 项</span><div class="checklist-actions"><button class="text-btn template-import-btn" data-action="templates" data-write>${icon("template")} 导入模板</button><button class="text-btn" data-action="category" data-write>新建分类 +</button></div></div>${bar(p.done, p.total)}${gap(nowDay(), trip.start) <= 1 ? reviewSummary() : ""}${categories
     .map(
       (c) =>
         `<section class="check-group"><div class="section-head category-head"><div><h2>${esc(c.name)}</h2><span class="muted">${items.filter((i) => i.categoryId === c.id).length} 项</span></div><button class="text-btn" data-action="item" data-category="${c.id}" aria-label="在${esc(c.name)}中新增条目" data-write>新增条目 +</button></div><div class="card check-card">${
@@ -488,6 +492,22 @@ function categoryForm() {
       "category",
       `<p class="muted">添加到${scope === "公共" ? "“一起准备”，同行人都能使用" : "“我的物品”，仅你自己使用"}。</p><input type="hidden" name="scope" value="${scope}"><label class="field">分类名称<input name="name" maxlength="40" required placeholder="例如：露营装备"></label>`,
     ),
+  );
+}
+function templateLibrary() {
+  const destination = scope === "公共" ? "一起准备" : "我的物品";
+  show(
+    "导入清单模板",
+    `<p class="template-import-note">将模板添加到<strong>${destination}</strong>。导入后，每一条内容都可以编辑或删除。</p><div class="template-list">${checklistTemplates.map((template) => `<button class="template-card" data-action="template-preview" data-id="${template.id}"><span class="template-symbol" aria-hidden="true">${template.symbol}</span><span class="template-copy"><strong>${esc(template.name)}</strong><small>${template.items.length} 项 · 建议放入${template.recommendedScope === "公共" ? "一起准备" : "我的物品"}</small></span><span class="template-arrow" aria-hidden="true">›</span></button>`).join("")}</div>`,
+  );
+}
+function templateDetail(templateId) {
+  const template = checklistTemplates.find((entry) => entry.id === templateId);
+  if (!template) return toast("清单模板不存在");
+  const destination = scope === "公共" ? "一起准备" : "我的物品";
+  show(
+    template.name,
+    `<div class="template-detail-head"><span class="template-symbol large" aria-hidden="true">${template.symbol}</span><div><span class="template-badge">建议放入${template.recommendedScope === "公共" ? "一起准备" : "我的物品"}</span><p>${esc(template.description)}</p></div></div><ul class="template-items">${template.items.map((item) => `<li><span>${esc(item.title)}</span>${item.key ? '<em>关键项</em>' : ""}</li>`).join("")}</ul><button class="btn full" data-action="import-template" data-id="${template.id}" data-write>导入到${destination}</button><button class="text-btn template-back" data-action="templates">返回模板列表</button>`,
   );
 }
 function itemForm(id, categoryId) {
@@ -671,6 +691,17 @@ document.addEventListener("click", async (ev) => {
         break;
       case "category":
         categoryForm();
+        break;
+      case "templates":
+        templateLibrary();
+        break;
+      case "template-preview":
+        templateDetail(id);
+        break;
+      case "import-template":
+        await mutate({ action: "importTemplate", templateId: id, scope });
+        modal.close();
+        toast(`已导入到${scope === "公共" ? "一起准备" : "我的物品"}`);
         break;
       case "delete-trip":
         deleteTripPrompt();
