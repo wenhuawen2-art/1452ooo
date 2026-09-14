@@ -5,6 +5,7 @@ const { avatarIds, normalizeMembers } = require("./avatars.cjs");
 
 const app = cloudbase.init({});
 const db = app.database();
+const ticketUrlCache = new Map();
 const collections = {
   trips: db.collection("trips"),
   members: db.collection("trip_members"),
@@ -49,8 +50,29 @@ const loadTrip = async (source, tripId) => {
 };
 const asView = async (source, trip, member) => {
   const invite = member.memberId === trip.creator ? (await inviteFor(source, trip.id))?.token : undefined;
-  return viewTrip(trip, trip.members.find((entry) => entry.id === member.memberId), invite);
+  return ticketView(viewTrip(trip, trip.members.find((entry) => entry.id === member.memberId), invite));
 };
+async function ticketView(view) {
+  const fileIds = [...new Set((view.tickets || []).map((ticket) => ticket.fileId).filter(Boolean))];
+  if (!fileIds.length) return view;
+  const now = Date.now();
+  const urls = new Map();
+  const missing = [];
+  for (const fileId of fileIds) {
+    const cached = ticketUrlCache.get(fileId);
+    if (cached?.expires > now) urls.set(fileId, cached.url);
+    else missing.push(fileId);
+  }
+  for (let index = 0; index < missing.length; index += 50) {
+    const result = await app.getTempFileURL({ fileList: missing.slice(index, index + 50).map((fileID) => ({ fileID, maxAge: 3600 })) });
+    for (const entry of result.fileList || []) {
+      const url = entry.tempFileURL || entry.download_url || "";
+      urls.set(entry.fileID, url);
+      if (url) ticketUrlCache.set(entry.fileID, { url, expires: now + 3000000 });
+    }
+  }
+  return { ...view, tickets: view.tickets.map((ticket) => ({ ...ticket, imageUrl: urls.get(ticket.fileId) || "" })) };
+}
 
 async function listTrips(uid) {
   const links = (await collections.members.where({ uid }).limit(100).get()).data;
@@ -75,7 +97,7 @@ async function create(uid, input) {
     await transaction.collection("trip_invites").doc(invite).set({
       token: invite, tripId: created.trip.id, active: true, createdAt: Date.now(),
     });
-    return { trip: viewTrip(created.trip, created.member, invite) };
+    return { trip: await ticketView(viewTrip(created.trip, created.member, invite)) };
   });
 }
 
@@ -98,7 +120,7 @@ async function join(uid, input) {
       await transaction.collection("trip_members").doc(memberKey(uid, trip.id)).set(link);
       await transaction.collection("trips").doc(trip.id).set(trip);
     }
-    return { trip: viewTrip(trip, trip.members.find((entry) => entry.id === link.memberId), input.invite) };
+    return { trip: await ticketView(viewTrip(trip, trip.members.find((entry) => entry.id === link.memberId), input.invite)) };
   });
 }
 
@@ -132,8 +154,26 @@ async function recover(uid, input) {
     });
     await transaction.collection("recovery_codes").doc(input.code).delete();
     const invite = member.id === trip.creator ? (await inviteFor(transaction, trip.id))?.token : undefined;
-    return { trip: viewTrip(trip, member, invite) };
+    return { trip: await ticketView(viewTrip(trip, member, invite)) };
   });
+}
+
+async function uploadTicket(uid, input) {
+  if (!input.tripId) fail(400, "缺少旅行标识");
+  if (typeof input.imageBase64 !== "string" || input.imageBase64.length > 4200000) fail(400, "图片过大，请选择更小的图片");
+  if (!/^image\/(jpeg|png|webp)$/.test(input.mime || "")) fail(400, "仅支持 JPG、PNG 或 WebP 图片");
+  await membership(db, uid, input.tripId);
+  const extension = input.mime === "image/png" ? "png" : input.mime === "image/webp" ? "webp" : "jpg";
+  const fileContent = Buffer.from(input.imageBase64, "base64");
+  if (!fileContent.length || fileContent.length > 3000000) fail(400, "图片过大，请选择更小的图片");
+  const cloudPath = `tickets/${input.tripId}/${id()}.${extension}`;
+  const uploaded = await app.uploadFile({ cloudPath, fileContent });
+  try {
+    return await mutate(uid, { ...input, action: "ticket", fileId: uploaded.fileID, imageBase64: undefined });
+  } catch (error) {
+    await app.deleteFile({ fileList: [uploaded.fileID] }).catch(() => {});
+    throw error;
+  }
 }
 
 async function mutate(uid, input) {
@@ -158,6 +198,8 @@ async function mutate(uid, input) {
       const pending = await first(transaction.collection("delete_challenges").where({ tripId: trip.id, memberId: member.id }).limit(1));
       if (!pending || pending.expires <= Date.now() || pending.challenge !== input.challenge || input.confirmName !== trip.name)
         fail(400, "请重新发起删除，并输入正确的旅行名称进行二次确认");
+      const ticketFiles = (trip.tickets || []).map((ticket) => ticket.fileId).filter(Boolean);
+      if (ticketFiles.length) await app.deleteFile({ fileList: ticketFiles }).catch(() => {});
       await transaction.collection("trip_members").where({ tripId: trip.id }).remove();
       await transaction.collection("trip_invites").where({ tripId: trip.id }).remove();
       await transaction.collection("recovery_codes").where({ tripId: trip.id }).remove();
@@ -189,9 +231,10 @@ async function mutate(uid, input) {
       await transaction.collection("trip_members").where({ tripId: trip.id, memberId: effects.removedMember }).remove();
       await transaction.collection("recovery_codes").where({ tripId: trip.id, memberId: effects.removedMember }).remove();
     }
+    if (effects.deletedFileId) await app.deleteFile({ fileList: [effects.deletedFileId] }).catch(() => {});
     await transaction.collection("trips").doc(trip.id).set(trip);
     const invite = member.id === trip.creator ? (extra.invite || (await inviteFor(transaction, trip.id))?.token) : undefined;
-    return { trip: viewTrip(trip, member, invite), ...extra };
+    return { trip: await ticketView(viewTrip(trip, member, invite)), ...extra };
   });
 }
 
@@ -205,6 +248,7 @@ exports.main = async (event, context) => {
       : operation === "createTrip" ? await create(uid, data)
       : operation === "joinTrip" ? await join(uid, data)
       : operation === "previewInvite" ? await previewInvite(data)
+      : operation === "uploadTicket" ? await uploadTicket(uid, data)
       : operation === "recoverMember" ? await recover(uid, data)
       : operation === "getTrip" ? await get(uid, data)
       : operation === "mutateTrip" ? await mutate(uid, data)

@@ -93,6 +93,7 @@ async function api(path, data) {
     else if (path === "create") [operation, payload] = ["createTrip", data];
     else if (path === "join") [operation, payload] = ["joinTrip", data];
     else if (path === "invite-preview") [operation, payload] = ["previewInvite", data];
+    else if (path === "upload-ticket") [operation, payload] = ["uploadTicket", data];
     else if (path === "recover") [operation, payload] = ["recoverMember", data];
     else if (path.startsWith("trips/")) {
       operation = data ? "mutateTrip" : "getTrip";
@@ -464,7 +465,27 @@ function route() {
   const days = Array.from({ length: gap(trip.start, trip.end) + 1 }, (_, i) =>
     addDay(trip.start, i),
   );
-  return `<div class="date-strip" aria-label="选择行程日期">${days.map((d) => `<button class="date-btn ${selected === d ? "active" : ""}" data-action="date" data-value="${d}" ${selected === d ? 'aria-current="date"' : ""}><span>${weekday(d)}</span><strong>${Number(d.slice(8))}</strong><span>${Number(d.slice(5, 7))} 月</span></button>`).join("")}</div><div class="section-head"><h2>${pretty(selected)} · 第 ${gap(trip.start, selected) + 1} 天</h2><button class="text-btn" data-action="event" data-date="${selected}" data-write>添加安排 +</button></div>${eventsCard(selected)}${hotelCard(selected)}`;
+  return `<div class="date-strip" aria-label="选择行程日期">${days.map((d) => `<button class="date-btn ${selected === d ? "active" : ""}" data-action="date" data-value="${d}" ${selected === d ? 'aria-current="date"' : ""}><span>${weekday(d)}</span><strong>${Number(d.slice(8))}</strong><span>${Number(d.slice(5, 7))} 月</span></button>`).join("")}</div><div class="section-head"><h2>${pretty(selected)} · 第 ${gap(trip.start, selected) + 1} 天</h2><button class="text-btn" data-action="event" data-date="${selected}" data-write>添加安排 +</button></div>${eventsCard(selected)}${hotelCard(selected)}${ticketCard(selected)}`;
+}
+function ticketCard(date) {
+  const tickets = (trip.tickets || []).filter((ticket) => ticket.date === date);
+  const upload = `<label class="ticket-upload ${tickets.length ? "compact" : ""}" data-write>${icon("plus")} 上传票据<input type="file" data-ticket-upload data-date="${date}" accept="image/jpeg,image/png,image/webp" data-write hidden></label>`;
+  return `<section class="ticket-section"><div class="section-head"><div><h2>票务</h2><span class="muted">${tickets.length ? `${tickets.length} 张` : "当天门票或车票"}</span></div>${tickets.length ? upload : ""}</div>${tickets.length ? `<div class="ticket-grid">${tickets.map((ticket) => `<article class="card ticket-card"><button class="ticket-image" data-action="view-ticket" data-id="${ticket.id}" aria-label="查看 ${esc(ticket.title)}"><img src="${esc(ticket.imageUrl)}" alt="${esc(ticket.title)}" loading="lazy" decoding="async"></button><div class="ticket-card-foot"><div><strong>${esc(ticket.title)}</strong><span>${memberChip(trip.members.find((member) => member.id === ticket.uploadedByMemberId))}</span></div><div class="ticket-actions"><button data-action="edit-ticket" data-id="${ticket.id}" aria-label="编辑票据" data-write>${icon("edit")}</button><button class="delete" data-action="delete-ticket" data-id="${ticket.id}" aria-label="删除票据" data-write>${icon("trash")}</button></div></div></article>`).join("")}</div>` : `<div class="card ticket-empty"><div class="ticket-empty-icon">${icon("calendar")}</div><h3>当天还没有票据</h3><p class="muted">上传景区门票、火车票或其他出行凭证，同行成员都能查看。</p>${upload}</div>`}</section>`;
+}
+function ticketMetaForm(id) {
+  const ticket = (trip.tickets || []).find((entry) => entry.id === id);
+  if (!ticket) return;
+  show("编辑票据", form("ticketMeta", `${field("票据名称", "title", ticket.title, "text", true)}${field("使用日期", "date", ticket.date, "date", true)}`, ticket.id));
+}
+function ticketPreview(id) {
+  const ticket = (trip.tickets || []).find((entry) => entry.id === id);
+  if (!ticket) return;
+  show(ticket.title, `<div class="ticket-preview"><img src="${esc(ticket.imageUrl)}" alt="${esc(ticket.title)}"><p class="muted">${pretty(ticket.date)} · 点击右上角关闭</p></div>`);
+}
+function deleteTicketPrompt(id) {
+  const ticket = (trip.tickets || []).find((entry) => entry.id === id);
+  if (!ticket) return;
+  show("删除这张票据？", `<div class="notice warn"><strong>${esc(ticket.title)}</strong><p>删除后，同行成员也无法继续查看这张图片。</p></div><div class="form-actions"><button class="btn secondary" data-action="close">取消</button><button class="btn danger" data-action="confirm-delete-ticket" data-id="${ticket.id}">确认删除</button></div>`);
 }
 function itemRow(i) {
   const reviewing = gap(nowDay(), trip.start) <= 1;
@@ -681,6 +702,58 @@ function downloadCalendar(events) {
   setTimeout(() => URL.revokeObjectURL(url), 3000);
   toast("日历文件已生成，请打开并确认导入；修改时间后需重新添加。");
 }
+async function prepareTicketImage(file) {
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type)) throw Error("请选择 JPG、PNG 或 WebP 图片");
+  if (file.size > 20 * 1024 * 1024) throw Error("原图不能超过 20MB");
+  const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+  const maxSide = 1800;
+  const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+  const context = canvas.getContext("2d", { alpha: false });
+  context.fillStyle = "#fff";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  let quality = .9;
+  let blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+  while (blob && blob.size > 2800000 && quality > .62) {
+    quality -= .08;
+    blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+  }
+  if (!blob || blob.size > 3000000) throw Error("图片处理后仍然过大，请先裁剪后重试");
+  const imageBase64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(",")[1]);
+    reader.onerror = () => reject(Error("读取图片失败"));
+    reader.readAsDataURL(blob);
+  });
+  return { imageBase64, mime: "image/jpeg", size: blob.size };
+}
+document.addEventListener("change", async (event) => {
+  const input = event.target.closest("[data-ticket-upload]");
+  if (!input || !input.files?.[0]) return;
+  input.disabled = true;
+  try {
+    toast("正在处理并上传票据…");
+    const file = input.files[0];
+    const image = await prepareTicketImage(file);
+    const title = file.name.replace(/\.[^.]+$/, "").slice(0, 80) || "出行票据";
+    const result = await api("upload-ticket", {
+      tripId: trip.id, revision: trip.revision, date: input.dataset.date,
+      title, ...image,
+    });
+    trip = result.trip;
+    render();
+    toast("票据已上传并保存");
+  } catch (error) {
+    toast(error.message);
+  } finally {
+    input.disabled = false;
+    input.value = "";
+  }
+});
 document.addEventListener("click", async (ev) => {
   const pickerInput = ev.target.closest("[data-picker]");
   if (pickerInput) {
@@ -716,6 +789,20 @@ document.addEventListener("click", async (ev) => {
       }
       case "profile":
         profileForm();
+        break;
+      case "view-ticket":
+        ticketPreview(id);
+        break;
+      case "edit-ticket":
+        ticketMetaForm(id);
+        break;
+      case "delete-ticket":
+        deleteTicketPrompt(id);
+        break;
+      case "confirm-delete-ticket":
+        await mutate({ action: "deleteTicket", id });
+        modal.close();
+        toast("票据已删除");
         break;
       case "scope":
         scope = b.dataset.value;

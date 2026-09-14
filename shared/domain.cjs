@@ -51,6 +51,7 @@ function defaultItems(owner) {
 
 function ensureCategories(trip) {
   trip.categories ||= [];
+  trip.tickets ||= [];
   const ensure = (name, owner) => {
     let category = trip.categories.find((entry) => entry.name === name && entry.owner === owner);
     if (!category) {
@@ -78,7 +79,7 @@ function createTrip(input, reuseTrip, reuseMember) {
   const trip = ensureCategories({
     id: id(), name: text(input.name), start: input.start, end: input.end,
     creator: member.id, members: [member], items: defaultItems(member.id),
-    categories: [], events: [], hotels: [], archived: false, revision: 0,
+    categories: [], events: [], hotels: [], tickets: [], archived: false, revision: 0,
     createdAt: Date.now(), updatedAt: Date.now(),
   });
   if (reuseTrip && reuseMember) {
@@ -265,6 +266,31 @@ function mutateTrip(trip, member, input) {
         if (!hotel) fail(404, "住宿不存在");
         Object.assign(hotel, values);
       } else trip.hotels.push({ id: id(), ...values });
+      break;
+    }
+    case "ticket": {
+      if (!validDate(input.date) || input.date < day(trip.start) || input.date > day(trip.end)) fail(400, "票务日期须在旅行内");
+      if (typeof input.fileId !== "string" || !input.fileId.startsWith("cloud://")) fail(400, "票据图片无效");
+      trip.tickets.push({
+        id: id(), date: input.date, title: text(input.title, 80), fileId: input.fileId,
+        mime: String(input.mime || "image/jpeg").slice(0, 40), size: Number(input.size) || 0,
+        uploadedByMemberId: member.id, createdAt: Date.now(),
+      });
+      break;
+    }
+    case "ticketMeta": {
+      const ticket = trip.tickets.find((entry) => entry.id === input.id);
+      if (!ticket) fail(404, "票据不存在");
+      if (!validDate(input.date) || input.date < day(trip.start) || input.date > day(trip.end)) fail(400, "票务日期须在旅行内");
+      ticket.title = text(input.title, 80);
+      ticket.date = input.date;
+      break;
+    }
+    case "deleteTicket": {
+      const ticket = trip.tickets.find((entry) => entry.id === input.id);
+      if (!ticket) fail(404, "票据不存在");
+      trip.tickets = trip.tickets.filter((entry) => entry.id !== ticket.id);
+      effects.deletedFileId = ticket.fileId;
       break;
     }
     case "deleteEvent": trip.events = trip.events.filter((event) => event.id !== input.id); break;
