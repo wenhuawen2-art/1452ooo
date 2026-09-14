@@ -52,6 +52,10 @@ function defaultItems(owner) {
 function ensureCategories(trip) {
   trip.categories ||= [];
   trip.tickets ||= [];
+  for (const ticket of trip.tickets) {
+    ticket.type ||= ticket.title || "其他票据";
+    ticket.startTime ||= `${ticket.date || day(trip.start)}T09:00`;
+  }
   const ensure = (name, owner) => {
     let category = trip.categories.find((entry) => entry.name === name && entry.owner === owner);
     if (!category) {
@@ -269,10 +273,11 @@ function mutateTrip(trip, member, input) {
       break;
     }
     case "ticket": {
-      if (!validDate(input.date) || input.date < day(trip.start) || input.date > day(trip.end)) fail(400, "票务日期须在旅行内");
+      if (!validTime(input.startTime) || input.startTime < trip.start || input.startTime > trip.end) fail(400, "票据起始时间须在旅行时间内");
       if (typeof input.fileId !== "string" || !input.fileId.startsWith("cloud://")) fail(400, "票据图片无效");
+      const type = text(input.type, 20);
       trip.tickets.push({
-        id: id(), date: input.date, title: text(input.title, 80), fileId: input.fileId,
+        id: id(), date: day(input.startTime), type, title: type, startTime: input.startTime, fileId: input.fileId,
         mime: String(input.mime || "image/jpeg").slice(0, 40), size: Number(input.size) || 0,
         uploadedByMemberId: member.id, createdAt: Date.now(),
       });
@@ -281,9 +286,11 @@ function mutateTrip(trip, member, input) {
     case "ticketMeta": {
       const ticket = trip.tickets.find((entry) => entry.id === input.id);
       if (!ticket) fail(404, "票据不存在");
-      if (!validDate(input.date) || input.date < day(trip.start) || input.date > day(trip.end)) fail(400, "票务日期须在旅行内");
-      ticket.title = text(input.title, 80);
-      ticket.date = input.date;
+      if (!validTime(input.startTime) || input.startTime < trip.start || input.startTime > trip.end) fail(400, "票据起始时间须在旅行时间内");
+      ticket.type = text(input.type, 20);
+      ticket.title = ticket.type;
+      ticket.startTime = input.startTime;
+      ticket.date = day(input.startTime);
       break;
     }
     case "deleteTicket": {

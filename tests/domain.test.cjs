@@ -126,13 +126,17 @@ test("profile changes update member references and legacy confirmations are matc
 test("ticket images are attached to a travel day and remain editable", () => {
   const { trip, member } = createTrip({ name: "票务测试", nickname: "甲", avatarId: "avatar-01", start: "2026-10-01T08:00", end: "2026-10-03T18:00" });
   mutateTrip(trip, member, {
-    action: "ticket", revision: trip.revision, date: "2026-10-02", title: "景区门票",
+    action: "ticket", revision: trip.revision, type: "门票", startTime: "2026-10-02T09:30",
     fileId: "cloud://example.tcb.qcloud.la/tickets/example.jpg", mime: "image/jpeg", size: 1234,
   });
   const ticket = trip.tickets[0];
   assert.equal(ticket.uploadedByMemberId, member.id);
-  mutateTrip(trip, member, { action: "ticketMeta", revision: trip.revision, id: ticket.id, date: "2026-10-03", title: "返程火车票" });
-  assert.equal(ticket.title, "返程火车票");
+  assert.equal(ticket.date, "2026-10-02");
+  assert.equal(ticket.type, "门票");
+  mutateTrip(trip, member, { action: "ticketMeta", revision: trip.revision, id: ticket.id, type: "车票", startTime: "2026-10-03T15:20" });
+  assert.equal(ticket.title, "车票");
+  assert.equal(ticket.startTime, "2026-10-03T15:20");
+  assert.equal(ticket.date, "2026-10-03");
   const effects = mutateTrip(trip, member, { action: "deleteTicket", revision: trip.revision, id: ticket.id });
   assert.equal(effects.deletedFileId, ticket.fileId);
   assert.equal(trip.tickets.length, 0);

@@ -179,7 +179,7 @@ const select = (label, name, values, current) =>
 const note = (label, name, value = "") =>
   `<label class="field">${label}<textarea name="${name}" maxlength="2000">${esc(value)}</textarea></label>`;
 function form(kind, fields, id = "", del = "") {
-  return `<form data-form="${kind}" data-id="${id}" data-revision="${trip?.revision ?? 0}">${fields}<p class="error" role="alert"></p><div class="form-actions">${del ? `<button type="button" class="btn danger" data-action="${del}" data-id="${id}">删除</button>` : ""}<button class="btn" type="submit">${kind === "create" ? "创建旅行" : kind === "join" ? "加入旅行" : kind === "recover" ? "恢复我的身份" : "保存"}</button></div></form>`;
+  return `<form data-form="${kind}" data-id="${id}" data-revision="${trip?.revision ?? 0}">${fields}<p class="error" role="alert"></p><div class="form-actions">${del ? `<button type="button" class="btn danger" data-action="${del}" data-id="${id}">删除</button>` : ""}<button class="btn" type="submit">${kind === "create" ? "创建旅行" : kind === "join" ? "加入旅行" : kind === "recover" ? "恢复我的身份" : kind === "ticketCreate" ? "添加票据" : "保存"}</button></div></form>`;
 }
 const avatarInfo = (avatarId) => avatars.find((entry) => entry.id === avatarId);
 function avatarImage(member, className = "") {
@@ -195,7 +195,7 @@ function memberChip(member, className = "") {
 function avatarPicker(selectedId = "", usedIds = [], allowDuplicates = false) {
   return `<fieldset class="avatar-picker"><legend>选择头像</legend><input type="hidden" name="avatarId" value="${esc(selectedId)}"><div class="avatar-grid">${avatars.map((entry) => {
     const unavailable = !allowDuplicates && usedIds.includes(entry.id) && entry.id !== selectedId;
-    return `<button type="button" class="avatar-option ${entry.id === selectedId ? "selected" : ""}" data-action="choose-avatar" data-value="${entry.id}" aria-label="${entry.name}${unavailable ? "，已被选择" : ""}" aria-pressed="${entry.id === selectedId}" ${unavailable ? "disabled" : ""}><img src="${entry.src}" alt="" loading="lazy"><span>${entry.name}</span><i aria-hidden="true">✓</i></button>`;
+    return `<button type="button" class="avatar-option ${entry.id === selectedId ? "selected" : ""}" data-action="choose-avatar" data-value="${entry.id}" aria-label="${entry.name}${unavailable ? "，已被选择" : ""}" aria-pressed="${entry.id === selectedId}" ${unavailable ? "disabled" : ""}><img src="${entry.src}" alt="" loading="lazy"><i aria-hidden="true">✓</i></button>`;
   }).join("")}</div><p class="muted">同一趟旅行会优先使用不同头像。</p></fieldset>`;
 }
 let pickerState = null;
@@ -469,18 +469,22 @@ function route() {
 }
 function ticketCard(date) {
   const tickets = (trip.tickets || []).filter((ticket) => ticket.date === date);
-  const upload = `<label class="ticket-upload ${tickets.length ? "compact" : ""}" data-write>${icon("plus")} 上传票据<input type="file" data-ticket-upload data-date="${date}" accept="image/jpeg,image/png,image/webp" data-write hidden></label>`;
-  return `<section class="ticket-section"><div class="section-head"><div><h2>票务</h2><span class="muted">${tickets.length ? `${tickets.length} 张` : "当天门票或车票"}</span></div>${tickets.length ? upload : ""}</div>${tickets.length ? `<div class="ticket-grid">${tickets.map((ticket) => `<article class="card ticket-card"><button class="ticket-image" data-action="view-ticket" data-id="${ticket.id}" aria-label="查看 ${esc(ticket.title)}"><img src="${esc(ticket.imageUrl)}" alt="${esc(ticket.title)}" loading="lazy" decoding="async"></button><div class="ticket-card-foot"><div><strong>${esc(ticket.title)}</strong><span>${memberChip(trip.members.find((member) => member.id === ticket.uploadedByMemberId))}</span></div><div class="ticket-actions"><button data-action="edit-ticket" data-id="${ticket.id}" aria-label="编辑票据" data-write>${icon("edit")}</button><button class="delete" data-action="delete-ticket" data-id="${ticket.id}" aria-label="删除票据" data-write>${icon("trash")}</button></div></div></article>`).join("")}</div>` : `<div class="card ticket-empty"><div class="ticket-empty-icon">${icon("calendar")}</div><h3>当天还没有票据</h3><p class="muted">上传景区门票、火车票或其他出行凭证，同行成员都能查看。</p>${upload}</div>`}</section>`;
+  const addButton = `<button class="ticket-upload" data-action="add-ticket" data-date="${date}" data-write>${icon("plus")} 添加票据</button>`;
+  return `<section class="ticket-section"><div class="section-head"><div><h2>票务</h2>${tickets.length ? `<span class="muted">${tickets.length} 张</span>` : ""}</div>${tickets.length ? addButton : ""}</div>${tickets.length ? `<div class="ticket-grid">${tickets.map((ticket) => `<article class="card ticket-card"><button class="ticket-image" data-action="view-ticket" data-id="${ticket.id}" aria-label="查看 ${esc(ticket.type || ticket.title)}"><img src="${esc(ticket.imageUrl)}" alt="${esc(ticket.type || ticket.title)}" loading="lazy" decoding="async"></button><div class="ticket-card-foot"><div><strong>${esc(ticket.type || ticket.title)}</strong><small>${esc((ticket.startTime || "").slice(11, 16) || "时间未填写")}</small><span>${memberChip(trip.members.find((member) => member.id === ticket.uploadedByMemberId))}</span></div><div class="ticket-actions"><button data-action="edit-ticket" data-id="${ticket.id}" aria-label="编辑票据" data-write>${icon("edit")}</button><button class="delete" data-action="delete-ticket" data-id="${ticket.id}" aria-label="删除票据" data-write>${icon("trash")}</button></div></div></article>`).join("")}</div>` : `<div class="card ticket-empty">${addButton}</div>`}</section>`;
+}
+const ticketTypes = ["车票", "门票", "机票", "船票", "其他票据"];
+function ticketCreateForm(date) {
+  show("添加票据", form("ticketCreate", `${select("选择类型", "type", ticketTypes, "车票")}${field("起始时间", "startTime", `${date}T09:00`, "datetime-local", true)}<label class="field ticket-file-field">上传图片<span class="ticket-file-picker">${icon("plus")}<span data-ticket-file-name>选择票据图片</span><input name="image" type="file" data-ticket-file accept="image/jpeg,image/png,image/webp" required></span><small>支持 JPG、PNG、WebP，原图不超过 20MB</small></label>`));
 }
 function ticketMetaForm(id) {
   const ticket = (trip.tickets || []).find((entry) => entry.id === id);
   if (!ticket) return;
-  show("编辑票据", form("ticketMeta", `${field("票据名称", "title", ticket.title, "text", true)}${field("使用日期", "date", ticket.date, "date", true)}`, ticket.id));
+  show("编辑票据", form("ticketMeta", `${select("选择类型", "type", ticketTypes, ticket.type || ticket.title || "其他票据")}${field("起始时间", "startTime", ticket.startTime || `${ticket.date}T09:00`, "datetime-local", true)}`, ticket.id));
 }
 function ticketPreview(id) {
   const ticket = (trip.tickets || []).find((entry) => entry.id === id);
   if (!ticket) return;
-  show(ticket.title, `<div class="ticket-preview"><img src="${esc(ticket.imageUrl)}" alt="${esc(ticket.title)}"><p class="muted">${pretty(ticket.date)} · 点击右上角关闭</p></div>`);
+  show(ticket.type || ticket.title, `<div class="ticket-preview"><img src="${esc(ticket.imageUrl)}" alt="${esc(ticket.type || ticket.title)}"><p class="muted">${pretty(ticket.date)} ${(ticket.startTime || "").slice(11, 16)}</p></div>`);
 }
 function deleteTicketPrompt(id) {
   const ticket = (trip.tickets || []).find((entry) => entry.id === id);
@@ -731,28 +735,11 @@ async function prepareTicketImage(file) {
   });
   return { imageBase64, mime: "image/jpeg", size: blob.size };
 }
-document.addEventListener("change", async (event) => {
-  const input = event.target.closest("[data-ticket-upload]");
-  if (!input || !input.files?.[0]) return;
-  input.disabled = true;
-  try {
-    toast("正在处理并上传票据…");
-    const file = input.files[0];
-    const image = await prepareTicketImage(file);
-    const title = file.name.replace(/\.[^.]+$/, "").slice(0, 80) || "出行票据";
-    const result = await api("upload-ticket", {
-      tripId: trip.id, revision: trip.revision, date: input.dataset.date,
-      title, ...image,
-    });
-    trip = result.trip;
-    render();
-    toast("票据已上传并保存");
-  } catch (error) {
-    toast(error.message);
-  } finally {
-    input.disabled = false;
-    input.value = "";
-  }
+document.addEventListener("change", (event) => {
+  const input = event.target.closest("[data-ticket-file]");
+  if (!input) return;
+  const name = input.closest(".ticket-file-picker")?.querySelector("[data-ticket-file-name]");
+  if (name) name.textContent = input.files?.[0]?.name || "选择票据图片";
 });
 document.addEventListener("click", async (ev) => {
   const pickerInput = ev.target.closest("[data-picker]");
@@ -789,6 +776,9 @@ document.addEventListener("click", async (ev) => {
       }
       case "profile":
         profileForm();
+        break;
+      case "add-ticket":
+        ticketCreateForm(b.dataset.date);
         break;
       case "view-ticket":
         ticketPreview(id);
@@ -966,7 +956,24 @@ document.addEventListener("submit", async (ev) => {
       data.start = `${data.startDate}T${data.startTime || "08:00"}`;
       data.end = `${data.endDate}T${data.endTime || "18:00"}`;
     }
-    if (kind === "deleteTrip") {
+    if (kind === "ticketCreate") {
+      const file = f.querySelector("[data-ticket-file]")?.files?.[0];
+      if (!file) throw Error("请选择票据图片");
+      toast("正在处理并上传票据…");
+      const image = await prepareTicketImage(file);
+      const result = await api("upload-ticket", {
+        tripId: trip.id,
+        revision: Number(f.dataset.revision),
+        type: data.type,
+        startTime: data.startTime,
+        ...image,
+      });
+      trip = result.trip;
+      modal.close();
+      render();
+      toast("票据已添加");
+      return;
+    } else if (kind === "deleteTrip") {
       await api("trips/" + trip.id, {
         action: "deleteTrip",
         ...data,
