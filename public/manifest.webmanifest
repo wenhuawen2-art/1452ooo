@@ -1,0 +1,13 @@
+{
+  "name": "在路上 · 自驾旅行助手",
+  "short_name": "在路上",
+  "description": "路线、住宿和共享准备清单。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3f8fd",
+  "theme_color": "#5daafa",
+  "icons": [
+    { "src": "/brand/logo-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/brand/logo-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

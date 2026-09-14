@@ -400,7 +400,7 @@ picker.addEventListener("click", (event) => {
   }
 });
 function brand() {
-  return `<header class="topbar"><div class="brand"><span class="brand-mark">${icon("road")}</span><span>随行<small>ON THE ROAD</small></span></div>${trip ? "" : '<span class="eyebrow">轻装出发</span>'}</header>`;
+  return `<header class="topbar"><div class="brand"><img class="brand-logo" src="/brand/logo.svg" alt="" width="36" height="36"><span>在路上<small>ON THE ROAD</small></span></div>${trip ? "" : '<span class="eyebrow">轻装出发</span>'}</header>`;
 }
 function render() {
   app.dataset.view = trip ? tab : "welcome";
@@ -755,14 +755,14 @@ function downloadCalendar(events) {
     return;
   }
   const text = calendarFile(events);
-  const file = new File([text], "随行-旅行提醒.ics", {
+  const file = new File([text], "在路上-旅行提醒.ics", {
     type: "text/calendar;charset=utf-8",
   });
   if (navigator.share && navigator.canShare?.({ files: [file] })) {
     navigator
       .share({
         files: [file],
-        title: "随行旅行提醒",
+        title: "在路上旅行提醒",
         text: "请选择手机日历打开并确认导入。",
       })
       .then(() => toast("已打开分享面板，请选择日历并确认导入。"))
@@ -776,7 +776,7 @@ function downloadCalendar(events) {
     ),
     a = document.createElement("a");
   a.href = url;
-  a.download = "随行-旅行提醒.ics";
+  a.download = "在路上-旅行提醒.ics";
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 3000);
   toast("日历文件已生成，请打开并确认导入；修改时间后需重新添加。");
@@ -1002,7 +1002,7 @@ document.addEventListener("click", async (ev) => {
         const url = URL.createObjectURL(new Blob([JSON.stringify(exported.exportData, null, 2)], { type: "application/json" }));
         const link = document.createElement("a");
         link.href = url;
-        link.download = `随行-${trip.name}-备份.json`;
+        link.download = `在路上-${trip.name}-备份.json`;
         link.click();
         setTimeout(() => URL.revokeObjectURL(url), 3000);
         toast("旅行备份已下载");

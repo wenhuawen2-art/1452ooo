@@ -15,12 +15,12 @@
   "functions": [
     {
       "name": "suixing-api",
-      "description": "随行旅行协作 API",
+      "description": "在路上旅行协作 API",
       "dir": "cloudfunctions/suixing-api"
     },
     {
       "name": "suixing-backup",
-      "description": "随行每日数据库快照",
+      "description": "在路上每日数据库快照",
       "dir": "cloudfunctions/suixing-backup",
       "timeout": 60,
       "triggers": [
