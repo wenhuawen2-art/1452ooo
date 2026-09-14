@@ -37,6 +37,20 @@ const weatherCodeText = (code) => {
   return map[Number(code)] || "天气变化";
 };
 const weatherKey = (place, date) => createHash("sha256").update(`${place}|${date}`).digest("hex").slice(0, 32);
+async function geocodePlace(place) {
+  const openUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(place)}&count=1&language=zh&format=json`;
+  const openResponse = await fetch(openUrl);
+  if (openResponse.ok) {
+    const openData = await openResponse.json();
+    if (openData?.results?.[0]) return { ...openData.results[0], geoSource: "Open-Meteo" };
+  }
+  const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&accept-language=zh-CN&limit=1&q=${encodeURIComponent(place)}`;
+  const nominatimResponse = await fetch(nominatimUrl, { headers: { "User-Agent": "suixing-roadtrip-weather/1.0" } });
+  if (!nominatimResponse.ok) return null;
+  const result = (await nominatimResponse.json())?.[0];
+  if (!result) return null;
+  return { name: result.display_name?.split(",")[0] || place, latitude: Number(result.lat), longitude: Number(result.lon), geoSource: "OpenStreetMap" };
+}
 async function getWeather(uid, input) {
   if (!input.tripId || !/^\d{4}-\d{2}-\d{2}$/.test(String(input.date || ""))) fail(400, "缺少天气日期");
   const link = await membership(db, uid, input.tripId);
@@ -51,11 +65,7 @@ async function getWeather(uid, input) {
   let cached;
   try { cached = await first(collections.weather.doc(key)); } catch { cached = undefined; }
   if (cached && cached.expiresAt > Date.now()) return cached.weather;
-  const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(place)}&count=1&language=zh&format=json`;
-  const geoResponse = await fetch(geoUrl);
-  if (!geoResponse.ok) fail(502, "天气地点解析失败");
-  const geo = await geoResponse.json();
-  const location = geo?.results?.[0];
+  const location = await geocodePlace(place);
   if (!location) return { available: false, reason: "place_not_found", date, place };
   const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(location.latitude)}&longitude=${encodeURIComponent(location.longitude)}&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=16`;
   const forecastResponse = await fetch(forecastUrl);
@@ -65,7 +75,7 @@ async function getWeather(uid, input) {
   if (index < 0) return { available: false, reason: "out_of_range", date, place, location: location.name };
   const weather = {
     available: true, date, place, location: location.name || place,
-    latitude: location.latitude, longitude: location.longitude,
+    latitude: location.latitude, longitude: location.longitude, geoSource: location.geoSource || "Open-Meteo",
     condition: weatherCodeText(forecast.daily.weather_code[index]),
     code: forecast.daily.weather_code[index],
     high: forecast.daily.temperature_2m_max[index], low: forecast.daily.temperature_2m_min[index],

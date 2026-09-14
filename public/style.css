@@ -1850,6 +1850,7 @@ button.my-trip-card { cursor: pointer; }
 .weather-main strong, .weather-main .muted, .weather-card > div:first-child > span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .weather-symbol { display: grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border-radius: 13px; background: #dcebff; font-size: 21px; }
 .weather-main .muted, .weather-card > div:first-child > span { margin-top: 3px; font-size: 12px; }
+.weather-source { display: block; margin-top: 4px; color: #9aa7b4; font-size: 9px; }
 .weather-temp { display: flex; align-items: baseline; gap: 5px; flex: 0 0 auto; color: #6d7885; }
 .weather-temp strong { color: #1d2834; font-size: 24px; }
 .weather-extra { display: flex; flex-direction: column; flex: 0 0 auto; gap: 3px; color: #788694; font-size: 11px; text-align: right; }

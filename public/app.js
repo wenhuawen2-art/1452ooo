@@ -174,7 +174,12 @@ async function browserWeatherFallback(date) {
     const timeout = setTimeout(() => controller.abort(), 8000);
     const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(place)}&count=1&language=zh&format=json`, { signal: controller.signal });
     const geo = await geoResponse.json();
-    const location = geo?.results?.[0];
+    let location = geo?.results?.[0];
+    if (!location) {
+      const fallbackResponse = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&accept-language=zh-CN&limit=1&q=${encodeURIComponent(place)}`, { signal: controller.signal });
+      const fallback = (await fallbackResponse.json())?.[0];
+      if (fallback) location = { name: fallback.display_name?.split(",")[0] || place, latitude: Number(fallback.lat), longitude: Number(fallback.lon), geoSource: "OpenStreetMap" };
+    }
     if (!location) { clearTimeout(timeout); return { available: false, reason: "place_not_found", date, place }; }
     const forecastResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(location.latitude)}&longitude=${encodeURIComponent(location.longitude)}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=16`, { signal: controller.signal });
     clearTimeout(timeout);
@@ -183,7 +188,7 @@ async function browserWeatherFallback(date) {
     if (index < 0) return { available: false, reason: "out_of_range", date, place };
     const code = Number(forecast.daily.weather_code[index]);
     const condition = { 0: "晴", 1: "大部晴朗", 2: "局部多云", 3: "阴", 45: "雾", 48: "雾凇", 51: "小毛毛雨", 53: "毛毛雨", 55: "较强毛毛雨", 61: "小雨", 63: "中雨", 65: "大雨", 71: "小雪", 73: "中雪", 75: "大雪", 80: "阵雨", 81: "较强阵雨", 82: "强阵雨", 95: "雷雨", 96: "雷雨伴冰雹", 99: "雷雨伴强冰雹" }[code] || "天气变化";
-    return { available: true, date, place, location: location.name || place, code, condition, high: forecast.daily.temperature_2m_max[index], low: forecast.daily.temperature_2m_min[index], rainProbability: forecast.daily.precipitation_probability_max?.[index] ?? null, updatedAt: new Date().toISOString(), source: "Open-Meteo" };
+    return { available: true, date, place, location: location.name || place, geoSource: location.geoSource || "Open-Meteo", code, condition, high: forecast.daily.temperature_2m_max[index], low: forecast.daily.temperature_2m_min[index], rainProbability: forecast.daily.precipitation_probability_max?.[index] ?? null, updatedAt: new Date().toISOString(), source: "Open-Meteo" };
   } catch {
     return { available: false, reason: "error", date, place };
   }
@@ -192,7 +197,7 @@ function weatherCard(date) {
   const w = weatherByDate[date];
   if (!w) return `<section class="weather-card card"><div><strong>当地天气</strong><span class="muted">正在查询…</span></div></section>`;
   if (!w.available) return `<section class="weather-card card"><div><strong>当地天气</strong><span class="muted">${w.reason === "missing_place" ? "请先填写住宿城市或行程地址" : w.reason === "place_not_found" ? "地点未识别，请补充城市或区域" : w.reason === "out_of_range" ? "天气预报将在临近日期更新" : "网络暂时不可用，稍后自动重试"}</span></div></section>`;
-  return `<section class="weather-card card"><div class="weather-main"><span class="weather-symbol" aria-hidden="true">${w.code >= 80 ? "☔" : w.code >= 51 ? "🌦️" : w.code >= 3 ? "☁️" : "☀️"}</span><div><strong>${esc(w.location || w.place)}</strong><span class="muted">${esc(w.condition)}</span></div></div><div class="weather-temp"><strong>${Math.round(w.high)}°</strong><span>${Math.round(w.low)}°</span></div><div class="weather-extra"><span>${w.rainProbability == null ? "" : `降雨 ${w.rainProbability}%`}</span><span>${w.wind == null ? "" : `风速 ${Math.round(w.wind)} km/h`}</span></div></section>`;
+  return `<section class="weather-card card"><div class="weather-main"><span class="weather-symbol" aria-hidden="true">${w.code >= 80 ? "☔" : w.code >= 51 ? "🌦️" : w.code >= 3 ? "☁️" : "☀️"}</span><div><strong>${esc(w.location || w.place)}</strong><span class="muted">${esc(w.condition)}</span><small class="weather-source">天气 Open-Meteo · 地点 ${esc(w.geoSource || "Open-Meteo")}</small></div></div><div class="weather-temp"><strong>${Math.round(w.high)}°</strong><span>${Math.round(w.low)}°</span></div><div class="weather-extra"><span>${w.rainProbability == null ? "" : `降雨 ${w.rainProbability}%`}</span><span>${w.wind == null ? "" : `风速 ${Math.round(w.wind)} km/h`}</span></div></section>`;
 }
 async function mutate(data) {
   if (busy) throw Error("正在保存，请稍候");
