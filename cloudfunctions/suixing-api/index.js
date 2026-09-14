@@ -12,11 +12,12 @@ const collections = {
   invites: db.collection("trip_invites"),
   recoveries: db.collection("recovery_codes"),
   challenges: db.collection("delete_challenges"),
+  weather: db.collection("weather_cache"),
 };
 let collectionSetup;
 async function ensureCollections() {
   if (!collectionSetup) collectionSetup = Promise.all(
-    ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges"].map(async (name) => {
+    ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges", "weather_cache"].map(async (name) => {
       try { await db.createCollection(name); }
       catch (error) {
         if (!/exist|already|重复|存在/i.test(String(error?.message || error))) throw error;
@@ -31,6 +32,51 @@ const cleanDocument = (value) => {
   const { _id, ...clean } = value;
   return clean;
 };
+const weatherCodeText = (code) => {
+  const map = { 0: "晴", 1: "大部晴朗", 2: "局部多云", 3: "阴", 45: "雾", 48: "雾凇", 51: "小毛毛雨", 53: "毛毛雨", 55: "较强毛毛雨", 61: "小雨", 63: "中雨", 65: "大雨", 71: "小雪", 73: "中雪", 75: "大雪", 80: "阵雨", 81: "较强阵雨", 82: "强阵雨", 95: "雷雨", 96: "雷雨伴冰雹", 99: "雷雨伴强冰雹" };
+  return map[Number(code)] || "天气变化";
+};
+const weatherKey = (place, date) => createHash("sha256").update(`${place}|${date}`).digest("hex").slice(0, 32);
+async function getWeather(uid, input) {
+  if (!input.tripId || !/^\d{4}-\d{2}-\d{2}$/.test(String(input.date || ""))) fail(400, "缺少天气日期");
+  const link = await membership(db, uid, input.tripId);
+  const trip = await loadTrip(db, input.tripId);
+  const date = input.date;
+  if (date < String(trip.start).slice(0, 10) || date > String(trip.end).slice(0, 10)) fail(400, "天气日期不在旅行范围内");
+  const hotel = (trip.hotels || []).find((entry) => entry.checkin <= date && date < entry.checkout);
+  const event = (trip.events || []).filter((entry) => entry.date === date && (entry.address || "")).sort((a, b) => (a.startTime || "").localeCompare(b.startTime || ""))[0];
+  const place = String(input.place || hotel?.city || event?.address || "").trim().slice(0, 120);
+  if (!place) return { available: false, reason: "missing_place", date };
+  const key = weatherKey(place, date);
+  let cached;
+  try { cached = await first(collections.weather.doc(key)); } catch { cached = undefined; }
+  if (cached && cached.expiresAt > Date.now()) return cached.weather;
+  const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(place)}&count=1&language=zh&format=json`;
+  const geoResponse = await fetch(geoUrl);
+  if (!geoResponse.ok) fail(502, "天气地点解析失败");
+  const geo = await geoResponse.json();
+  const location = geo?.results?.[0];
+  if (!location) return { available: false, reason: "place_not_found", date, place };
+  const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(location.latitude)}&longitude=${encodeURIComponent(location.longitude)}&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=16`;
+  const forecastResponse = await fetch(forecastUrl);
+  if (!forecastResponse.ok) fail(502, "天气服务暂时不可用");
+  const forecast = await forecastResponse.json();
+  const index = (forecast.daily?.time || []).indexOf(date);
+  if (index < 0) return { available: false, reason: "out_of_range", date, place, location: location.name };
+  const weather = {
+    available: true, date, place, location: location.name || place,
+    latitude: location.latitude, longitude: location.longitude,
+    condition: weatherCodeText(forecast.daily.weather_code[index]),
+    code: forecast.daily.weather_code[index],
+    high: forecast.daily.temperature_2m_max[index], low: forecast.daily.temperature_2m_min[index],
+    rainProbability: forecast.daily.precipitation_probability_max?.[index] ?? null,
+    current: forecast.current?.temperature_2m ?? null,
+    wind: forecast.current?.wind_speed_10m ?? null,
+    updatedAt: new Date().toISOString(), source: "Open-Meteo",
+  };
+  await collections.weather.doc(key).set({ id: key, place, date, weather, expiresAt: Date.now() + 3600000, updatedAt: Date.now() }).catch(() => {});
+  return weather;
+}
 const first = async (reference) => cleanDocument((await reference.get()).data[0]);
 const requireUid = async (context) => {
   const auth = await app.auth().getAuthContext(context);
@@ -264,6 +310,7 @@ exports.main = async (event, context) => {
       : operation === "previewInvite" ? await previewInvite(data)
       : operation === "uploadTicket" ? await uploadTicket(uid, data)
       : operation === "recoverMember" ? await recover(uid, data)
+      : operation === "getWeather" ? await getWeather(uid, data)
       : operation === "getTrip" ? await get(uid, data)
       : operation === "mutateTrip" ? await mutate(uid, data)
       : fail(404, "接口不存在");

@@ -70,7 +70,10 @@ let trip = null,
   scope = "公共",
   selected = nowDay(),
   busy = false,
-  connection = true;
+  connection = true,
+  weatherByDate = {},
+  weatherLoading = {},
+  weatherTripId = null;
 const authQuery = new URLSearchParams(location.search),
   authFragment = new URLSearchParams(location.hash.slice(1));
 let invite = authQuery.get("invite") || authFragment.get("invite"),
@@ -95,6 +98,7 @@ async function api(path, data) {
     else if (path === "invite-preview") [operation, payload] = ["previewInvite", data];
     else if (path === "upload-ticket") [operation, payload] = ["uploadTicket", data];
     else if (path === "recover") [operation, payload] = ["recoverMember", data];
+    else if (path === "weather") [operation, payload] = ["getWeather", data];
     else if (path.startsWith("trips/")) {
       operation = data ? "mutateTrip" : "getTrip";
       payload = { ...(data || {}), tripId: path.slice(6) };
@@ -133,6 +137,31 @@ async function refresh() {
   if (selected < day(trip.start) || selected > day(trip.end))
     selected = clampDay();
   render();
+}
+async function loadWeather(date) {
+  if (!trip || !date || weatherLoading[date]) return;
+  if (weatherTripId !== trip.id) {
+    weatherTripId = trip.id;
+    weatherByDate = {};
+    weatherLoading = {};
+  }
+  const cached = weatherByDate[date];
+  if (cached?.available && Date.now() - Date.parse(cached.updatedAt || 0) < 3600000) return;
+  weatherLoading[date] = true;
+  try {
+    weatherByDate[date] = await api("weather", { tripId: trip.id, date });
+  } catch {
+    weatherByDate[date] = { available: false, reason: "error", date };
+  } finally {
+    delete weatherLoading[date];
+    if (trip) render();
+  }
+}
+function weatherCard(date) {
+  const w = weatherByDate[date];
+  if (!w) return `<section class="weather-card card"><div><strong>当地天气</strong><span class="muted">正在查询…</span></div></section>`;
+  if (!w.available) return `<section class="weather-card card"><div><strong>当地天气</strong><span class="muted">${w.reason === "missing_place" ? "请先填写住宿城市或行程地址" : w.reason === "out_of_range" ? "天气预报将在临近日期更新" : "暂时无法获取天气"}</span></div></section>`;
+  return `<section class="weather-card card"><div class="weather-main"><span class="weather-symbol" aria-hidden="true">${w.code >= 80 ? "☔" : w.code >= 51 ? "🌦️" : w.code >= 3 ? "☁️" : "☀️"}</span><div><strong>${esc(w.location || w.place)}</strong><span class="muted">${esc(w.condition)}</span></div></div><div class="weather-temp"><strong>${Math.round(w.high)}°</strong><span>${Math.round(w.low)}°</span></div><div class="weather-extra"><span>${w.rainProbability == null ? "" : `降雨 ${w.rainProbability}%`}</span><span>${w.wind == null ? "" : `风速 ${Math.round(w.wind)} km/h`}</span></div></section>`;
 }
 async function mutate(data) {
   if (busy) throw Error("正在保存，请稍候");
@@ -417,7 +446,8 @@ function today() {
   const tickets = trip.items
     .filter((i) => i.remind && !i.done)
     .sort((a, b) => a.remind.localeCompare(b.remind));
-  const schedule = `<div class="section-head"><h2>${d > 0 ? "出发日安排" : nowDay() > day(trip.end) ? "最后一天安排" : "今天的安排"}</h2><span class="muted">${pretty(target)}</span></div>${eventsCard(target)}${hotelCard(target)}`;
+  loadWeather(target);
+  const schedule = `<div class="section-head"><h2>${d > 0 ? "出发日安排" : nowDay() > day(trip.end) ? "最后一天安排" : "今天的安排"}</h2><span class="muted">${pretty(target)}</span></div>${weatherCard(target)}${eventsCard(target)}${hotelCard(target)}`;
   const preparation = `<div class="section-head"><h2>出行准备</h2><button class="text-btn" data-action="tab" data-value="list">查看清单 →</button></div><div class="stats">${[
     ["公共准备", pub],
     ["我的准备", mine],
@@ -465,7 +495,8 @@ function route() {
   const days = Array.from({ length: gap(trip.start, trip.end) + 1 }, (_, i) =>
     addDay(trip.start, i),
   );
-  return `<div class="date-strip" aria-label="选择行程日期">${days.map((d) => `<button class="date-btn ${selected === d ? "active" : ""}" data-action="date" data-value="${d}" ${selected === d ? 'aria-current="date"' : ""}><span>${weekday(d)}</span><strong>${Number(d.slice(8))}</strong><span>${Number(d.slice(5, 7))} 月</span></button>`).join("")}</div><div class="section-head"><h2>${pretty(selected)} · 第 ${gap(trip.start, selected) + 1} 天</h2><button class="text-btn" data-action="event" data-date="${selected}" data-write>添加安排 +</button></div>${eventsCard(selected)}${hotelCard(selected)}${ticketCard(selected)}`;
+  loadWeather(selected);
+  return `<div class="date-strip" aria-label="选择行程日期">${days.map((d) => `<button class="date-btn ${selected === d ? "active" : ""}" data-action="date" data-value="${d}" ${selected === d ? 'aria-current="date"' : ""}><span>${weekday(d)}</span><strong>${Number(d.slice(8))}</strong><span>${Number(d.slice(5, 7))} 月</span></button>`).join("")}</div><div class="section-head"><h2>${pretty(selected)} · 第 ${gap(trip.start, selected) + 1} 天</h2><button class="text-btn" data-action="event" data-date="${selected}" data-write>添加安排 +</button></div>${weatherCard(selected)}${eventsCard(selected)}${hotelCard(selected)}${ticketCard(selected)}`;
 }
 function ticketCard(date) {
   const tickets = (trip.tickets || []).filter((ticket) => ticket.date === date);
