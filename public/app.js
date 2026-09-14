@@ -32,6 +32,7 @@ const paths = {
   arrow: "M5 12h14m-5-5 5 5-5 5",
   close: "m6 6 12 12M6 18 18 6",
   edit: "m16 3 5 5-12 12-6 1 1-6L16 3m-2 2 5 5",
+  trash: "M4 7h16M9 7V4h6v3m3 0-1 14H7L6 7m4 4v6m4-6v6",
   calendar: "M4 5h16v16H4V5m3-3v6m10-6v6M4 11h16",
 };
 const icon = (n) =>
@@ -421,7 +422,14 @@ function addresses(address) {
 }
 function eventsCard(d) {
   const items = eventList(d);
-  return `<div class="card">${items.length ? `<div class="timeline">${items.map((e) => `<div class="timeline-entry"><div class="time-label">${e.period}</div><div class="timeline-body"><div class="row"><h3>${esc(e.title)}</h3><button class="edit-item" data-action="event" data-id="${e.id}" aria-label="编辑 ${esc(e.title)}" data-write>${icon("edit")}</button></div><p class="event-time">${esc(e.startTime || e.time || "开始待补充")} — ${esc(e.endTime || "结束待补充")}</p>${e.address ? `<p class="muted">${esc(e.address)}</p>` : ""}${e.note ? `<p>${esc(e.note)}</p>` : ""}${addresses(e.address)}</div></div>`).join("")}</div>` : `<div class="empty"><p>这一天的安排尚未填写</p><button class="btn secondary" data-action="event" data-date="${d}" data-write>${icon("plus")} 添加安排</button></div>`}</div>`;
+  if (!items.length) {
+    return `<div class="card"><div class="empty"><p>这一天的安排尚未填写</p><button class="btn secondary" data-action="event" data-date="${d}" data-write>${icon("plus")} 添加安排</button></div></div>`;
+  }
+  return `<div class="itinerary-list">${items.map((e) => {
+    const start = e.startTime || e.time || "待补充";
+    const end = e.endTime || "待补充";
+    return `<article class="card itinerary-card"><div class="itinerary-head"><div><span class="itinerary-status">${esc(e.period)}行程</span><h3>${esc(e.title)}</h3></div><button class="itinerary-edit" data-action="event" data-id="${e.id}" aria-label="编辑 ${esc(e.title)}" data-write>${icon("edit")}</button></div><div class="itinerary-divider" aria-hidden="true"></div><div class="journey-track"><div class="journey-stop"><span class="journey-dot" aria-hidden="true"></span><div><strong class="journey-time">${esc(start)}</strong><span class="journey-caption">开始 · ${esc(e.period)}</span></div></div><div class="journey-stop"><span class="journey-dot" aria-hidden="true"></span><div><strong class="journey-time">${esc(end)}</strong><span class="journey-caption">${e.address ? esc(e.address) : "结束"}</span></div></div></div>${e.note ? `<p class="itinerary-note">${esc(e.note)}</p>` : ""}${addresses(e.address)}</article>`;
+  }).join("")}</div>`;
 }
 function hotelCard(d) {
   const h = trip.hotels.find((h) => h.checkin <= d && d < h.checkout);
@@ -437,7 +445,7 @@ function route() {
 }
 function itemRow(i) {
   const reviewing = gap(nowDay(), trip.start) <= 1;
-  return `<div class="check-row ${i.done ? "done" : ""}"><button class="check-main" data-action="toggle" data-id="${i.id}" role="checkbox" aria-checked="${i.done}" data-write><span class="checkbox">${i.done ? icon("check") : ""}</span><span><span class="item-title">${esc(i.title)}</span><span class="item-meta">${i.key ? '<span class="key-dot">● 关键项</span>' : ""}${i.done ? (i.owner ? "已准备" : esc(i.by || "同行人") + " 已确认") : ""}${i.remind ? `<br>${pretty(day(i.remind))} ${i.remind.slice(11)} 提醒` : ""}${i.linkedDate ? ` · 关联 ${pretty(i.linkedDate)} 行程` : ""}</span></span></button>${i.key && i.done && reviewing ? `<button class="review-btn ${i.reviewed ? "checked" : ""}" data-action="review" data-id="${i.id}" data-write>${i.reviewed ? "已复核" : "再确认"}</button>` : ""}<button class="edit-item" data-action="item" data-id="${i.id}" aria-label="编辑 ${esc(i.title)}" data-write>${icon("more")}</button></div>`;
+  return `<div class="check-row ${i.done ? "done" : ""}"><button class="check-main" data-action="toggle" data-id="${i.id}" role="checkbox" aria-checked="${i.done}" data-write><span class="checkbox">${i.done ? icon("check") : ""}</span><span><span class="item-title">${esc(i.title)}</span><span class="item-meta">${i.key ? '<span class="key-dot">● 关键项</span>' : ""}${i.done ? (i.owner ? "已准备" : esc(i.by || "同行人") + " 已确认") : ""}${i.remind ? `<br>${pretty(day(i.remind))} ${i.remind.slice(11)} 提醒` : ""}${i.linkedDate ? ` · 关联 ${pretty(i.linkedDate)} 行程` : ""}</span></span></button><div class="item-actions">${i.key && i.done && reviewing ? `<button class="review-btn ${i.reviewed ? "checked" : ""}" data-action="review" data-id="${i.id}" data-write>${i.reviewed ? "已复核" : "再确认"}</button>` : ""}<button class="item-action edit" data-action="item" data-id="${i.id}" aria-label="编辑 ${esc(i.title)}" title="编辑" data-write>${icon("edit")}</button><button class="item-action delete" data-action="deleteItem" data-id="${i.id}" aria-label="删除 ${esc(i.title)}" title="删除" data-write>${icon("trash")}</button></div></div>`;
 }
 function checklist() {
   const items = trip.items.filter((i) =>
@@ -546,6 +554,14 @@ async function settings() {
       '<button class="btn danger full" data-action="delete-trip">删除整趟旅行</button><p class="muted">用于清理测试旅行。删除需要二次确认，会同时删除所有同行人的这趟旅行数据。</p>';
     modal.querySelector(".modal-body").append(area);
   }
+}
+function deleteItemPrompt(id) {
+  const item = trip.items.find((entry) => entry.id === id);
+  if (!item) return;
+  show(
+    "删除清单条目",
+    `<div class="notice warn"><strong>${esc(item.title)}</strong><p>${item.owner ? "这条内容只会从你的个人清单中移除。" : "删除后，同行人的公共清单中也会移除这条内容。"}</p></div><div class="form-actions"><button class="btn secondary" data-action="close">取消</button><button class="btn danger" data-action="confirm-delete-item" data-id="${item.id}">确认删除</button></div>`,
+  );
 }
 function deleteTripPrompt() {
   show(
@@ -686,6 +702,13 @@ document.addEventListener("click", async (ev) => {
         toast(a === "review" ? "复核状态已保存" : "已保存");
         break;
       case "deleteItem":
+        deleteItemPrompt(id);
+        break;
+      case "confirm-delete-item":
+        await mutate({ action: "deleteItem", id });
+        modal.close();
+        toast("条目已删除");
+        break;
       case "deleteEvent":
       case "deleteHotel":
       case "removeMember":
