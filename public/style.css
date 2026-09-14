@@ -620,6 +620,7 @@ dialog::backdrop {
 .field textarea {
   width: 100%;
   min-height: 47px;
+  font-size: 16px;
   border: .5px solid #c7c7cc;
   border-radius: 12px;
   padding: 12px 13px;
