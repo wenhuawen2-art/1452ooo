@@ -1,5 +1,6 @@
 const { randomBytes } = require("node:crypto");
 const { getChecklistTemplate } = require("./templates.cjs");
+const { periodForStart } = require("./schedule.cjs");
 
 const id = () => randomBytes(24).toString("hex");
 const day = (value) => String(value || "").slice(0, 10);
@@ -216,11 +217,10 @@ function mutateTrip(trip, member, input) {
     }
     case "event": {
       if (!validDate(input.date) || input.date < day(trip.start) || input.date > day(trip.end)) fail(400, "安排日期须在旅行内");
-      if (!["上午", "下午", "晚上"].includes(input.period)) fail(400, "请选择时段");
       const clock = (value) => typeof value === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
       if (!clock(input.startTime) || !clock(input.endTime) || input.endTime <= input.startTime)
         fail(400, "请填写开始与结束时间，结束须晚于开始；跨天安排请拆成两天");
-      const values = { date: input.date, period: input.period, time: input.startTime,
+      const values = { date: input.date, period: periodForStart(input.startTime), time: input.startTime,
         startTime: input.startTime, endTime: input.endTime, title: text(input.title),
         address: String(input.address || "").slice(0, 500), note: String(input.note || "").slice(0, 2000) };
       if (input.id) {

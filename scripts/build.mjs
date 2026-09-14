@@ -8,6 +8,7 @@ await Promise.all([
   cp("public/style.css", "dist/style.css"),
   cp("shared/domain.cjs", "cloudfunctions/suixing-api/domain.cjs"),
   cp("shared/templates.cjs", "cloudfunctions/suixing-api/templates.cjs"),
+  cp("shared/schedule.cjs", "cloudfunctions/suixing-api/schedule.cjs"),
 ]);
 await build({
   entryPoints: ["public/app.js"],

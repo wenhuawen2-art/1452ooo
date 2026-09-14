@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const { createTrip, addMember, viewTrip, mutateTrip } = require("../shared/domain.cjs");
 const { checklistTemplates } = require("../shared/templates.cjs");
+const { periodForStart, splitEventByPeriods } = require("../shared/schedule.cjs");
 
 test("CloudBase shared domain keeps public and personal checklist data isolated", () => {
   const { trip, member: owner } = createTrip({
@@ -23,11 +24,27 @@ test("CloudBase shared domain validates full schedule period and revision", () =
     start: "2026-10-01T08:00", end: "2026-10-03T18:00",
   });
   mutateTrip(trip, member, {
-    action: "event", revision: 0, date: "2026-10-01", period: "上午",
+    action: "event", revision: 0, date: "2026-10-01",
     startTime: "09:00", endTime: "11:30", title: "出发去景区",
   });
+  assert.equal(trip.events[0].period, "上午");
   assert.equal(trip.events[0].endTime, "11:30");
   assert.throws(() => mutateTrip(trip, member, { action: "archive", revision: 0 }), /同行人刚刚更新/);
+});
+
+test("schedule periods derive from start time and split spanning events", () => {
+  assert.equal(periodForStart("08:00"), "上午");
+  assert.equal(periodForStart("13:00"), "下午");
+  assert.equal(periodForStart("18:00"), "晚上");
+  const segments = splitEventByPeriods({
+    id: "drive", title: "长途驾驶", startTime: "08:00", endTime: "18:00",
+  });
+  assert.deepEqual(segments.map((entry) => [entry.periodName, entry.segmentStart, entry.segmentEnd]), [
+    ["上午", "08:00", "13:00"],
+    ["下午", "13:00", "18:00"],
+  ]);
+  assert.equal(segments[0].continuesToNext, true);
+  assert.equal(segments[1].continuedFromPrevious, true);
 });
 
 test("CloudBase shared domain resets review after a checklist toggle", () => {

@@ -403,6 +403,24 @@ p {
   background: #fff;
   box-shadow: 0 6px 18px #2c78b91a, inset 0 0 0 1px #dcecf9;
 }
+.period-card-head {
+  align-items: center;
+}
+.period-card-head h3 {
+  color: #1874ca;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.25px;
+}
+.period-count {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #317abf;
+  background: #e9f4ff;
+  font-size: 11px;
+  font-weight: 650;
+}
 .itinerary-divider {
   height: 1px;
   margin: 17px -22px 14px;
@@ -452,6 +470,97 @@ p {
   font-size: 13px;
   overflow-wrap: anywhere;
 }
+.period-timeline {
+  position: relative;
+  display: grid;
+  padding-left: 24px;
+}
+.period-timeline::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 5px;
+  border-left: 2px dotted #c7d6e6;
+}
+.period-event {
+  position: relative;
+  padding: 3px 0 17px;
+}
+.period-event + .period-event {
+  padding-top: 17px;
+  border-top: 1px solid #e7eef4;
+}
+.period-event:last-child {
+  padding-bottom: 2px;
+}
+.period-event > .journey-dot {
+  top: 10px;
+  left: -24px;
+}
+.period-event + .period-event > .journey-dot {
+  top: 24px;
+}
+.period-event-body {
+  min-width: 0;
+}
+.period-event-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.period-event-head > div {
+  min-width: 0;
+}
+.period-event-time {
+  color: #172642;
+  font-size: 23px;
+  line-height: 1.15;
+  font-weight: 760;
+  letter-spacing: -.55px;
+  font-variant-numeric: tabular-nums;
+}
+.period-event-time span {
+  color: #92a6ba;
+  font-size: 15px;
+  font-weight: 500;
+}
+.period-event h4 {
+  margin: 7px 0 0;
+  color: #1874ca;
+  font-size: 17px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.period-event .itinerary-edit {
+  flex-basis: 40px;
+  width: 40px;
+  min-height: 40px;
+}
+.continuation-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
+}
+.continuation-tags span {
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #277bc9;
+  background: #eaf4fd;
+  font-size: 10px;
+  font-weight: 650;
+}
+.period-event .journey-caption {
+  margin: 9px 0 0;
+}
+.period-event .small-actions {
+  margin-top: 2px;
+}
+.period-event .itinerary-note {
+  margin-top: 10px;
+}
 .itinerary-note {
   margin: 15px 0 2px;
   padding: 11px 13px;
@@ -461,6 +570,21 @@ p {
   font-size: 13px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+.period-rule {
+  display: grid;
+  gap: 5px;
+  margin: 2px 0 17px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  color: #667687;
+  background: #edf6ff;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.period-rule strong {
+  color: #267aca;
+  font-size: 12px;
 }
 .small-actions {
   display: flex;
