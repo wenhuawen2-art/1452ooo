@@ -334,7 +334,7 @@ picker.addEventListener("click", (event) => {
   }
 });
 function brand() {
-  return `<header class="topbar"><div class="brand"><span class="brand-mark">${icon("road")}</span><span>随行<small>ON THE ROAD</small></span></div>${trip ? memberChip(trip.members.find((member) => member.id === trip.me), "top-member") : '<span class="eyebrow">轻装出发</span>'}</header>`;
+  return `<header class="topbar"><div class="brand"><span class="brand-mark">${icon("road")}</span><span>随行<small>ON THE ROAD</small></span></div>${trip ? "" : '<span class="eyebrow">轻装出发</span>'}</header>`;
 }
 function render() {
   app.dataset.view = trip ? tab : "welcome";

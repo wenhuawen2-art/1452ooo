@@ -1767,7 +1767,6 @@ dialog::backdrop {
 .member-avatar.list-avatar { width: 48px; height: 48px; flex-basis: 48px; border-radius: 15px; }
 .member-avatar.profile-avatar { width: 72px; height: 72px; flex-basis: 72px; border-radius: 22px; }
 .avatar-fallback { display: grid; place-items: center; color: #fff; background: #9ba4b1; font-weight: 800; }
-.top-member { max-width: 142px; padding: 5px 10px 5px 5px; border-radius: 16px; background: #ffffffa8; box-shadow: 0 7px 28px #6382a122; }
 .avatar-picker { min-width: 0; margin: 8px 0 18px; padding: 0; border: 0; }
 .avatar-picker legend { margin-bottom: 10px; color: #575d67; font-size: 14px; }
 .avatar-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
