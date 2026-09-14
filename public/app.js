@@ -635,14 +635,13 @@ function myTripMember(member, own) {
 function myTripCard(entry, own) {
   const current = entry.id === trip.id;
   const status = entry.archived ? "已归档" : current ? "当前旅程" : "进行中";
-  if (!current) return `<button class="my-trip-card archive" data-action="switch" data-id="${entry.id}"><div class="my-trip-card-head"><strong>${esc(entry.name)}</strong><span class="trip-status">${status}</span></div><div class="my-trip-dates">${pretty(day(entry.start))}<span>→</span>${pretty(day(entry.end))}</div><span class="my-trip-switch">点击切换查看</span></button>`;
+  if (!current) return `<button class="my-trip-card archive" data-action="switch" data-id="${entry.id}"><div class="my-trip-card-head"><strong>${esc(entry.name)}</strong><span class="trip-status">${status}</span></div><div class="my-trip-dates">${pretty(day(entry.start))}<span>→</span>${pretty(day(entry.end))}</div></button>`;
   return `<article class="my-trip-card current ${entry.archived ? "archived" : ""}"><div class="my-trip-card-head"><div><h3>${esc(entry.name)}</h3><span class="trip-status">${status}</span></div><span class="my-trip-count">${trip.members.length} 人同行</span></div><div class="my-trip-dates">${pretty(day(entry.start))}<span>→</span>${pretty(day(entry.end))}</div>${own && !entry.archived ? `<div class="my-trip-invite"><span>把邀请链接发给同行人</span><button data-action="invite">复制邀请链接</button></div>` : ""}<div class="my-trip-members">${trip.members.map((member) => myTripMember(member, own)).join("")}</div><div class="my-trip-actions">${!entry.archived ? `<button data-action="edit-trip" data-write>${icon("edit")} 编辑旅行</button>` : ""}${own ? `<button data-action="export-trip">${icon("arrow")} 导出备份</button>` : ""}${own && !entry.archived ? `<button data-action="archive" data-write>${icon("more")} 归档旅行</button>` : ""}${own ? `<button class="danger" data-action="delete-trip" data-write>${icon("trash")} 删除旅行</button>` : ""}</div>${own && !entry.archived ? `<button class="text-btn rotate-link" data-action="rotate">更换邀请链接，使旧链接失效</button>` : ""}</article>`;
 }
 function memberCenter() {
   const me = trip.members.find((member) => member.id === trip.me);
   const own = trip.me === trip.creator;
-  return `<div class="page-heading"><span class="eyebrow">MY SPACE</span><h1>我的</h1></div>
-    <section class="my-profile-section"><div class="section-head"><h2>我的资料</h2><button class="text-btn" data-action="profile" data-write>${icon("edit")} 编辑资料</button></div><div class="card my-profile-card">${avatarImage(me, "profile-avatar")}<div class="my-profile-copy"><h2>${esc(me.name)}</h2><span class="pill">${own ? "创建者" : "同行成员"}</span><p class="muted">身份保存在这台设备</p></div></div></section>
+  return `<section class="my-profile-section"><div class="section-head"><h2>我的资料</h2><button class="text-btn" data-action="profile" data-write>${icon("edit")} 编辑资料</button></div><div class="card my-profile-card">${avatarImage(me, "profile-avatar")}<div class="my-profile-copy"><h2>${esc(me.name)}</h2><span class="pill">${own ? "创建者" : "同行成员"}</span><p class="muted">身份保存在这台设备</p></div></div></section>
     <section class="my-trips-section"><div class="section-head"><h2>旅行管理</h2><button class="text-btn" data-action="create">${icon("plus")} 新建旅行</button></div><div class="my-trip-list">${trips.map((entry) => myTripCard(entry, own)).join("")}</div></section>`;
 }
 function deleteItemPrompt(id) {
