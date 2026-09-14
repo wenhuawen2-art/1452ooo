@@ -149,18 +149,49 @@ async function loadWeather(date) {
   if (cached?.available && Date.now() - Date.parse(cached.updatedAt || 0) < 3600000) return;
   weatherLoading[date] = true;
   try {
-    weatherByDate[date] = await api("weather", { tripId: trip.id, date });
+    const result = await api("weather", { tripId: trip.id, date });
+    weatherByDate[date] = result;
   } catch {
-    weatherByDate[date] = { available: false, reason: "error", date };
+    weatherByDate[date] = await browserWeatherFallback(date);
+    if (weatherByDate[date].reason === "error") {
+      setTimeout(() => { if (trip && !document.hidden) { delete weatherByDate[date]; loadWeather(date); } }, 15000);
+    }
   } finally {
     delete weatherLoading[date];
     if (trip) render();
   }
 }
+function weatherPlaceForDate(date) {
+  const hotel = (trip?.hotels || []).find((entry) => entry.checkin <= date && date < entry.checkout);
+  const event = (trip?.events || []).filter((entry) => entry.date === date && entry.address).sort((a, b) => (a.startTime || "").localeCompare(b.startTime || ""))[0];
+  return String(hotel?.city || event?.address || "").trim();
+}
+async function browserWeatherFallback(date) {
+  const place = weatherPlaceForDate(date);
+  if (!place) return { available: false, reason: "missing_place", date };
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(place)}&count=1&language=zh&format=json`, { signal: controller.signal });
+    const geo = await geoResponse.json();
+    const location = geo?.results?.[0];
+    if (!location) { clearTimeout(timeout); return { available: false, reason: "place_not_found", date, place }; }
+    const forecastResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(location.latitude)}&longitude=${encodeURIComponent(location.longitude)}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=16`, { signal: controller.signal });
+    clearTimeout(timeout);
+    const forecast = await forecastResponse.json();
+    const index = (forecast.daily?.time || []).indexOf(date);
+    if (index < 0) return { available: false, reason: "out_of_range", date, place };
+    const code = Number(forecast.daily.weather_code[index]);
+    const condition = { 0: "晴", 1: "大部晴朗", 2: "局部多云", 3: "阴", 45: "雾", 48: "雾凇", 51: "小毛毛雨", 53: "毛毛雨", 55: "较强毛毛雨", 61: "小雨", 63: "中雨", 65: "大雨", 71: "小雪", 73: "中雪", 75: "大雪", 80: "阵雨", 81: "较强阵雨", 82: "强阵雨", 95: "雷雨", 96: "雷雨伴冰雹", 99: "雷雨伴强冰雹" }[code] || "天气变化";
+    return { available: true, date, place, location: location.name || place, code, condition, high: forecast.daily.temperature_2m_max[index], low: forecast.daily.temperature_2m_min[index], rainProbability: forecast.daily.precipitation_probability_max?.[index] ?? null, updatedAt: new Date().toISOString(), source: "Open-Meteo" };
+  } catch {
+    return { available: false, reason: "error", date, place };
+  }
+}
 function weatherCard(date) {
   const w = weatherByDate[date];
   if (!w) return `<section class="weather-card card"><div><strong>当地天气</strong><span class="muted">正在查询…</span></div></section>`;
-  if (!w.available) return `<section class="weather-card card"><div><strong>当地天气</strong><span class="muted">${w.reason === "missing_place" ? "请先填写住宿城市或行程地址" : w.reason === "out_of_range" ? "天气预报将在临近日期更新" : "暂时无法获取天气"}</span></div></section>`;
+  if (!w.available) return `<section class="weather-card card"><div><strong>当地天气</strong><span class="muted">${w.reason === "missing_place" ? "请先填写住宿城市或行程地址" : w.reason === "place_not_found" ? "地点未识别，请补充城市或区域" : w.reason === "out_of_range" ? "天气预报将在临近日期更新" : "网络暂时不可用，稍后自动重试"}</span></div></section>`;
   return `<section class="weather-card card"><div class="weather-main"><span class="weather-symbol" aria-hidden="true">${w.code >= 80 ? "☔" : w.code >= 51 ? "🌦️" : w.code >= 3 ? "☁️" : "☀️"}</span><div><strong>${esc(w.location || w.place)}</strong><span class="muted">${esc(w.condition)}</span></div></div><div class="weather-temp"><strong>${Math.round(w.high)}°</strong><span>${Math.round(w.low)}°</span></div><div class="weather-extra"><span>${w.rainProbability == null ? "" : `降雨 ${w.rainProbability}%`}</span><span>${w.wind == null ? "" : `风速 ${Math.round(w.wind)} km/h`}</span></div></section>`;
 }
 async function mutate(data) {
