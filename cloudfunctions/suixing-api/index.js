@@ -81,7 +81,7 @@ async function listTrips(uid) {
 }
 
 async function create(uid, input) {
-  return db.runTransaction(async (transaction) => {
+  const result = await db.runTransaction(async (transaction) => {
     let reuseTrip, reuseMember;
     if (input.reuse) {
       reuseMember = await membership(transaction, uid, input.reuse);
@@ -97,13 +97,15 @@ async function create(uid, input) {
     await transaction.collection("trip_invites").doc(invite).set({
       token: invite, tripId: created.trip.id, active: true, createdAt: Date.now(),
     });
-    return { trip: await ticketView(viewTrip(created.trip, created.member, invite)) };
+    return { trip: created.trip, memberId: created.member.id, invite };
   });
+  const member = result.trip.members.find((entry) => entry.id === result.memberId);
+  return { trip: await ticketView(viewTrip(result.trip, member, result.invite)) };
 }
 
 async function join(uid, input) {
   if (typeof input.invite !== "string" || !/^[a-f0-9]{48}$/.test(input.invite)) fail(404, "邀请已失效或旅行已归档");
-  return db.runTransaction(async (transaction) => {
+  const result = await db.runTransaction(async (transaction) => {
     const invite = await first(transaction.collection("trip_invites").where({ token: input.invite, active: true }).limit(1));
     if (!invite?.active) fail(404, "邀请已失效或旅行已归档");
     const trip = await loadTrip(transaction, invite.tripId);
@@ -120,8 +122,10 @@ async function join(uid, input) {
       await transaction.collection("trip_members").doc(memberKey(uid, trip.id)).set(link);
       await transaction.collection("trips").doc(trip.id).set(trip);
     }
-    return { trip: await ticketView(viewTrip(trip, trip.members.find((entry) => entry.id === link.memberId), input.invite)) };
+    return { trip, memberId: link.memberId };
   });
+  const member = result.trip.members.find((entry) => entry.id === result.memberId);
+  return { trip: await ticketView(viewTrip(result.trip, member, input.invite)) };
 }
 
 async function previewInvite(input) {
@@ -142,7 +146,7 @@ async function get(uid, input) {
 
 async function recover(uid, input) {
   if (typeof input.code !== "string" || !/^[a-f0-9]{48}$/.test(input.code)) fail(404, "恢复链接无效或已过期");
-  return db.runTransaction(async (transaction) => {
+  const result = await db.runTransaction(async (transaction) => {
     const recovery = await first(transaction.collection("recovery_codes").where({ code: input.code }).limit(1));
     if (!recovery || recovery.expires <= Date.now()) fail(404, "恢复链接无效或已过期");
     const trip = await loadTrip(transaction, recovery.tripId);
@@ -154,8 +158,10 @@ async function recover(uid, input) {
     });
     await transaction.collection("recovery_codes").doc(input.code).delete();
     const invite = member.id === trip.creator ? (await inviteFor(transaction, trip.id))?.token : undefined;
-    return { trip: await ticketView(viewTrip(trip, member, invite)) };
+    return { trip, memberId: member.id, invite };
   });
+  const member = result.trip.members.find((entry) => entry.id === result.memberId);
+  return { trip: await ticketView(viewTrip(result.trip, member, result.invite)) };
 }
 
 async function uploadTicket(uid, input) {
@@ -178,7 +184,7 @@ async function uploadTicket(uid, input) {
 
 async function mutate(uid, input) {
   if (!input.tripId) fail(400, "缺少旅行标识");
-  return db.runTransaction(async (transaction) => {
+  const result = await db.runTransaction(async (transaction) => {
     const link = await membership(transaction, uid, input.tripId);
     const trip = await loadTrip(transaction, input.tripId);
     const member = trip.members.find((entry) => entry.id === link.memberId);
@@ -191,7 +197,7 @@ async function mutate(uid, input) {
       await transaction.collection("delete_challenges").doc(challengeKey).set({
         tripId: trip.id, memberId: member.id, challenge, expires: Date.now() + 300000,
       });
-      return { challenge };
+      return { direct: { challenge } };
     }
     if (input.action === "deleteTrip") {
       if (member.id !== trip.creator) fail(403, "只有创建者可以操作");
@@ -199,17 +205,16 @@ async function mutate(uid, input) {
       if (!pending || pending.expires <= Date.now() || pending.challenge !== input.challenge || input.confirmName !== trip.name)
         fail(400, "请重新发起删除，并输入正确的旅行名称进行二次确认");
       const ticketFiles = (trip.tickets || []).map((ticket) => ticket.fileId).filter(Boolean);
-      if (ticketFiles.length) await app.deleteFile({ fileList: ticketFiles }).catch(() => {});
       await transaction.collection("trip_members").where({ tripId: trip.id }).remove();
       await transaction.collection("trip_invites").where({ tripId: trip.id }).remove();
       await transaction.collection("recovery_codes").where({ tripId: trip.id }).remove();
       await transaction.collection("delete_challenges").where({ tripId: trip.id }).remove();
       await transaction.collection("trips").doc(trip.id).delete();
-      return { deleted: trip.id };
+      return { direct: { deleted: trip.id }, filesToDelete: ticketFiles };
     }
     if (input.action === "exportTrip") {
       if (member.id !== trip.creator) fail(403, "只有创建者可以操作");
-      return { exportData: { format: "suixing-cloudbase-v1", exportedAt: new Date().toISOString(), trip } };
+      return { direct: { exportData: { format: "suixing-cloudbase-v1", exportedAt: new Date().toISOString(), trip } } };
     }
     const effects = mutateTrip(trip, member, input);
     const extra = {};
@@ -231,11 +236,20 @@ async function mutate(uid, input) {
       await transaction.collection("trip_members").where({ tripId: trip.id, memberId: effects.removedMember }).remove();
       await transaction.collection("recovery_codes").where({ tripId: trip.id, memberId: effects.removedMember }).remove();
     }
-    if (effects.deletedFileId) await app.deleteFile({ fileList: [effects.deletedFileId] }).catch(() => {});
     await transaction.collection("trips").doc(trip.id).set(trip);
     const invite = member.id === trip.creator ? (extra.invite || (await inviteFor(transaction, trip.id))?.token) : undefined;
-    return { trip: await ticketView(viewTrip(trip, member, invite)), ...extra };
+    return {
+      trip,
+      memberId: member.id,
+      invite,
+      extra,
+      filesToDelete: effects.deletedFileId ? [effects.deletedFileId] : [],
+    };
   });
+  if (result.filesToDelete?.length) await app.deleteFile({ fileList: result.filesToDelete }).catch(() => {});
+  if (result.direct) return result.direct;
+  const member = result.trip.members.find((entry) => entry.id === result.memberId);
+  return { trip: await ticketView(viewTrip(result.trip, member, result.invite)), ...result.extra };
 }
 
 exports.main = async (event, context) => {
