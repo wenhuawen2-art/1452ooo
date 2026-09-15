@@ -19,11 +19,25 @@ const avatars = [
 
 const avatarIds = avatars.map((entry) => entry.id);
 const isAvatarId = (value) => avatarIds.includes(value);
+const customAvatarPattern = /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/;
+const isCustomAvatar = (value) =>
+  typeof value === "string" && value.length <= 220000 && customAvatarPattern.test(value);
+
+function avatarInput(avatarId, avatarData) {
+  if (isCustomAvatar(avatarData)) return { avatarId: "", avatarData };
+  if (isAvatarId(avatarId)) return { avatarId, avatarData: "" };
+  return null;
+}
 
 function normalizeMembers(trip) {
   const used = new Set();
   for (let index = 0; index < trip.members.length; index += 1) {
     const member = trip.members[index];
+    if (isCustomAvatar(member.avatarData)) {
+      member.avatarId = "";
+      continue;
+    }
+    member.avatarData = "";
     if (isAvatarId(member.avatarId) && !used.has(member.avatarId)) {
       used.add(member.avatarId);
       continue;
@@ -52,4 +66,4 @@ function avatarSelection(trip, memberId, avatarId) {
   return { valid: true, available: allowDuplicates || !used.has(avatarId), allowDuplicates };
 }
 
-module.exports = { avatars, avatarIds, isAvatarId, normalizeMembers, avatarSelection };
+module.exports = { avatars, avatarIds, isAvatarId, isCustomAvatar, avatarInput, normalizeMembers, avatarSelection };

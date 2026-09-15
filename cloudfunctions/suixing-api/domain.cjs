@@ -1,7 +1,7 @@
 const { randomBytes } = require("node:crypto");
 const { getChecklistTemplate } = require("./templates.cjs");
 const { periodForStart } = require("./schedule.cjs");
-const { isAvatarId, normalizeMembers, avatarSelection } = require("./avatars.cjs");
+const { avatarInput, normalizeMembers, avatarSelection } = require("./avatars.cjs");
 
 const id = () => randomBytes(24).toString("hex");
 const day = (value) => String(value || "").slice(0, 10);
@@ -78,8 +78,9 @@ function ensureCategories(trip) {
 
 function createTrip(input, reuseTrip, reuseMember) {
   validateDates(input.start, input.end);
-  if (!isAvatarId(input.avatarId)) fail(400, "请选择头像");
-  const member = { id: id(), name: text(input.nickname, 40), avatarId: input.avatarId };
+  const selectedAvatar = avatarInput(input.avatarId, input.avatarData);
+  if (!selectedAvatar) fail(400, "请选择头像");
+  const member = { id: id(), name: text(input.nickname, 40), ...selectedAvatar };
   const trip = ensureCategories({
     id: id(), name: text(input.name), start: input.start, end: input.end,
     creator: member.id, members: [member], items: defaultItems(member.id),
@@ -105,12 +106,15 @@ function createTrip(input, reuseTrip, reuseMember) {
   return { trip, member };
 }
 
-function addMember(trip, nickname, avatarId) {
+function addMember(trip, nickname, avatarId, avatarData) {
   normalizeMembers(trip);
-  const choice = avatarSelection(trip, null, avatarId);
-  if (!choice.valid) fail(400, "请选择头像");
-  if (!choice.available) fail(409, "这个头像刚被同行人选走，请换一个");
-  const member = { id: id(), name: text(nickname, 40), avatarId };
+  const selectedAvatar = avatarInput(avatarId, avatarData);
+  if (!selectedAvatar) fail(400, "请选择头像");
+  if (selectedAvatar.avatarId) {
+    const choice = avatarSelection(trip, null, selectedAvatar.avatarId);
+    if (!choice.available) fail(409, "这个头像刚被同行人选走，请换一个");
+  }
+  const member = { id: id(), name: text(nickname, 40), ...selectedAvatar };
   trip.members.push(member);
   trip.items.push(...defaultItems(member.id).filter((item) => item.owner));
   ensureCategories(trip);
@@ -129,7 +133,7 @@ function viewTrip(trip, member, invite) {
     categories: trip.categories.filter((category) => !category.owner || category.owner === member.id),
     progress: trip.members.map((entry) => {
       const items = trip.items.filter((item) => item.owner === entry.id);
-      return { id: entry.id, name: entry.name, avatarId: entry.avatarId, total: items.length,
+      return { id: entry.id, name: entry.name, avatarId: entry.avatarId, avatarData: entry.avatarData || "", total: items.length,
         done: items.filter((item) => item.done).length,
         keys: items.filter((item) => item.key).length,
         reviewed: items.filter((item) => item.key && item.reviewed).length };
@@ -146,11 +150,15 @@ function mutateTrip(trip, member, input) {
   switch (input.action) {
     case "profile": {
       const nextName = text(input.name, 40);
-      const choice = avatarSelection(trip, member.id, input.avatarId);
-      if (!choice.valid) fail(400, "请选择头像");
-      if (!choice.available) fail(409, "这个头像刚被同行人选走，请换一个");
+      const selectedAvatar = avatarInput(input.avatarId, input.avatarData);
+      if (!selectedAvatar) fail(400, "请选择头像");
+      if (selectedAvatar.avatarId) {
+        const choice = avatarSelection(trip, member.id, selectedAvatar.avatarId);
+        if (!choice.available) fail(409, "这个头像刚被同行人选走，请换一个");
+      }
       member.name = nextName;
-      member.avatarId = input.avatarId;
+      member.avatarId = selectedAvatar.avatarId;
+      member.avatarData = selectedAvatar.avatarData;
       for (const item of trip.items) {
         if (item.byMemberId === member.id) item.by = nextName;
         if (item.reviewByMemberId === member.id) item.reviewBy = nextName;

@@ -292,19 +292,21 @@ function form(kind, fields, id = "", del = "") {
 const avatarInfo = (avatarId) => avatars.find((entry) => entry.id === avatarId);
 function avatarImage(member, className = "") {
   const info = avatarInfo(member?.avatarId);
-  return info
-    ? `<img class="member-avatar ${className}" src="${info.src}" alt="" loading="lazy" decoding="async">`
+  const src = member?.avatarData?.match(/^data:image\/(?:jpeg|png|webp);base64,/) ? member.avatarData : info?.src;
+  return src
+    ? `<img class="member-avatar ${className}" src="${esc(src)}" alt="" loading="lazy" decoding="async">`
     : `<span class="member-avatar avatar-fallback ${className}" aria-hidden="true">?</span>`;
 }
 function memberChip(member, className = "") {
   if (!member) return "";
   return `<span class="member-chip ${className}">${avatarImage(member)}<span>${esc(member.name)}</span></span>`;
 }
-function avatarPicker(selectedId = "", usedIds = [], allowDuplicates = false) {
-  return `<fieldset class="avatar-picker"><legend>选择头像</legend><input type="hidden" name="avatarId" value="${esc(selectedId)}"><div class="avatar-grid">${avatars.map((entry) => {
+function avatarPicker(selectedId = "", usedIds = [], allowDuplicates = false, selectedData = "") {
+  const customSelected = Boolean(selectedData);
+  return `<fieldset class="avatar-picker"><legend>选择头像</legend><input type="hidden" name="avatarId" value="${esc(selectedId)}"><input type="hidden" name="avatarData" value="${esc(selectedData)}"><div class="avatar-grid"><label class="avatar-option avatar-upload ${customSelected ? "selected" : ""}" aria-label="上传自定义头像"><input type="file" accept="image/jpeg,image/png,image/webp" data-avatar-file><span class="avatar-upload-preview">${customSelected ? `<img src="${esc(selectedData)}" alt="">` : `${icon("plus")}<b>上传图片</b>`}</span><i aria-hidden="true">✓</i></label>${avatars.map((entry) => {
     const unavailable = !allowDuplicates && usedIds.includes(entry.id) && entry.id !== selectedId;
     return `<button type="button" class="avatar-option ${entry.id === selectedId ? "selected" : ""}" data-action="choose-avatar" data-value="${entry.id}" aria-label="${entry.name}${unavailable ? "，已被选择" : ""}" aria-pressed="${entry.id === selectedId}" ${unavailable ? "disabled" : ""}><img src="${entry.src}" alt="" loading="lazy"><i aria-hidden="true">✓</i></button>`;
-  }).join("")}</div><p class="muted">同一趟旅行会优先使用不同头像。</p></fieldset>`;
+  }).join("")}</div><p class="muted">可上传自己的照片；系统头像在同一趟旅行中优先不重复。</p></fieldset>`;
 }
 let pickerState = null;
 const pad2 = (n) => String(n).padStart(2, "0");
@@ -729,7 +731,7 @@ function members() {
   const own = trip.me === trip.creator;
   show(
     "一起出发的人",
-    `<p class="muted">公共清单一起确认，个人物品各自准备。</p><div class="identity-note"><strong>你的身份会保存在这台设备</strong><span>正常关闭网页后再打开仍可继续使用。换手机、使用无痕模式或清除浏览器数据前，请先生成自己的恢复链接。</span></div>${own && !trip.archived ? `<button class="btn full" data-action="invite">${icon("users")} 复制邀请链接</button><p class="muted">链接仅分享给同行人。对方打开后填写昵称即可加入。</p>` : ""}<div class="members">${trip.members.map((m) => `<div><div class="row"><span><span class="avatar">${esc(m.name.slice(0, 1))}</span>${esc(m.name)} ${m.id === trip.creator ? '<span class="pill">创建者</span>' : ""}</span></div>${(own || m.id === trip.me) && !trip.archived ? `<div class="small-actions"><button data-action="recovery" data-id="${m.id}">${m.id === trip.me ? "保存我的恢复链接" : "为此成员生成恢复链接"}</button>${own && m.id !== trip.creator ? `<button data-action="removeMember" data-id="${m.id}">移除成员</button>` : ""}</div>` : ""}</div>`).join("")}</div>${own && !trip.archived ? '<div class="subtle"><button class="text-btn" data-action="rotate">使旧邀请失效，生成新链接</button></div>' : ""}`,
+    `<p class="muted">公共清单一起确认，个人物品各自准备。</p><div class="identity-note"><strong>你的身份会保存在这台设备</strong><span>正常关闭网页后再打开仍可继续使用。换手机、使用无痕模式或清除浏览器数据前，请先生成自己的恢复链接。</span></div>${own && !trip.archived ? `<button class="btn full" data-action="invite">${icon("users")} 复制邀请链接</button><p class="muted">链接仅分享给同行人。对方打开后填写昵称即可加入。</p>` : ""}<div class="members">${trip.members.map((m) => `<div><div class="row"><span class="member-name-row">${avatarImage(m)}<span>${esc(m.name)}</span> ${m.id === trip.creator ? '<span class="pill">创建者</span>' : ""}</span></div>${(own || m.id === trip.me) && !trip.archived ? `<div class="small-actions"><button data-action="recovery" data-id="${m.id}">${m.id === trip.me ? "保存我的恢复链接" : "为此成员生成恢复链接"}</button>${own && m.id !== trip.creator ? `<button data-action="removeMember" data-id="${m.id}">移除成员</button>` : ""}</div>` : ""}</div>`).join("")}</div>${own && !trip.archived ? '<div class="subtle"><button class="text-btn" data-action="rotate">使旧邀请失效，生成新链接</button></div>' : ""}`,
   );
 }
 async function settings() {
@@ -751,7 +753,7 @@ function profileForm() {
   const used = trip.members.filter((member) => member.id !== trip.me).map((member) => member.avatarId);
   const allUsed = trip.members.map((member) => member.avatarId);
   const allowDuplicates = avatars.every((avatar) => allUsed.includes(avatar.id));
-  show("编辑我的资料", form("profile", `${field("昵称", "name", me.name, "text", true)}${avatarPicker(me.avatarId, used, allowDuplicates)}`));
+  show("编辑我的资料", form("profile", `${field("昵称", "name", me.name, "text", true)}${avatarPicker(me.avatarId, used, allowDuplicates, me.avatarData || "")}`));
 }
 function myTripMember(member, own) {
   const canManage = (own || member.id === trip.me) && !trip.archived;
@@ -868,7 +870,62 @@ async function prepareTicketImage(file) {
   });
   return { imageBase64, mime: "image/jpeg", size: blob.size };
 }
-document.addEventListener("change", (event) => {
+
+async function prepareAvatarImage(file) {
+  if (!file?.type?.match(/^image\/(jpeg|png|webp)$/)) throw Error("请选择 JPG、PNG 或 WebP 图片");
+  if (file.size > 12 * 1024 * 1024) throw Error("头像图片不能超过 12MB");
+  const bitmap = await createImageBitmap(file);
+  const size = Math.min(bitmap.width, bitmap.height);
+  const canvas = document.createElement("canvas");
+  canvas.width = 320;
+  canvas.height = 320;
+  const context = canvas.getContext("2d", { alpha: false });
+  context.fillStyle = "#fff";
+  context.fillRect(0, 0, 320, 320);
+  context.drawImage(
+    bitmap,
+    Math.round((bitmap.width - size) / 2),
+    Math.round((bitmap.height - size) / 2),
+    size,
+    size,
+    0,
+    0,
+    320,
+    320,
+  );
+  bitmap.close?.();
+  let quality = 0.86;
+  let blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+  while (blob && blob.size > 150 * 1024 && quality > 0.5) {
+    quality -= 0.08;
+    blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+  }
+  if (!blob) throw Error("无法处理这张图片，请换一张重试");
+  return await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(Error("无法读取这张图片，请换一张重试"));
+    reader.readAsDataURL(blob);
+  });
+}
+document.addEventListener("change", async (event) => {
+  const avatarInput = event.target.closest("[data-avatar-file]");
+  if (avatarInput) {
+    const picker = avatarInput.closest(".avatar-picker");
+    try {
+      const avatarData = await prepareAvatarImage(avatarInput.files?.[0]);
+      picker.querySelector('input[name="avatarData"]').value = avatarData;
+      picker.querySelector('input[name="avatarId"]').value = "";
+      picker.querySelectorAll(".avatar-option").forEach((option) => option.classList.remove("selected"));
+      const upload = avatarInput.closest(".avatar-upload");
+      upload.classList.add("selected");
+      upload.querySelector(".avatar-upload-preview").innerHTML = `<img src="${esc(avatarData)}" alt="自定义头像预览">`;
+    } catch (error) {
+      avatarInput.value = "";
+      toast(error.message);
+    }
+    return;
+  }
   const input = event.target.closest("[data-ticket-file]");
   if (!input) return;
   const name = input.closest(".ticket-file-picker")?.querySelector("[data-ticket-file-name]");
@@ -900,6 +957,7 @@ document.addEventListener("click", async (ev) => {
       case "choose-avatar": {
         const grid = b.closest(".avatar-picker");
         grid.querySelector('input[name="avatarId"]').value = b.dataset.value;
+        grid.querySelector('input[name="avatarData"]').value = "";
         grid.querySelectorAll(".avatar-option").forEach((option) => {
           const selected = option === b;
           option.classList.toggle("selected", selected);
@@ -1083,7 +1141,7 @@ document.addEventListener("submit", async (ev) => {
     data[input.name] = input.dataset.value || "";
   });
   try {
-    if ((kind === "create" || kind === "join" || kind === "profile") && !data.avatarId)
+    if ((kind === "create" || kind === "join" || kind === "profile") && !data.avatarId && !data.avatarData)
       throw Error("请选择一个头像");
     if ((kind === "create" || kind === "trip") && data.startDate && data.endDate) {
       data.start = `${data.startDate}T${data.startTime || "08:00"}`;

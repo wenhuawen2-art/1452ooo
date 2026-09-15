@@ -173,7 +173,7 @@ async function join(uid, input) {
         .limit(1),
     );
     if (!link) {
-      const member = addMember(trip, input.nickname, input.avatarId);
+      const member = addMember(trip, input.nickname, input.avatarId, input.avatarData);
       link = { uid, tripId: trip.id, memberId: member.id, createdAt: Date.now() };
       await transaction.collection("trip_members").doc(memberKey(uid, trip.id)).set(link);
       await transaction.collection("trips").doc(trip.id).set(trip);

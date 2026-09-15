@@ -113,6 +113,34 @@ test("avatar choice is required, unique while available, and reusable after sixt
   assert.equal(addMember(trip, "第十七人", "avatar-01").avatarId, "avatar-01");
 });
 
+test("custom avatar can be created, joined and updated without consuming a system avatar", () => {
+  const firstImage = "data:image/jpeg;base64,aGVsbG8=";
+  const secondImage = "data:image/webp;base64,d29ybGQ=";
+  const { trip, member } = createTrip({
+    name: "自定义头像",
+    nickname: "甲",
+    avatarData: firstImage,
+    start: "2026-10-01T08:00",
+    end: "2026-10-02T18:00",
+  });
+  assert.equal(member.avatarId, "");
+  assert.equal(member.avatarData, firstImage);
+  const guest = addMember(trip, "乙", "avatar-01");
+  assert.equal(guest.avatarId, "avatar-01");
+  mutateTrip(trip, member, {
+    action: "profile",
+    revision: trip.revision,
+    name: "新名字",
+    avatarData: secondImage,
+  });
+  assert.equal(member.avatarData, secondImage);
+  assert.equal(member.avatarId, "");
+  assert.throws(
+    () => addMember(trip, "异常图片", "", "data:image/svg+xml;base64,PHN2Zz4="),
+    /请选择头像/,
+  );
+});
+
 test("profile changes update member references and legacy confirmations are matched safely", () => {
   const { trip, member } = createTrip({ name: "资料测试", nickname: "旧名字", avatarId: "avatar-01", start: "2026-10-01T08:00", end: "2026-10-02T18:00" });
   const item = trip.items.find((entry) => !entry.owner);

@@ -1935,6 +1935,13 @@ dialog::backdrop {
 .avatar-option.selected { border-color: #367fdf; background: #edf5ff; }
 .avatar-option.selected i { display: grid; }
 .avatar-option:disabled { opacity: .3; filter: grayscale(.8); }
+.avatar-upload { display: block; cursor: pointer; }
+.avatar-upload input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.avatar-upload-preview { display: grid; width: 100%; aspect-ratio: 1; place-items: center; gap: 3px; border-radius: 12px; color: #367fdf; background: linear-gradient(145deg, #eaf5ff, #f7fbff); font-size: 11px; text-align: center; }
+.avatar-upload-preview .icon { width: 25px; height: 25px; }
+.avatar-upload-preview b { font-weight: 700; }
+.avatar-upload-preview img { width: 100%; height: 100%; object-fit: cover; }
+.member-name-row { display: inline-flex; align-items: center; gap: 9px; }
 .bottom-nav { grid-template-columns: repeat(4, 1fr); }
 .item-copy { min-width: 0; }
 .item-title-line { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-width: 0; }
