@@ -249,6 +249,7 @@ function mutateTrip(trip, member, input) {
         fail(400, "请填写开始与结束时间，结束须晚于开始；跨天安排请拆成两天");
       const values = { date: input.date, period: periodForStart(input.startTime), time: input.startTime,
         startTime: input.startTime, endTime: input.endTime, title: text(input.title),
+        startPlace: String(input.startPlace || "").slice(0, 500), endPlace: String(input.endPlace || "").slice(0, 500),
         address: String(input.address || "").slice(0, 500), note: String(input.note || "").slice(0, 2000) };
       if (input.id) {
         const event = trip.events.find((entry) => entry.id === input.id);

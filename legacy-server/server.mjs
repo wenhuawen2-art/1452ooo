@@ -447,6 +447,8 @@ const server = http.createServer(async (req, res) => {
           startTime,
           endTime,
           title: txt(b.title),
+          startPlace: String(b.startPlace || "").slice(0, 500),
+          endPlace: String(b.endPlace || "").slice(0, 500),
           address: String(b.address || "").slice(0, 500),
           note: String(b.note || "").slice(0, 2000),
         };

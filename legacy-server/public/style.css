@@ -394,6 +394,16 @@ p {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+.journey-route {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 7px;
+  color: var(--green);
+}
+.journey-route span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.journey-route em { display: inline-grid; width: 16px; height: 16px; place-items: center; flex: 0 0 auto; border-radius: 5px; color: #fff; background: var(--green); font-size: 10px; font-style: normal; }
+.journey-route i { flex: 0 0 auto; color: var(--muted); font-style: normal; }
 .timeline-body h3 {
   overflow-wrap: anywhere;
 }

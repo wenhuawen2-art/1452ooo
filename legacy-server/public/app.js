@@ -248,9 +248,19 @@ function addresses(address) {
     ? `<div class="small-actions"><button data-action="copy" data-value="${esc(address)}">复制地址</button><a href="https://uri.amap.com/search?keyword=${encodeURIComponent(address)}&callnative=1" target="_blank" rel="noopener noreferrer">打开地图 ↗</a></div>`
     : "";
 }
+function routePlaces(e) {
+  const start = String(e.startPlace || "").trim();
+  const end = String(e.endPlace || "").trim();
+  if (!start && !end) return "";
+  const parts = [];
+  if (start) parts.push(`<span><em>起</em>${esc(start)}</span>`);
+  if (start && end) parts.push('<i aria-hidden="true">→</i>');
+  if (end) parts.push(`<span><em>终</em>${esc(end)}</span>`);
+  return `<p class="journey-route">${parts.join("")}</p>`;
+}
 function eventsCard(d) {
   const items = eventList(d);
-  return `<div class="card">${items.length ? `<div class="timeline">${items.map((e) => `<div class="timeline-entry"><div class="time-label">${e.period}</div><div class="timeline-body"><div class="row"><h3>${esc(e.title)}</h3><button class="edit-item" data-action="event" data-id="${e.id}" aria-label="编辑 ${esc(e.title)}" data-write>${icon("edit")}</button></div><p class="event-time">${esc(e.startTime || e.time || "开始待补充")} — ${esc(e.endTime || "结束待补充")}</p>${e.address ? `<p class="muted">${esc(e.address)}</p>` : ""}${e.note ? `<p>${esc(e.note)}</p>` : ""}${addresses(e.address)}</div></div>`).join("")}</div>` : `<div class="empty"><p>这一天的安排尚未填写</p><button class="btn secondary" data-action="event" data-date="${d}" data-write>${icon("plus")} 添加安排</button></div>`}</div>`;
+  return `<div class="card">${items.length ? `<div class="timeline">${items.map((e) => `<div class="timeline-entry"><div class="time-label">${e.period}</div><div class="timeline-body"><div class="row"><h3>${esc(e.title)}</h3><button class="edit-item" data-action="event" data-id="${e.id}" aria-label="编辑 ${esc(e.title)}" data-write>${icon("edit")}</button></div><p class="event-time">${esc(e.startTime || e.time || "开始待补充")} — ${esc(e.endTime || "结束待补充")}</p>${routePlaces(e)}${e.address ? `<p class="muted">${esc(e.address)}</p>` : ""}${e.note ? `<p>${esc(e.note)}</p>` : ""}${addresses(e.address || e.endPlace || e.startPlace)}</div></div>`).join("")}</div>` : `<div class="empty"><p>这一天的安排尚未填写</p><button class="btn secondary" data-action="event" data-date="${d}" data-write>${icon("plus")} 添加安排</button></div>`}</div>`;
 }
 function hotelCard(d) {
   const h = trip.hotels.find((h) => h.checkin <= d && d < h.checkout);
@@ -334,7 +344,7 @@ function eventForm(id, date) {
     id ? "编辑行程安排" : "添加行程安排",
     form(
       "event",
-      `${field("去哪里 / 做什么", "title", e.title || "", "text", true)}${field("日期", "date", e.date || date || selected, "date", true)}${select("时段", "period", ["上午", "下午", "晚上"], e.period || "上午")}<div class="form-grid">${field("开始时间", "startTime", e.startTime || e.time || "", "time", true)}${field("结束时间", "endTime", e.endTime || "", "time", true)}</div><p class="muted">填写同一天内的完整时段；跨天安排请拆成两天。</p>${field("地址（选填）", "address", e.address || "")}${note("备注（选填）", "note", e.note || "")}`,
+      `${field("去哪里 / 做什么", "title", e.title || "", "text", true)}${field("日期", "date", e.date || date || selected, "date", true)}${select("时段", "period", ["上午", "下午", "晚上"], e.period || "上午")}<div class="form-grid">${field("开始时间", "startTime", e.startTime || e.time || "", "time", true)}${field("结束时间", "endTime", e.endTime || "", "time", true)}</div><p class="muted">填写同一天内的完整时段；跨天安排请拆成两天。</p><div class="form-grid">${field("起始地（选填）", "startPlace", e.startPlace || "")}${field("目的地（选填）", "endPlace", e.endPlace || "")}</div>${field("详细地址（选填）", "address", e.address || "")}${note("备注（选填）", "note", e.note || "")}`,
       e.id || "",
       e.id ? "deleteEvent" : "",
     ),

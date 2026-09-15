@@ -165,8 +165,8 @@ async function loadWeather(date) {
 }
 function weatherPlaceForDate(date) {
   const hotel = (trip?.hotels || []).find((entry) => entry.checkin <= date && date < entry.checkout);
-  const event = (trip?.events || []).filter((entry) => entry.date === date && entry.address).sort((a, b) => (a.startTime || "").localeCompare(b.startTime || ""))[0];
-  return String(hotel?.city || event?.address || "").trim();
+  const event = (trip?.events || []).filter((entry) => entry.date === date && (entry.address || entry.endPlace || entry.startPlace)).sort((a, b) => (a.startTime || "").localeCompare(b.startTime || ""))[0];
+  return String(hotel?.city || event?.address || event?.endPlace || event?.startPlace || "").trim();
 }
 async function browserWeatherFallback(date) {
   const place = weatherPlaceForDate(date);
@@ -528,6 +528,16 @@ function addresses(address) {
     ? `<div class="small-actions"><button data-action="copy" data-value="${esc(address)}">复制地址</button><a href="https://uri.amap.com/search?keyword=${encodeURIComponent(address)}&callnative=1" target="_blank" rel="noopener noreferrer">打开地图 ↗</a></div>`
     : "";
 }
+function routePlaces(entry) {
+  const start = String(entry.startPlace || "").trim();
+  const end = String(entry.endPlace || "").trim();
+  if (!start && !end) return "";
+  const parts = [];
+  if (start) parts.push(`<span><em>起</em>${esc(start)}</span>`);
+  if (start && end) parts.push('<i aria-hidden="true">→</i>');
+  if (end) parts.push(`<span><em>终</em>${esc(end)}</span>`);
+  return `<p class="journey-route">${parts.join("")}</p>`;
+}
 function eventsCard(d) {
   const items = eventList(d);
   if (!items.length) {
@@ -537,7 +547,7 @@ function eventsCard(d) {
   return `<div class="itinerary-list">${schedulePeriods.map((period) => {
     const periodItems = segments.filter((entry) => entry.periodId === period.id);
     if (!periodItems.length) return "";
-    return `<article class="card itinerary-card period-card"><div class="itinerary-head period-card-head"><div><span class="itinerary-status">${period.name}行程</span><h3>${period.range}</h3></div><span class="period-count">${periodItems.length} 项</span></div><div class="itinerary-divider" aria-hidden="true"></div><div class="period-timeline">${periodItems.map((entry) => `<section class="period-event"><span class="journey-dot" aria-hidden="true"></span><div class="period-event-body"><div class="period-event-head"><div><div class="period-event-time">${esc(entry.segmentStart)} <span>—</span> ${esc(entry.segmentEnd)}</div><h4>${esc(entry.title)}</h4></div><button class="itinerary-edit" data-action="event" data-id="${entry.id}" aria-label="编辑 ${esc(entry.title)}" data-write>${icon("edit")}</button></div>${entry.continuedFromPrevious || entry.continuesToNext ? `<div class="continuation-tags">${entry.continuedFromPrevious ? '<span>接上个时段</span>' : ""}${entry.continuesToNext ? '<span>下个时段继续</span>' : ""}</div>` : ""}${entry.address ? `<p class="journey-caption">${esc(entry.address)}</p>` : ""}${entry.note ? `<p class="itinerary-note">${esc(entry.note)}</p>` : ""}${addresses(entry.address)}</div></section>`).join("")}</div></article>`;
+    return `<article class="card itinerary-card period-card"><div class="itinerary-head period-card-head"><div><span class="itinerary-status">${period.name}行程</span><h3>${period.range}</h3></div><span class="period-count">${periodItems.length} 项</span></div><div class="itinerary-divider" aria-hidden="true"></div><div class="period-timeline">${periodItems.map((entry) => `<section class="period-event"><span class="journey-dot" aria-hidden="true"></span><div class="period-event-body"><div class="period-event-head"><div><div class="period-event-time">${esc(entry.segmentStart)} <span>—</span> ${esc(entry.segmentEnd)}</div><h4>${esc(entry.title)}</h4></div><button class="itinerary-edit" data-action="event" data-id="${entry.id}" aria-label="编辑 ${esc(entry.title)}" data-write>${icon("edit")}</button></div>${entry.continuedFromPrevious || entry.continuesToNext ? `<div class="continuation-tags">${entry.continuedFromPrevious ? '<span>接上个时段</span>' : ""}${entry.continuesToNext ? '<span>下个时段继续</span>' : ""}</div>` : ""}${routePlaces(entry)}${entry.address ? `<p class="journey-caption">${esc(entry.address)}</p>` : ""}${entry.note ? `<p class="itinerary-note">${esc(entry.note)}</p>` : ""}${addresses(entry.address || entry.endPlace || entry.startPlace)}</div></section>`).join("")}</div></article>`;
   }).join("")}</div>`;
 }
 function hotelCard(d) {
@@ -667,7 +677,7 @@ function eventForm(id, date) {
     id ? "编辑行程安排" : "添加行程安排",
     form(
       "event",
-      `${field("去哪里 / 做什么", "title", e.title || "", "text", true)}${field("日期", "date", e.date || date || selected, "date", true)}<div class="form-grid">${field("开始时间", "startTime", e.startTime || e.time || "", "time", true)}${field("结束时间", "endTime", e.endTime || "", "time", true)}</div><div class="period-rule"><strong>按开始时间自动归类</strong><span>上午 08:00—13:00 · 下午 13:00—18:00 · 晚上 18:00—23:00</span><span>跨越时段的安排会连续显示在多个时段卡中。</span></div>${field("地址（选填）", "address", e.address || "")}${note("备注（选填）", "note", e.note || "")}`,
+      `${field("去哪里 / 做什么", "title", e.title || "", "text", true)}${field("日期", "date", e.date || date || selected, "date", true)}<div class="form-grid">${field("开始时间", "startTime", e.startTime || e.time || "", "time", true)}${field("结束时间", "endTime", e.endTime || "", "time", true)}</div><div class="period-rule"><strong>按开始时间自动归类</strong><span>上午 08:00—13:00 · 下午 13:00—18:00 · 晚上 18:00—23:00</span><span>跨越时段的安排会连续显示在多个时段卡中。</span></div><div class="form-grid">${field("起始地（选填）", "startPlace", e.startPlace || "")}${field("目的地（选填）", "endPlace", e.endPlace || "")}</div>${field("详细地址（选填）", "address", e.address || "")}${note("备注（选填）", "note", e.note || "")}`,
       e.id || "",
       e.id ? "deleteEvent" : "",
     ),

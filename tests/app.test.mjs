@@ -274,6 +274,8 @@ test("旅行、共享与归档端到端", async () => {
     period: "下午",
     startTime: "16:30",
     endTime: "18:00",
+    startPlace: "成都",
+    endPlace: "鱼子西",
     address: "鱼子西",
   });
   assert.equal(r.status, 200);
@@ -289,6 +291,8 @@ test("旅行、共享与归档端到端", async () => {
   });
   assert.equal(r.trip.events[0].time, "16:00");
   assert.equal(r.trip.events[0].endTime, "18:30");
+  assert.equal(r.trip.events[0].startPlace, "");
+  assert.equal(r.trip.events[0].endPlace, "");
   for (const [startTime, endTime] of [
     ["16:00", ""],
     ["18:00", "16:00"],

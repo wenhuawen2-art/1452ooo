@@ -472,6 +472,40 @@ p {
   font-size: 13px;
   overflow-wrap: anywhere;
 }
+.journey-route {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 7px;
+  margin: 9px 0 0;
+  color: #277bc9;
+  font-size: 13px;
+}
+.journey-route span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.journey-route em {
+  display: inline-grid;
+  width: 16px;
+  height: 16px;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 5px;
+  color: #fff;
+  background: #6a9de3;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+}
+.journey-route i {
+  flex: 0 0 auto;
+  color: #9ebee3;
+  font-size: 14px;
+  font-style: normal;
+}
 .period-timeline {
   position: relative;
   display: grid;

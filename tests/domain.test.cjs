@@ -27,9 +27,12 @@ test("CloudBase shared domain validates full schedule period and revision", () =
   mutateTrip(trip, member, {
     action: "event", revision: 0, date: "2026-10-01",
     startTime: "09:00", endTime: "11:30", title: "出发去景区",
+    startPlace: "成都", endPlace: "鱼子西",
   });
   assert.equal(trip.events[0].period, "上午");
   assert.equal(trip.events[0].endTime, "11:30");
+  assert.equal(trip.events[0].startPlace, "成都");
+  assert.equal(trip.events[0].endPlace, "鱼子西");
   assert.throws(() => mutateTrip(trip, member, { action: "archive", revision: 0 }), /同行人刚刚更新/);
 });
 
