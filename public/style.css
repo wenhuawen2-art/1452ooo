@@ -488,17 +488,16 @@ p {
   font-size: 24px;
   font-weight: 750;
 }
-.journey-route span {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
+.journey-route .route-place {
+  flex: 0 1 auto;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #111820;
+  font: inherit;
 }
-.journey-route span:last-of-type { justify-content: flex-end; }
-.journey-route em {
+.journey-route .route-label {
   display: inline-grid;
   width: 62px;
   height: 48px;
@@ -511,7 +510,7 @@ p {
   font-style: normal;
   font-weight: 700;
 }
-.journey-route i {
+.journey-route .route-arrow {
   display: flex;
   flex: 1 1 70px;
   align-items: center;
@@ -520,14 +519,14 @@ p {
   font-size: 0;
   font-style: normal;
 }
-.journey-route i::before {
+.journey-route .route-arrow::before {
   content: "";
   height: 4px;
   flex: 1;
   border-radius: 99px;
   background: currentColor;
 }
-.journey-route i::after {
+.journey-route .route-arrow::after {
   content: "";
   width: 11px;
   height: 11px;
@@ -537,9 +536,10 @@ p {
   border-right: 4px solid currentColor;
   transform: rotate(45deg);
 }
-.journey-route span:last-of-type em {
+.journey-route .route-end-label {
   background: linear-gradient(145deg, #9dce5e, #d0f486);
 }
+.journey-route.has-one-place .route-end-place { margin-left: auto; }
 .period-timeline {
   position: relative;
   display: grid;

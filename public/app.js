@@ -559,10 +559,10 @@ function routePlaces(entry) {
   const end = String(entry.endPlace || "").trim();
   if (!start && !end) return "";
   const parts = [];
-  if (start) parts.push(`<span><em>起点</em>${esc(start)}</span>`);
-  if (start && end) parts.push('<i aria-hidden="true">→</i>');
-  if (end) parts.push(`<span><em>终点</em>${esc(end)}</span>`);
-  return `<div class="journey-route">${parts.join("")}</div>`;
+  if (start) parts.push(`<em class="route-label route-start-label">起点</em><strong class="route-place route-start-place">${esc(start)}</strong>`);
+  if (start && end) parts.push('<i class="route-arrow" aria-hidden="true">→</i>');
+  if (end) parts.push(`<strong class="route-place route-end-place">${esc(end)}</strong><em class="route-label route-end-label">终点</em>`);
+  return `<div class="journey-route ${start && end ? "has-both-places" : "has-one-place"}">${parts.join("")}</div>`;
 }
 function mapAction(entry) {
   const place = String(entry.address || entry.endPlace || entry.startPlace || "").trim();
