@@ -46,6 +46,12 @@ const paths = {
 };
 const icon = (n) =>
   `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="${paths[n] || paths.road}"/></svg>`;
+const filledIconPaths = {
+  template: "M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z",
+  category: "M10 2h4v8h8v4h-8v8h-4v-8H2v-4h8z",
+};
+const filledIcon = (n) =>
+  `<svg class="icon filled-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="${filledIconPaths[n]}"/></svg>`;
 const moduleIconPaths = {
   "travel-medicine": '<path d="M9 3h6v4h3a2 2 0 0 1 2 2v9H4V9a2 2 0 0 1 2-2h3V3Z"/><path d="M12 10v6m-3-3h6"/>',
   "travel-documents": '<path d="M7 3h7l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5M8 12h6m-6 4h6"/>',
@@ -618,7 +624,7 @@ function checklist() {
   const categories = trip.categories.filter((c) =>
     scope === "公共" ? !c.owner : c.owner === trip.me,
   );
-  return `<div class="segment">${["公共", "我的"].map((s) => `<button class="${scope === s ? "active" : ""}" data-action="scope" data-value="${s}">${s === "公共" ? "一起准备" : "我的物品"}</button>`).join("")}</div><section class="checklist-overview card"><div class="checklist-overview-head"><div><span class="muted">准备进度</span><div class="checklist-total"><strong>${p.done}</strong><span>/ ${p.total} 项</span></div></div><div class="checklist-actions"><button class="text-btn template-import-btn" data-action="templates" data-write>${icon("template")} 导入模板</button><button class="text-btn" data-action="category" data-write>新建分类 +</button></div></div><div class="checklist-progress"><i style="width:${p.total ? Math.round((p.done / p.total) * 100) : 0}%"></i></div></section>${gap(nowDay(), trip.start) <= 1 ? reviewSummary() : ""}${categories
+  return `<div class="segment">${["公共", "我的"].map((s) => `<button class="${scope === s ? "active" : ""}" data-action="scope" data-value="${s}">${s === "公共" ? "一起准备" : "我的物品"}</button>`).join("")}</div><section class="checklist-overview card"><div class="checklist-overview-head"><div><span class="muted">准备进度</span><div class="checklist-total"><strong>${p.done}</strong><span>/ ${p.total} 项</span></div></div><div class="checklist-actions"><button class="checklist-action-btn template-import-btn" data-action="templates" data-write>${filledIcon("template")}<span>导入模板</span></button><button class="checklist-action-btn" data-action="category" data-write>${filledIcon("category")}<span>新建分类</span></button></div></div><div class="checklist-progress"><i style="width:${p.total ? Math.round((p.done / p.total) * 100) : 0}%"></i></div></section>${gap(nowDay(), trip.start) <= 1 ? reviewSummary() : ""}${categories
     .map(
       (c) =>
         `<section class="check-group"><div class="section-head category-head"><div><h2>${esc(c.name)}</h2><span class="muted">${items.filter((i) => i.categoryId === c.id).length} 项</span></div><button class="text-btn" data-action="item" data-category="${c.id}" aria-label="在${esc(c.name)}中新增条目" data-write>新增条目 +</button></div><div class="card check-card">${

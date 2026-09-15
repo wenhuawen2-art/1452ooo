@@ -727,6 +727,29 @@ p {
   justify-content: flex-end;
   gap: 14px;
 }
+.checklist-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid #dceafb;
+  border-radius: 12px;
+  color: #2e7fd8;
+  background: linear-gradient(145deg, #fafdff, #edf6ff);
+  box-shadow: 0 4px 12px #377fc51a, inset 0 1px 0 #fff;
+  font-size: 13px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.checklist-action-btn:active { transform: translateY(1px); }
+.checklist-action-btn .filled-icon {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+  stroke: none;
+}
 .template-import-btn {
   display: inline-flex;
   align-items: center;
