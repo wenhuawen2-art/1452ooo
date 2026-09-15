@@ -778,9 +778,39 @@ p {
   border: 1px solid #d6eafd;
   border-radius: 15px;
   color: #257fd6;
-  background: #eaf5ff;
+  background: linear-gradient(145deg, #fafdff 10%, #e4f2ff 100%);
+  box-shadow: inset 0 1px 0 #fff, 0 4px 10px #337bc21c;
   font-size: 15px;
   font-weight: 750;
+}
+.module-icon {
+  width: 27px;
+  height: 27px;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+  filter: drop-shadow(0 1px 0 #fff9);
+}
+.template-symbol.large .module-icon {
+  width: 31px;
+  height: 31px;
+}
+.module-travel-medicine,
+.module-road-emergency { color: #e48a61; background: linear-gradient(145deg, #fff8f2, #ffe8dd); }
+.module-travel-documents,
+.module-lodging-checkin { color: #6b8fda; background: linear-gradient(145deg, #f4f7ff, #e4ecff); }
+.module-vehicle-check,
+.module-electronics-navigation { color: #4b9acb; background: linear-gradient(145deg, #f1fbff, #dff3ff); }
+.module-home-safety,
+.module-family-travel { color: #70a97f; background: linear-gradient(145deg, #f4fff8, #e2f5e9); }
+.module-road-trip-comfort,
+.module-clothing-toiletries { color: #a68bd0; background: linear-gradient(145deg, #fbf7ff, #eee5ff); }
+.module-camping-outdoor,
+.module-pet-travel { color: #5ca59c; background: linear-gradient(145deg, #f1fffd, #ddf5f0); }
+.module-long-drive-safety { color: #d49b52; background: linear-gradient(145deg, #fffaf0, #ffedc7); }
 }
 .template-symbol.large {
   flex: 0 0 54px;
