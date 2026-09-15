@@ -344,7 +344,7 @@ function eventForm(id, date) {
     id ? "编辑行程安排" : "添加行程安排",
     form(
       "event",
-      `${field("去哪里 / 做什么", "title", e.title || "", "text", true)}${field("日期", "date", e.date || date || selected, "date", true)}${select("时段", "period", ["上午", "下午", "晚上"], e.period || "上午")}<div class="form-grid">${field("开始时间", "startTime", e.startTime || e.time || "", "time", true)}${field("结束时间", "endTime", e.endTime || "", "time", true)}</div><p class="muted">填写同一天内的完整时段；跨天安排请拆成两天。</p><div class="form-grid">${field("起始地（选填）", "startPlace", e.startPlace || "")}${field("目的地（选填）", "endPlace", e.endPlace || "")}</div>${field("详细地址（选填）", "address", e.address || "")}${note("备注（选填）", "note", e.note || "")}`,
+      `${field("做什么", "title", e.title || "", "text", true)}${field("日期", "date", e.date || date || selected, "date", true)}${select("时段", "period", ["上午", "下午", "晚上"], e.period || "上午")}<div class="form-grid">${field("开始时间", "startTime", e.startTime || e.time || "", "time", true)}${field("结束时间", "endTime", e.endTime || "", "time", true)}</div><p class="muted">填写同一天内的完整时段；跨天安排请拆成两天。</p><div class="form-grid">${field("起始地（选填）", "startPlace", e.startPlace || "")}${field("目的地（选填）", "endPlace", e.endPlace || "")}</div>${field("详细地址（选填）", "address", e.address || "")}${note("备注（选填）", "note", e.note || "")}`,
       e.id || "",
       e.id ? "deleteEvent" : "",
     ),

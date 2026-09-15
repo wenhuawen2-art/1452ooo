@@ -677,7 +677,7 @@ function eventForm(id, date) {
     id ? "编辑行程安排" : "添加行程安排",
     form(
       "event",
-      `${field("去哪里 / 做什么", "title", e.title || "", "text", true)}${field("日期", "date", e.date || date || selected, "date", true)}<div class="form-grid">${field("开始时间", "startTime", e.startTime || e.time || "", "time", true)}${field("结束时间", "endTime", e.endTime || "", "time", true)}</div><div class="period-rule"><strong>按开始时间自动归类</strong><span>上午 08:00—13:00 · 下午 13:00—18:00 · 晚上 18:00—23:00</span><span>跨越时段的安排会连续显示在多个时段卡中。</span></div><div class="form-grid">${field("起始地（选填）", "startPlace", e.startPlace || "")}${field("目的地（选填）", "endPlace", e.endPlace || "")}</div>${field("详细地址（选填）", "address", e.address || "")}${note("备注（选填）", "note", e.note || "")}`,
+      `${field("做什么", "title", e.title || "", "text", true)}${field("日期", "date", e.date || date || selected, "date", true)}<div class="form-grid">${field("开始时间", "startTime", e.startTime || e.time || "", "time", true)}${field("结束时间", "endTime", e.endTime || "", "time", true)}</div><div class="period-rule"><strong>按开始时间自动归类</strong><span>上午 08:00—13:00 · 下午 13:00—18:00 · 晚上 18:00—23:00</span><span>跨越时段的安排会连续显示在多个时段卡中。</span></div><div class="form-grid">${field("起始地（选填）", "startPlace", e.startPlace || "")}${field("目的地（选填）", "endPlace", e.endPlace || "")}</div>${field("详细地址（选填）", "address", e.address || "")}${note("备注（选填）", "note", e.note || "")}`,
       e.id || "",
       e.id ? "deleteEvent" : "",
     ),
