@@ -1695,8 +1695,8 @@ h3 { font-size: 17px; letter-spacing: -.25px; }
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(70px, .64fr) minmax(0, 1fr);
   align-items: center;
-  min-height: 112px;
-  padding: 16px 10px;
+  min-height: 92px;
+  padding: 14px clamp(16px, 4vw, 20px);
   border-radius: 18px;
   color: #303d4d;
   background: rgba(255, 255, 255, .6);
