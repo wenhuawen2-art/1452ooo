@@ -263,7 +263,7 @@ function show(title, html) {
   modal.innerHTML = `<div class="modal-head"><h2>${esc(title)}</h2><button data-action="close" aria-label="关闭">${icon("close")}</button></div><div class="modal-body">${html}</div>`;
   if (!modal.open) modal.showModal();
 }
-const pickerTypes = new Set(["date", "time", "datetime-local", "range"]);
+const pickerTypes = new Set(["date", "time", "datetime-local", "range", "trip-type"]);
 const pickerDisplay = (value, type) => {
   if (type === "range") {
     const [start, end] = String(value || "").split("|");
@@ -287,7 +287,7 @@ const dateRangeField = (label, start, end, required = true) => {
 const select = (label, name, values, current) =>
   `<label class="field">${label}<select name="${name}">${values.map((v) => `<option ${v === current ? "selected" : ""}>${esc(v)}</option>`).join("")}</select></label>`;
 const typeSelect = (current = "自驾游") =>
-  `<label class="field trip-type-field">类型<span class="select-control"><select name="type" required>${tripTypes.map((value) => `<option value="${esc(value)}" ${value === current ? "selected" : ""}>${esc(value)}</option>`).join("")}</select><i aria-hidden="true">⌄</i></span></label>`;
+  `<label class="field picker-field trip-type-field">类型<input class="picker-input" name="type" type="text" value="${esc(current)}" data-value="${esc(current)}" data-picker="trip-type" autocomplete="off" readonly required></label>`;
 const note = (label, name, value = "") =>
   `<label class="field">${label}<textarea name="${name}" maxlength="2000">${esc(value)}</textarea></label>`;
 function form(kind, fields, id = "", del = "") {
@@ -317,6 +317,10 @@ const pad2 = (n) => String(n).padStart(2, "0");
 const dateOnly = (value) => String(value || "").slice(0, 10);
 function parsePickerState(input) {
   const type = input.dataset.picker;
+  if (type === "trip-type") {
+    const value = tripTypes.includes(input.dataset.value) ? input.dataset.value : tripTypes[0];
+    return { input, type, value, stage: "options" };
+  }
   if (type === "range") {
     const start = new Date(`${input.dataset.start}T12:00:00`);
     const end = input.dataset.end ? new Date(`${input.dataset.end}T12:00:00`) : null;
@@ -377,14 +381,30 @@ function pickerTimeView() {
     picker.querySelector(`[data-picker-minute="${s.minute}"]`)?.scrollIntoView({ block: "center" });
   });
 }
+function pickerTypeView() {
+  const s = pickerState;
+  const options = tripTypes.map((value, index) => `<button type="button" class="picker-wheel-item picker-type-option ${value === s.value ? "selected" : ""}" data-picker-option="${index}" aria-pressed="${value === s.value}">${esc(value)}</button>`).join("");
+  picker.innerHTML = `<div class="picker-sheet picker-time-sheet picker-type-sheet"><div class="picker-top"><button type="button" class="picker-cancel" data-picker-action="cancel">取消</button><strong>选择类型</strong><button type="button" class="picker-cancel picker-blue" data-picker-action="confirm-option">确认</button></div><div class="picker-wheels picker-type-wheels"><div class="picker-wheel picker-type-wheel" data-picker-wheel="type">${options}</div></div></div>`;
+  requestAnimationFrame(() => {
+    picker.querySelector(`[data-picker-option="${tripTypes.indexOf(s.value)}"]`)?.scrollIntoView({ block: "center" });
+  });
+}
 function openPicker(input) {
   pickerState = parsePickerState(input);
   if (!picker.open) picker.showModal();
-  pickerState.stage === "time" ? pickerTimeView() : pickerDateView();
+  pickerState.stage === "time" ? pickerTimeView() : pickerState.stage === "options" ? pickerTypeView() : pickerDateView();
 }
 function commitPicker() {
   const s = pickerState;
   if (!s) return;
+  if (s.type === "trip-type") {
+    s.input.dataset.value = s.value;
+    s.input.value = s.value;
+    s.input.dispatchEvent(new Event("change", { bubbles: true }));
+    picker.close();
+    pickerState = null;
+    return;
+  }
   if (s.type === "range") {
     if (!s.start || !s.end) return;
     const start = pickerDateKey(s.start), end = pickerDateKey(s.end);
@@ -408,8 +428,28 @@ function commitPicker() {
   pickerState = null;
 }
 picker.addEventListener("cancel", () => { pickerState = null; });
+picker.addEventListener("scroll", (event) => {
+  const wheel = event.target.closest?.('[data-picker-wheel="type"]');
+  if (!wheel || pickerState?.type !== "trip-type") return;
+  clearTimeout(picker.typeScrollTimer);
+  picker.typeScrollTimer = setTimeout(() => {
+    const center = wheel.getBoundingClientRect().top + wheel.clientHeight / 2;
+    const options = [...wheel.querySelectorAll("[data-picker-option]")];
+    const selectedOption = options.reduce((nearest, option) =>
+      Math.abs(option.getBoundingClientRect().top + option.offsetHeight / 2 - center)
+        < Math.abs(nearest.getBoundingClientRect().top + nearest.offsetHeight / 2 - center) ? option : nearest,
+    options[0]);
+    if (!selectedOption) return;
+    pickerState.value = tripTypes[Number(selectedOption.dataset.pickerOption)];
+    options.forEach((option) => {
+      const selected = option === selectedOption;
+      option.classList.toggle("selected", selected);
+      option.setAttribute("aria-pressed", String(selected));
+    });
+  }, 80);
+}, true);
 picker.addEventListener("click", (event) => {
-  const target = event.target.closest("[data-picker-action], [data-picker-date], [data-picker-hour], [data-picker-minute]");
+  const target = event.target.closest("[data-picker-action], [data-picker-date], [data-picker-hour], [data-picker-minute], [data-picker-option]");
   if (!target || !pickerState) return;
   if (target.dataset.pickerDate) {
     if (pickerState.type === "range") {
@@ -433,6 +473,9 @@ picker.addEventListener("click", (event) => {
   } else if (target.dataset.pickerMinute != null) {
     pickerState.minute = Number(target.dataset.pickerMinute);
     pickerTimeView();
+  } else if (target.dataset.pickerOption != null) {
+    pickerState.value = tripTypes[Number(target.dataset.pickerOption)];
+    pickerTypeView();
   } else if (target.dataset.pickerAction === "prev" || target.dataset.pickerAction === "next") {
     pickerState.month.setMonth(pickerState.month.getMonth() + (target.dataset.pickerAction === "next" ? 1 : -1));
     pickerDateView();
@@ -442,6 +485,8 @@ picker.addEventListener("click", (event) => {
       pickerTimeView();
     } else commitPicker();
   } else if (target.dataset.pickerAction === "confirm-time") {
+    commitPicker();
+  } else if (target.dataset.pickerAction === "confirm-option") {
     commitPicker();
   } else if (target.dataset.pickerAction === "cancel") {
     picker.close();
