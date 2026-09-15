@@ -42,6 +42,7 @@ const paths = {
   edit: "m16 3 5 5-12 12-6 1 1-6L16 3m-2 2 5 5",
   trash: "M4 7h16M9 7V4h6v3m3 0-1 14H7L6 7m4 4v6m4-6v6",
   calendar: "M4 5h16v16H4V5m3-3v6m10-6v6M4 11h16",
+  mapPin: "M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Zm0-8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z",
   template: "M4 4h7v7H4V4m9 0h7v7h-7V4M4 13h7v7H4v-7m9 0h7v7h-7v-7",
 };
 const icon = (n) =>
@@ -559,7 +560,12 @@ function routePlaces(entry) {
   if (start) parts.push(`<span><em>起</em>${esc(start)}</span>`);
   if (start && end) parts.push('<i aria-hidden="true">→</i>');
   if (end) parts.push(`<span><em>终</em>${esc(end)}</span>`);
-  return `<p class="journey-route">${parts.join("")}</p>`;
+  return `<div class="journey-route">${parts.join("")}</div>`;
+}
+function mapAction(entry) {
+  const place = String(entry.address || entry.endPlace || entry.startPlace || "").trim();
+  if (!place) return "";
+  return `<a class="itinerary-map" href="https://uri.amap.com/search?keyword=${encodeURIComponent(place)}&callnative=1" target="_blank" rel="noopener noreferrer" aria-label="打开${esc(place)}地图">${icon("mapPin")}</a>`;
 }
 function eventsCard(d) {
   const items = eventList(d);
@@ -570,7 +576,7 @@ function eventsCard(d) {
   return `<div class="itinerary-list">${schedulePeriods.map((period) => {
     const periodItems = segments.filter((entry) => entry.periodId === period.id);
     if (!periodItems.length) return "";
-    return `<article class="card itinerary-card period-card"><div class="itinerary-head period-card-head"><div><span class="itinerary-status">${period.name}行程</span><h3>${period.range}</h3></div><span class="period-count">${periodItems.length} 项</span></div><div class="itinerary-divider" aria-hidden="true"></div><div class="period-timeline">${periodItems.map((entry) => `<section class="period-event"><span class="journey-dot" aria-hidden="true"></span><div class="period-event-body"><div class="period-event-head"><div><div class="period-event-time">${esc(entry.segmentStart)} <span>—</span> ${esc(entry.segmentEnd)}</div><h4>${esc(entry.title)}</h4></div><button class="itinerary-edit" data-action="event" data-id="${entry.id}" aria-label="编辑 ${esc(entry.title)}" data-write>${icon("edit")}</button></div>${entry.continuedFromPrevious || entry.continuesToNext ? `<div class="continuation-tags">${entry.continuedFromPrevious ? '<span>接上个时段</span>' : ""}${entry.continuesToNext ? '<span>下个时段继续</span>' : ""}</div>` : ""}${routePlaces(entry)}${entry.address ? `<p class="journey-caption">${esc(entry.address)}</p>` : ""}${entry.note ? `<p class="itinerary-note">${esc(entry.note)}</p>` : ""}${addresses(entry.address || entry.endPlace || entry.startPlace)}</div></section>`).join("")}</div></article>`;
+    return `<article class="card itinerary-card period-card"><div class="itinerary-head period-card-head"><div><span class="itinerary-status">${period.name}行程</span><h3>${period.range}</h3></div><span class="period-count">${periodItems.length} 项</span></div><div class="itinerary-divider" aria-hidden="true"></div><div class="period-timeline">${periodItems.map((entry) => `<section class="period-event"><span class="journey-dot" aria-hidden="true"></span><div class="period-event-body"><div class="period-event-head"><div><div class="period-event-time">${esc(entry.segmentStart)} <span>—</span> ${esc(entry.segmentEnd)}</div><h4>${esc(entry.title)}</h4></div><div class="period-event-actions">${mapAction(entry)}<button class="itinerary-edit" data-action="event" data-id="${entry.id}" aria-label="编辑 ${esc(entry.title)}" data-write>${icon("edit")}</button></div></div>${entry.continuedFromPrevious || entry.continuesToNext ? `<div class="continuation-tags">${entry.continuedFromPrevious ? '<span>接上个时段</span>' : ""}${entry.continuesToNext ? '<span>下个时段继续</span>' : ""}</div>` : ""}${routePlaces(entry)}${entry.note ? `<p class="itinerary-note">${esc(entry.note)}</p>` : ""}</div></section>`).join("")}</div></article>`;
   }).join("")}</div>`;
 }
 function hotelCard(d) {

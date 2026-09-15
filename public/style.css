@@ -476,10 +476,14 @@ p {
   display: flex;
   align-items: center;
   min-width: 0;
-  gap: 7px;
-  margin: 9px 0 0;
-  color: #277bc9;
-  font-size: 13px;
+  gap: 12px;
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  color: #172642;
+  background: #f1f2f3;
+  font-size: 22px;
+  font-weight: 750;
 }
 .journey-route span {
   min-width: 0;
@@ -489,21 +493,21 @@ p {
 }
 .journey-route em {
   display: inline-grid;
-  width: 16px;
-  height: 16px;
+  width: 58px;
+  height: 42px;
   place-items: center;
   flex: 0 0 auto;
-  border-radius: 5px;
+  border-radius: 12px;
   color: #fff;
-  background: #6a9de3;
-  font-size: 10px;
+  background: linear-gradient(145deg, #5f9cf0, #8fc3ff);
+  font-size: 17px;
   font-style: normal;
   font-weight: 700;
 }
 .journey-route i {
   flex: 0 0 auto;
-  color: #9ebee3;
-  font-size: 14px;
+  color: #72a9e9;
+  font-size: 31px;
   font-style: normal;
 }
 .period-timeline {
@@ -546,6 +550,30 @@ p {
   justify-content: space-between;
   gap: 12px;
 }
+.period-event-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+.period-event-actions .itinerary-map,
+.period-event-actions .itinerary-edit {
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid #e1ecf7;
+  border-radius: 50%;
+  color: #5388d8;
+  background: #fff;
+  box-shadow: 0 8px 20px #4179a51a;
+}
+.period-event-actions .itinerary-map .icon,
+.period-event-actions .itinerary-edit .icon {
+  width: 20px;
+  height: 20px;
+}
+.period-event-actions .itinerary-map .icon { fill: currentColor; stroke: none; }
 .period-event-head > div {
   min-width: 0;
 }
