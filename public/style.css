@@ -1699,7 +1699,7 @@ h3 { font-size: 17px; letter-spacing: -.25px; }
   padding: 14px clamp(16px, 4vw, 20px);
   border-radius: 18px;
   color: #303d4d;
-  background: rgba(255, 255, 255, .6);
+  background: rgba(255, 255, 255, .4);
   box-shadow: inset 0 0 0 1px #ffffffb8, 0 10px 32px #4a82b214;
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
