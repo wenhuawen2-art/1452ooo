@@ -376,6 +376,9 @@ p {
   border-radius: 0 5px 5px 0;
   background: #2787e8;
 }
+.period-card.period-morning::before { background: #00a870; }
+.period-card.period-afternoon::before { background: #2787e8; }
+.period-card.period-evening::before { background: #ff964c; }
 .itinerary-head {
   display: flex;
   align-items: flex-start;
