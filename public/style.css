@@ -608,6 +608,11 @@ p {
   height: 22px;
 }
 .period-event-actions .itinerary-map .icon { fill: currentColor; stroke: none; }
+.period-event-actions .itinerary-map img {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
 .period-event-head > div {
   min-width: 0;
 }
@@ -1619,6 +1624,131 @@ h3 { font-size: 17px; letter-spacing: -.25px; }
   right: 0;
   bottom: 0;
 }
+#app[data-view="today"] .trip-hero {
+  display: flex;
+  min-height: 330px;
+  flex-direction: column;
+  padding: 24px 20px 20px;
+}
+.trip-hero-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+#app[data-view="today"] .trip-hero-heading h2 {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: #111820;
+  font-size: 27px;
+  line-height: 1.25;
+  font-weight: 760;
+  letter-spacing: -.65px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.trip-type-badge {
+  flex: 0 0 auto;
+  padding: 8px 11px;
+  border-radius: 10px;
+  color: #fff;
+  background: #79afe3a8;
+  box-shadow: inset 0 0 0 1px #ffffff26;
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+.trip-countdown {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 120px;
+  padding: 20px 0 14px;
+  color: #36465a;
+  font-size: 17px;
+  font-weight: 600;
+}
+.trip-countdown strong {
+  margin: 0 5px;
+  color: #1c2732;
+  font-size: 72px;
+  line-height: .9;
+  font-weight: 650;
+  letter-spacing: -4px;
+  font-variant-numeric: tabular-nums;
+}
+.trip-date-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(70px, .64fr) minmax(0, 1fr);
+  align-items: center;
+  min-height: 112px;
+  padding: 16px 10px;
+  border-radius: 18px;
+  color: #303d4d;
+  background: #ffffff82;
+  box-shadow: inset 0 0 0 1px #ffffffb8, 0 10px 32px #4a82b214;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+.trip-date-block {
+  min-width: 0;
+}
+.trip-date-block span,
+.trip-date-block strong {
+  display: block;
+  white-space: nowrap;
+}
+.trip-date-block span {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 560;
+}
+.trip-date-block strong {
+  overflow: hidden;
+  color: #273241;
+  font-size: clamp(14px, 3.8vw, 18px);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -.3px;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+.trip-date-end { text-align: right; }
+.trip-duration {
+  display: grid;
+  place-items: center;
+  gap: 13px;
+  min-width: 0;
+  padding-top: 6px;
+  color: #18212d;
+}
+.trip-duration b {
+  font-size: 17px;
+  line-height: 1;
+  font-weight: 700;
+}
+.trip-duration i {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: #7597ba;
+}
+.trip-duration i::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 9px;
+  height: 9px;
+  border-top: 2px solid #7597ba;
+  border-right: 2px solid #7597ba;
+  transform: translateY(-50%) rotate(45deg);
+}
 .pill {
   padding: 7px 12px;
   border-radius: 999px;
@@ -1899,6 +2029,32 @@ h3 { font-size: 17px; letter-spacing: -.25px; }
   background: #fff;
   color: #15171b;
   box-shadow: inset 0 0 0 1px #e7e9ee;
+}
+.select-control {
+  position: relative;
+  display: block;
+}
+.field .select-control select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 46px;
+}
+.select-control > i {
+  position: absolute;
+  top: 50%;
+  right: 17px;
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #347fd2;
+  background: #edf5ff;
+  font-size: 19px;
+  font-style: normal;
+  line-height: 1;
+  pointer-events: none;
+  transform: translateY(-50%);
 }
 dialog {
   border-radius: 32px;

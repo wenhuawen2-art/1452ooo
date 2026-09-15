@@ -4,10 +4,12 @@ import { isWeatherCacheFresh, stampWeatherResult } from "./weather-cache.js";
 import templatePackage from "../shared/templates.cjs";
 import schedulePackage from "../shared/schedule.cjs";
 import avatarPackage from "../shared/avatars.cjs";
+import tripTypePackage from "../shared/trip-types.cjs";
 
 const { checklistTemplates } = templatePackage;
 const { schedulePeriods, splitEventByPeriods } = schedulePackage;
 const { avatars } = avatarPackage;
+const { tripTypes } = tripTypePackage;
 
 const cloud = cloudbase.init({ env: "zdata-d4g6l75lwebf2dbb0" });
 const auth = cloud.auth({ persistence: "local" });
@@ -284,6 +286,8 @@ const dateRangeField = (label, start, end, required = true) => {
 };
 const select = (label, name, values, current) =>
   `<label class="field">${label}<select name="${name}">${values.map((v) => `<option ${v === current ? "selected" : ""}>${esc(v)}</option>`).join("")}</select></label>`;
+const typeSelect = (current = "自驾游") =>
+  `<label class="field trip-type-field">类型<span class="select-control"><select name="type" required>${tripTypes.map((value) => `<option value="${esc(value)}" ${value === current ? "selected" : ""}>${esc(value)}</option>`).join("")}</select><i aria-hidden="true">⌄</i></span></label>`;
 const note = (label, name, value = "") =>
   `<label class="field">${label}<textarea name="${name}" maxlength="2000">${esc(value)}</textarea></label>`;
 function form(kind, fields, id = "", del = "") {
@@ -543,7 +547,15 @@ function today() {
   const hotel = trip.hotels.find(
     (h) => h.checkin <= target && target < h.checkout,
   );
-  return `<div class="page-heading"><div><span class="eyebrow">${pretty(nowDay())} · ${weekday(nowDay())}</span><h1>${d > 0 ? "旅途将近，准备出发。" : nowDay() > day(trip.end) ? "到家了，好好休息。" : "今天，也有好风景。"}</h1></div></div><section class="hero card ${d <= 0 ? "on-trip" : ""}"><div class="row"><span class="pill">${trip.archived ? "旅行回忆" : d > 0 ? "即将出发" : nowDay() > day(trip.end) ? "已归来" : "正在路上"}</span><span class="muted">${gap(trip.start, trip.end) + 1} 天旅程</span></div><h2>${esc(trip.name)}</h2><p class="muted">${pretty(day(trip.start))} ${trip.start.slice(11)} 出发 → ${pretty(day(trip.end))} ${trip.end.slice(11)} 归来</p>${d > 0 ? '<svg class="route-art" viewBox="0 0 550 70"><path d="M5 50C100 50 70 5 160 20S275 75 345 35 455 5 540 25"/><circle cx="5" cy="50" r="4"/><circle cx="540" cy="25" r="5"/></svg>' : `<p class="muted">${target === day(trip.end) ? "今日归来" : `今晚 · ${hotel ? esc(hotel.city + " / " + hotel.name) : "住宿尚未填写"}`}</p>`}<div class="hero-foot"><span>${d > 0 ? `距离出发 <strong>${d}</strong> 天` : nowDay() > day(trip.end) ? "本次旅程已结束" : `旅行第 <strong>${gap(trip.start, nowDay()) + 1}</strong> 天`}</span><button class="text-btn" style="color:#d6ece8" data-action="tab" data-value="route">完整行程 →</button></div></section>${nowDay() === day(trip.end) ? `<div class="notice">今天归来 · 预计 ${trip.end.slice(11)}，记得给返程留足时间。</div>` : ""}${d > 0 ? preparation + schedule : schedule + preparation}`;
+  const totalDays = gap(trip.start, trip.end) + 1;
+  const countdown = d > 0
+    ? { label: "距离出发", value: d, unit: "天" }
+    : nowDay() <= day(trip.end)
+      ? { label: "旅行第", value: gap(trip.start, nowDay()) + 1, unit: "天" }
+      : { label: "本次旅程", value: totalDays, unit: "天" };
+  const dateText = (value) => `${pretty(day(value))}${value.slice(11, 16)}`;
+  const tripHero = `<section class="hero card trip-hero ${d <= 0 ? "on-trip" : ""}"><div class="trip-hero-heading"><h2>${esc(trip.name)}</h2><span class="trip-type-badge">${esc(trip.type || "自驾游")}</span></div><div class="trip-countdown"><span>${countdown.label}</span><strong>${countdown.value}</strong><span>${countdown.unit}</span></div><div class="trip-date-panel"><div class="trip-date-block"><span>出发日期</span><strong>${dateText(trip.start)}</strong></div><div class="trip-duration"><b>${totalDays}天</b><i aria-hidden="true"></i></div><div class="trip-date-block trip-date-end"><span>归来日期</span><strong>${dateText(trip.end)}</strong></div></div></section>`;
+  return `<div class="page-heading"><div><span class="eyebrow">${pretty(nowDay())} · ${weekday(nowDay())}</span><h1>${d > 0 ? "旅途将近，准备出发。" : nowDay() > day(trip.end) ? "到家了，好好休息。" : "今天，也有好风景。"}</h1></div></div>${tripHero}${nowDay() === day(trip.end) ? `<div class="notice">今天归来 · 预计 ${trip.end.slice(11)}，记得给返程留足时间。</div>` : ""}${d > 0 ? preparation + schedule : schedule + preparation}`;
 }
 const eventList = (d) =>
   trip.events
@@ -567,7 +579,7 @@ function routePlaces(entry) {
 function mapAction(entry) {
   const place = String(entry.address || entry.endPlace || entry.startPlace || "").trim();
   if (!place) return "";
-  return `<a class="itinerary-map" href="https://uri.amap.com/search?keyword=${encodeURIComponent(place)}&callnative=1" target="_blank" rel="noopener noreferrer" aria-label="打开${esc(place)}地图">${icon("mapPin")}</a>`;
+  return `<a class="itinerary-map" href="https://uri.amap.com/search?keyword=${encodeURIComponent(place)}&callnative=1" target="_blank" rel="noopener noreferrer" aria-label="打开${esc(place)}地图"><img src="/brand/map-marker.svg" alt="" aria-hidden="true"></a>`;
 }
 function eventsCard(d) {
   const items = eventList(d);
@@ -654,7 +666,7 @@ function tripForm(edit = false) {
     edit ? "编辑旅行" : "开启一段新旅程",
     form(
       edit ? "trip" : "create",
-      `${field("旅行名称", "name", edit ? trip.name : "", "text", true)}${edit ? "" : field("你的昵称", "nickname", trip?.members.find((m) => m.id === trip.me)?.name || "", "text", true)}${edit ? "" : avatarPicker()}${dateRangeField("出行日期", day(start), day(end))}<div class="form-grid">${field("出发时间（北京时间）", "startTime", start.slice(11, 16), "time", true)}${field("归来时间（北京时间）", "endTime", end.slice(11, 16), "time", true)}</div>${!edit && trips.length ? `<label class="field">复用已有清单<select name="reuse"><option value="">使用精简默认清单</option>${trips.map((t) => `<option value="${t.id}">${esc(t.name)}</option>`).join("")}</select></label><p class="muted">仅复用公共清单和你的个人清单，完成与复核状态都会清零。</p>` : ""}${edit ? '<p class="muted">修改日期或时间后，请同步更新已添加的手机日历。</p>' : ""}`,
+      `${field("旅行名称", "name", edit ? trip.name : "", "text", true)}${typeSelect(edit ? trip.type || "自驾游" : "自驾游")}${edit ? "" : field("你的昵称", "nickname", trip?.members.find((m) => m.id === trip.me)?.name || "", "text", true)}${edit ? "" : avatarPicker()}${dateRangeField("出行日期", day(start), day(end))}<div class="form-grid">${field("出发时间（北京时间）", "startTime", start.slice(11, 16), "time", true)}${field("归来时间（北京时间）", "endTime", end.slice(11, 16), "time", true)}</div>${!edit && trips.length ? `<label class="field">复用已有清单<select name="reuse"><option value="">使用精简默认清单</option>${trips.map((t) => `<option value="${t.id}">${esc(t.name)}</option>`).join("")}</select></label><p class="muted">仅复用公共清单和你的个人清单，完成与复核状态都会清零。</p>` : ""}${edit ? '<p class="muted">修改日期或时间后，请同步更新已添加的手机日历。</p>' : ""}`,
     ),
   );
 }

@@ -13,6 +13,7 @@ await Promise.all([
   cp("shared/avatars.cjs", "cloudfunctions/suixing-api/avatars.cjs"),
   cp("shared/templates.cjs", "cloudfunctions/suixing-api/templates.cjs"),
   cp("shared/schedule.cjs", "cloudfunctions/suixing-api/schedule.cjs"),
+  cp("shared/trip-types.cjs", "cloudfunctions/suixing-api/trip-types.cjs"),
 ]);
 await build({
   entryPoints: ["public/app.js"],

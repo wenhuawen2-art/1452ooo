@@ -2,6 +2,7 @@ const { randomBytes } = require("node:crypto");
 const { getChecklistTemplate } = require("./templates.cjs");
 const { periodForStart } = require("./schedule.cjs");
 const { avatarInput, normalizeMembers, avatarSelection } = require("./avatars.cjs");
+const { isTripType, normalizeTripType } = require("./trip-types.cjs");
 
 const id = () => randomBytes(24).toString("hex");
 const day = (value) => String(value || "").slice(0, 10);
@@ -52,6 +53,7 @@ function defaultItems(owner) {
 function ensureCategories(trip) {
   trip.categories ||= [];
   trip.tickets ||= [];
+  trip.type = normalizeTripType(trip.type);
   for (const ticket of trip.tickets) {
     ticket.type ||= ticket.title || "其他票据";
     ticket.startTime ||= `${ticket.date || day(trip.start)}T09:00`;
@@ -82,7 +84,7 @@ function createTrip(input, reuseTrip, reuseMember) {
   if (!selectedAvatar) fail(400, "请选择头像");
   const member = { id: id(), name: text(input.nickname, 40), ...selectedAvatar };
   const trip = ensureCategories({
-    id: id(), name: text(input.name), start: input.start, end: input.end,
+    id: id(), name: text(input.name), type: isTripType(input.type) ? input.type : "其他", start: input.start, end: input.end,
     creator: member.id, members: [member], items: defaultItems(member.id),
     categories: [], events: [], hotels: [], tickets: [], archived: false, revision: 0,
     createdAt: Date.now(), updatedAt: Date.now(),
@@ -167,10 +169,11 @@ function mutateTrip(trip, member, input) {
     }
     case "trip":
       validateDates(input.start, input.end);
+      if (!isTripType(input.type)) fail(400, "请选择旅行类型");
       if (trip.events.some((event) => event.date < day(input.start) || event.date > day(input.end)) ||
           trip.hotels.some((hotel) => hotel.checkin < day(input.start) || hotel.checkout > day(input.end)))
         fail(400, "已有行程或住宿超出新日期，请先调整对应安排");
-      trip.name = text(input.name); trip.start = input.start; trip.end = input.end;
+      trip.name = text(input.name); trip.type = input.type; trip.start = input.start; trip.end = input.end;
       break;
     case "archive": owner(); trip.archived = true; break;
     case "rotate": owner(); effects.rotateInvite = true; break;

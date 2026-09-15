@@ -113,6 +113,28 @@ test("avatar choice is required, unique while available, and reusable after sixt
   assert.equal(addMember(trip, "第十七人", "avatar-01").avatarId, "avatar-01");
 });
 
+test("trip type is saved, editable and safely falls back to other", () => {
+  const { trip, member } = createTrip({
+    name: "类型测试", nickname: "创建者", avatarId: "avatar-01", type: "露营",
+    start: "2026-10-01T08:00", end: "2026-10-03T18:00",
+  });
+  assert.equal(trip.type, "露营");
+  mutateTrip(trip, member, {
+    action: "trip", revision: 0, name: trip.name, type: "骑行",
+    start: trip.start, end: trip.end,
+  });
+  assert.equal(trip.type, "骑行");
+  assert.throws(() => mutateTrip(trip, member, {
+    action: "trip", revision: trip.revision, name: trip.name, type: "未知类型",
+    start: trip.start, end: trip.end,
+  }), /请选择旅行类型/);
+  const fallback = createTrip({
+    name: "其他类型", nickname: "创建者", avatarId: "avatar-02",
+    start: "2026-10-01T08:00", end: "2026-10-03T18:00",
+  }).trip;
+  assert.equal(fallback.type, "其他");
+});
+
 test("custom avatar can be created, joined and updated without consuming a system avatar", () => {
   const firstImage = "data:image/jpeg;base64,aGVsbG8=";
   const secondImage = "data:image/webp;base64,d29ybGQ=";
