@@ -193,11 +193,28 @@ async function browserWeatherFallback(date) {
     return { available: false, reason: "error", date, place };
   }
 }
+function weatherIcon(code) {
+  const key = `weather-${Number(code) || 0}`;
+  const cloud = `<path d="M13 32c-4.1 0-7-2.8-7-6.5 0-3.3 2.3-6 5.5-6.5.8-5.5 5.4-9.5 11-9.5 5.9 0 10.6 4.2 11.2 9.8 3.7.2 6.8 3.2 6.8 6.8 0 3.5-2.9 6-7 6H13Z" fill="url(#${key}-cloud)"/>`;
+  const sun = `<g fill="url(#${key}-sun)"><circle cx="30" cy="17" r="8"/><path d="M30 4v4M30 26v4M17 17h4M39 17h4M20.8 7.8l2.8 2.8M36.4 23.4l2.8 2.8M39.2 7.8l-2.8 2.8M23.6 23.4l-2.8 2.8" fill="none" stroke="#ffd66b" stroke-width="3" stroke-linecap="round"/></g>`;
+  const drops = `<g fill="#83c7ff"><path d="M15 35c-2.7 3.3-2.9 4.8-2.9 5.8a2.9 2.9 0 1 0 5.8 0c0-1-1.1-3.1-2.9-5.8Z"/><path d="M25 35c-2.7 3.3-2.9 4.8-2.9 5.8a2.9 2.9 0 1 0 5.8 0c0-1-1.1-3.1-2.9-5.8Z"/><path d="M35 35c-2.7 3.3-2.9 4.8-2.9 5.8a2.9 2.9 0 1 0 5.8 0c0-1-1.1-3.1-2.9-5.8Z"/></g>`;
+  const snow = `<g stroke="#a9dcff" stroke-width="2.5" stroke-linecap="round"><path d="M17 36v9M13 38l8 5M21 38l-8 5M31 36v9M27 38l8 5M35 38l-8 5"/></g>`;
+  const fog = `<g fill="none" stroke="#a8c9eb" stroke-width="3" stroke-linecap="round"><path d="M12 37h24M16 43h20M11 49h14"/></g>`;
+  const lightning = `<path d="m25 34-5 11h6l-2 8 9-13h-6l3-6Z" fill="url(#${key}-bolt)"/>`;
+  let layer = sun;
+  if ([45, 48].includes(code)) layer = `${cloud}${fog}`;
+  else if ([71, 73, 75].includes(code)) layer = `${cloud}${snow}`;
+  else if ([95, 96, 99].includes(code)) layer = `${cloud}${lightning}`;
+  else if (code >= 51) layer = `${cloud}${drops}`;
+  else if (code >= 3) layer = cloud;
+  else if (code >= 1) layer = `${sun}${cloud}`;
+  return `<svg viewBox="0 0 48 54" focusable="false" aria-hidden="true"><defs><linearGradient id="${key}-cloud" x1="12" y1="10" x2="36" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".52" stop-color="#ddecff"/><stop offset="1" stop-color="#a8c7ec"/></linearGradient><radialGradient id="${key}-sun" cx=".35" cy=".28"><stop stop-color="#fff4a5"/><stop offset=".55" stop-color="#ffd460"/><stop offset="1" stop-color="#f5ab35"/></radialGradient><linearGradient id="${key}-bolt" x1="20" y1="34" x2="33" y2="53" gradientUnits="userSpaceOnUse"><stop stop-color="#fff1a3"/><stop offset="1" stop-color="#f6b72e"/></linearGradient><filter id="${key}-shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#6a9fce" flood-opacity=".24"/></filter></defs><g filter="url(#${key}-shadow)">${layer}</g></svg>`;
+}
 function weatherCard(date) {
   const w = weatherByDate[date];
   if (!w) return `<section class="weather-card card"><div><strong>当地天气</strong><span class="muted">正在查询…</span></div></section>`;
   if (!w.available) return `<section class="weather-card card"><div><strong>当地天气</strong><span class="muted">${w.reason === "missing_place" ? "请先填写住宿城市或行程地址" : w.reason === "place_not_found" ? "地点未识别，请补充城市或区域" : w.reason === "out_of_range" ? "天气预报将在临近日期更新" : "网络暂时不可用，稍后自动重试"}</span></div></section>`;
-  return `<section class="weather-card card"><div class="weather-main"><span class="weather-symbol" aria-hidden="true">${w.code >= 80 ? "☔" : w.code >= 51 ? "🌦️" : w.code >= 3 ? "☁️" : "☀️"}</span><div><strong>${esc(w.location || w.place)}</strong><span class="muted">${esc(w.condition)}</span><small class="weather-source">天气 Open-Meteo · 地点 ${esc(w.geoSource || "Open-Meteo")}</small></div></div><div class="weather-temp"><strong>${Math.round(w.high)}°</strong><span>${Math.round(w.low)}°</span></div><div class="weather-extra"><span>${w.rainProbability == null ? "" : `降雨 ${w.rainProbability}%`}</span><span>${w.wind == null ? "" : `风速 ${Math.round(w.wind)} km/h`}</span></div></section>`;
+  return `<section class="weather-card card"><div class="weather-main"><span class="weather-symbol">${weatherIcon(Number(w.code))}</span><div><strong>${esc(w.location || w.place)}</strong><span class="muted">${esc(w.condition)}</span><small class="weather-source">天气 Open-Meteo · 地点 ${esc(w.geoSource || "Open-Meteo")}</small></div></div><div class="weather-temp"><strong>${Math.round(w.high)}°</strong><span>${Math.round(w.low)}°</span></div><div class="weather-extra"><span>${w.rainProbability == null ? "" : `降雨 ${w.rainProbability}%`}</span><span>${w.wind == null ? "" : `风速 ${Math.round(w.wind)} km/h`}</span></div></section>`;
 }
 async function mutate(data) {
   if (busy) throw Error("正在保存，请稍候");
