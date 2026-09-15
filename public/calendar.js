@@ -51,7 +51,7 @@ export const calendarFile = (events) =>
     "METHOD:PUBLISH",
     "PRODID:-//Suixing//Roadtrip//ZH",
     "CALSCALE:GREGORIAN",
-    "X-WR-CALNAME:在路上提醒",
+    "X-WR-CALNAME:向野提醒",
     "X-WR-TIMEZONE:Asia/Shanghai",
     ...events,
     "END:VCALENDAR",

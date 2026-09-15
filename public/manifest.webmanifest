@@ -1,6 +1,6 @@
 {
-  "name": "在路上 · 自驾旅行助手",
-  "short_name": "在路上",
+  "name": "向野 · 自驾旅行助手",
+  "short_name": "向野",
   "description": "路线、住宿和共享准备清单。",
   "start_url": "/",
   "display": "standalone",
