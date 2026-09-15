@@ -557,9 +557,9 @@ function routePlaces(entry) {
   const end = String(entry.endPlace || "").trim();
   if (!start && !end) return "";
   const parts = [];
-  if (start) parts.push(`<span><em>起</em>${esc(start)}</span>`);
+  if (start) parts.push(`<span><em>起点</em>${esc(start)}</span>`);
   if (start && end) parts.push('<i aria-hidden="true">→</i>');
-  if (end) parts.push(`<span><em>终</em>${esc(end)}</span>`);
+  if (end) parts.push(`<span><em>终点</em>${esc(end)}</span>`);
   return `<div class="journey-route">${parts.join("")}</div>`;
 }
 function mapAction(entry) {
@@ -576,7 +576,7 @@ function eventsCard(d) {
   return `<div class="itinerary-list">${schedulePeriods.map((period) => {
     const periodItems = segments.filter((entry) => entry.periodId === period.id);
     if (!periodItems.length) return "";
-    return `<article class="card itinerary-card period-card"><div class="itinerary-head period-card-head"><div><span class="itinerary-status">${period.name}行程</span><h3>${period.range}</h3></div><span class="period-count">${periodItems.length} 项</span></div><div class="itinerary-divider" aria-hidden="true"></div><div class="period-timeline">${periodItems.map((entry) => `<section class="period-event"><span class="journey-dot" aria-hidden="true"></span><div class="period-event-body"><div class="period-event-head"><div><div class="period-event-time">${esc(entry.segmentStart)} <span>—</span> ${esc(entry.segmentEnd)}</div><h4>${esc(entry.title)}</h4></div><div class="period-event-actions">${mapAction(entry)}<button class="itinerary-edit" data-action="event" data-id="${entry.id}" aria-label="编辑 ${esc(entry.title)}" data-write>${icon("edit")}</button></div></div>${entry.continuedFromPrevious || entry.continuesToNext ? `<div class="continuation-tags">${entry.continuedFromPrevious ? '<span>接上个时段</span>' : ""}${entry.continuesToNext ? '<span>下个时段继续</span>' : ""}</div>` : ""}${routePlaces(entry)}${entry.note ? `<p class="itinerary-note">${esc(entry.note)}</p>` : ""}</div></section>`).join("")}</div></article>`;
+    return `<article class="card itinerary-card period-card"><div class="itinerary-head period-card-head"><div><span class="itinerary-status">${period.name}行程</span><h3>${period.range}</h3></div><span class="period-count">${periodItems.length} 项</span></div><div class="itinerary-divider" aria-hidden="true"></div><div class="period-timeline">${periodItems.map((entry) => `<section class="period-event"><span class="journey-dot" aria-hidden="true"></span><div class="period-event-body"><div class="period-event-head"><div><div class="period-event-time">${esc(entry.segmentStart)} <span>—</span> ${esc(entry.segmentEnd)}</div><h4>${esc(entry.title)}</h4></div><div class="period-event-actions"><button class="itinerary-edit" data-action="event" data-id="${entry.id}" aria-label="编辑 ${esc(entry.title)}" data-write>${icon("edit")}</button>${mapAction(entry)}</div></div>${entry.continuedFromPrevious || entry.continuesToNext ? `<div class="continuation-tags">${entry.continuedFromPrevious ? '<span>接上个时段</span>' : ""}${entry.continuesToNext ? '<span>下个时段继续</span>' : ""}</div>` : ""}${routePlaces(entry)}${entry.note ? `<p class="itinerary-note">${esc(entry.note)}</p>` : ""}</div></section>`).join("")}</div></article>`;
   }).join("")}</div>`;
 }
 function hotelCard(d) {

@@ -79,7 +79,7 @@ textarea:focus-visible {
   display: flex;
   gap: 10px;
   align-items: center;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.25px;
 }
@@ -505,10 +505,33 @@ p {
   font-weight: 700;
 }
 .journey-route i {
-  flex: 0 0 auto;
+  display: flex;
+  flex: 1 1 70px;
+  align-items: center;
+  min-width: 26px;
   color: #72a9e9;
-  font-size: 31px;
+  font-size: 0;
   font-style: normal;
+}
+.journey-route i::before {
+  content: "";
+  height: 4px;
+  flex: 1;
+  border-radius: 99px;
+  background: currentColor;
+}
+.journey-route i::after {
+  content: "";
+  width: 11px;
+  height: 11px;
+  flex: 0 0 auto;
+  margin-left: -2px;
+  border-top: 4px solid currentColor;
+  border-right: 4px solid currentColor;
+  transform: rotate(45deg);
+}
+.journey-route span:last-of-type em {
+  background: linear-gradient(145deg, #9dce5e, #d0f486);
 }
 .period-timeline {
   position: relative;
@@ -567,6 +590,10 @@ p {
   color: #5388d8;
   background: #fff;
   box-shadow: 0 8px 20px #4179a51a;
+}
+.period-event-actions .itinerary-map {
+  width: 44px;
+  height: 44px;
 }
 .period-event-actions .itinerary-map .icon,
 .period-event-actions .itinerary-edit .icon {
