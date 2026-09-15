@@ -400,7 +400,7 @@ picker.addEventListener("click", (event) => {
   }
 });
 function brand() {
-  return `<header class="topbar"><div class="brand"><img class="brand-logo" src="/brand/logo.svg" alt="" width="36" height="36"><span>在路上<small>ON THE ROAD</small></span></div>${trip ? "" : '<span class="eyebrow">轻装出发</span>'}</header>`;
+  return `<header class="topbar"><div class="brand"><img class="brand-logo" src="/brand/logo-512.png?v=20260915-logo2" alt="" width="36" height="36"><span>在路上<small>ON THE ROAD</small></span></div>${trip ? "" : '<span class="eyebrow">轻装出发</span>'}</header>`;
 }
 function render() {
   app.dataset.view = trip ? tab : "welcome";
