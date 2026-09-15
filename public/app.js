@@ -1,5 +1,6 @@
 import cloudbase from "@cloudbase/js-sdk";
 import { calendarEvent, calendarFile } from "./calendar.js";
+import { isWeatherCacheFresh, stampWeatherResult } from "./weather-cache.js";
 import templatePackage from "../shared/templates.cjs";
 import schedulePackage from "../shared/schedule.cjs";
 import avatarPackage from "../shared/avatars.cjs";
@@ -146,13 +147,14 @@ async function loadWeather(date) {
     weatherLoading = {};
   }
   const cached = weatherByDate[date];
-  if (cached?.available && Date.now() - Date.parse(cached.updatedAt || 0) < 3600000) return;
+  if (isWeatherCacheFresh(cached)) return;
   weatherLoading[date] = true;
   try {
     const result = await api("weather", { tripId: trip.id, date });
-    weatherByDate[date] = result;
+    weatherByDate[date] = stampWeatherResult(result);
   } catch {
-    weatherByDate[date] = await browserWeatherFallback(date);
+    const fallback = await browserWeatherFallback(date);
+    weatherByDate[date] = stampWeatherResult(fallback);
     if (weatherByDate[date].reason === "error") {
       setTimeout(() => { if (trip && !document.hidden) { delete weatherByDate[date]; loadWeather(date); } }, 15000);
     }
@@ -1174,7 +1176,7 @@ setInterval(async () => {
     try {
       const wasDisconnected = !connection;
       const next = await api("trips/" + trip.id);
-      const changed = next.revision !== trip.revision;
+      const changed = Number(next.revision) !== Number(trip.revision);
       trip = next;
       if (changed || wasDisconnected) render();
     } catch (e) {
@@ -1184,8 +1186,7 @@ setInterval(async () => {
         render();
         toast("访问权限已变更，请重新打开邀请或恢复链接。");
       } else {
-        connection = false;
-        render();
+        if (!wasDisconnected) render();
       }
     }
   }

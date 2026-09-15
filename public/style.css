@@ -19,7 +19,8 @@
 }
 body {
   margin: 0;
-  min-height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
@@ -1314,6 +1315,11 @@ a:active { transform: scale(.975); }
   }
 }
 
+/* 手机端的后台同步不应反复触发整页入场动画。 */
+@media (hover: none) {
+  .card { animation: none; }
+}
+
 /* 参考图视觉系统：空气感蓝色渐变、半透明胶囊、柔和大圆角卡片 */
 :root {
   --ink: #111216;
@@ -1329,7 +1335,8 @@ a:active { transform: scale(.975); }
 }
 body { background: var(--bg); }
 #app {
-  min-height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
   background:
     radial-gradient(circle at 50% -120px, #dcecff 0, #f5f7fa 390px, transparent 650px),
     var(--bg);
