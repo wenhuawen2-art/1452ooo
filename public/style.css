@@ -361,17 +361,18 @@ p {
   position: relative;
   overflow: hidden;
   margin: 0;
-  padding: 22px 22px 20px;
+  padding: 27px 28px 24px;
+  border-radius: 24px;
   background: linear-gradient(155deg, #edf7ff 0%, #fff 58%);
   box-shadow: 0 18px 46px #397fb51a, inset 0 0 0 1px #fff;
 }
 .itinerary-card::before {
   content: "";
   position: absolute;
-  top: 24px;
+  top: 27px;
   left: 0;
   width: 5px;
-  height: 38px;
+  height: 42px;
   border-radius: 0 5px 5px 0;
   background: #2787e8;
 }
@@ -390,7 +391,7 @@ p {
 }
 .itinerary-status {
   color: #172642;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
 }
 .itinerary-edit {
@@ -409,23 +410,24 @@ p {
   align-items: center;
 }
 .period-card-head h3 {
-  color: #1874ca;
-  font-size: 18px;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -.25px;
+  margin: 0;
+  color: #172642;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -.15px;
 }
 .period-count {
   flex: 0 0 auto;
-  padding: 5px 9px;
+  padding: 7px 12px;
   border-radius: 999px;
   color: #317abf;
   background: #e9f4ff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
 }
 .itinerary-divider {
   height: 1px;
-  margin: 17px -22px 14px;
+  margin: 20px -28px 21px;
   background: repeating-linear-gradient(90deg, #cbd8e5 0 8px, transparent 8px 15px);
 }
 .journey-track {
@@ -476,31 +478,36 @@ p {
   display: flex;
   align-items: center;
   min-width: 0;
-  gap: 12px;
-  margin: 18px 0 0;
-  padding: 14px 16px;
+  gap: 16px;
+  min-height: 76px;
+  margin: 25px 0 0;
+  padding: 14px 18px;
   border-radius: 14px;
   color: #172642;
   background: #f1f2f3;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 750;
 }
 .journey-route span {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.journey-route span:last-of-type { justify-content: flex-end; }
 .journey-route em {
   display: inline-grid;
-  width: 58px;
-  height: 42px;
+  width: 62px;
+  height: 48px;
   place-items: center;
   flex: 0 0 auto;
   border-radius: 12px;
   color: #fff;
   background: linear-gradient(145deg, #5f9cf0, #8fc3ff);
-  font-size: 17px;
+  font-size: 18px;
   font-style: normal;
   font-weight: 700;
 }
@@ -536,19 +543,19 @@ p {
 .period-timeline {
   position: relative;
   display: grid;
-  padding-left: 24px;
+  padding-left: 32px;
 }
 .period-timeline::before {
   content: "";
   position: absolute;
   top: 12px;
   bottom: 12px;
-  left: 5px;
+  left: 6px;
   border-left: 2px dotted #c7d6e6;
 }
 .period-event {
   position: relative;
-  padding: 3px 0 17px;
+  padding: 4px 0 22px;
 }
 .period-event + .period-event {
   padding-top: 17px;
@@ -558,11 +565,11 @@ p {
   padding-bottom: 2px;
 }
 .period-event > .journey-dot {
-  top: 10px;
-  left: -24px;
+  top: 11px;
+  left: -32px;
 }
 .period-event + .period-event > .journey-dot {
-  top: 24px;
+  top: 25px;
 }
 .period-event-body {
   min-width: 0;
@@ -571,19 +578,19 @@ p {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 18px;
 }
 .period-event-actions {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: 8px;
+  gap: 14px;
 }
 .period-event-actions .itinerary-map,
 .period-event-actions .itinerary-edit {
   display: inline-grid;
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
   place-items: center;
   border: 1px solid #e1ecf7;
   border-radius: 50%;
@@ -592,13 +599,13 @@ p {
   box-shadow: 0 8px 20px #4179a51a;
 }
 .period-event-actions .itinerary-map {
-  width: 44px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
 }
 .period-event-actions .itinerary-map .icon,
 .period-event-actions .itinerary-edit .icon {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 }
 .period-event-actions .itinerary-map .icon { fill: currentColor; stroke: none; }
 .period-event-head > div {
@@ -606,7 +613,7 @@ p {
 }
 .period-event-time {
   color: #172642;
-  font-size: 23px;
+  font-size: 27px;
   line-height: 1.15;
   font-weight: 760;
   letter-spacing: -.55px;
@@ -618,16 +625,16 @@ p {
   font-weight: 500;
 }
 .period-event h4 {
-  margin: 7px 0 0;
+  margin: 8px 0 0;
   color: #1874ca;
-  font-size: 17px;
+  font-size: 19px;
   line-height: 1.35;
   overflow-wrap: anywhere;
 }
 .period-event .itinerary-edit {
-  flex-basis: 40px;
-  width: 40px;
-  min-height: 40px;
+  flex-basis: 46px;
+  width: 46px;
+  min-height: 46px;
 }
 .continuation-tags {
   display: flex;
