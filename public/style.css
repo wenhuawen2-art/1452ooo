@@ -316,6 +316,14 @@ p {
   margin: 0;
   padding: 17px;
 }
+.preparation-stat {
+  width: 100%;
+  text-align: center;
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.preparation-stat:active {
+  transform: scale(.975);
+}
 .stats strong {
   font-size: 24px;
 }

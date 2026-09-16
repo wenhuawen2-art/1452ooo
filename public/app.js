@@ -578,13 +578,13 @@ function today() {
     .sort((a, b) => a.remind.localeCompare(b.remind));
   loadWeather(target);
   const weather = weatherCard(target);
-  const preparation = `<div class="section-head"><h2>出行准备</h2><button class="text-btn" data-action="tab" data-value="list">查看清单 →</button></div><div class="stats">${[
-    ["公共准备", pub],
-    ["我的准备", mine],
+  const preparation = `<div class="section-head"><h2>出行准备</h2></div><div class="stats">${[
+    ["公共准备", pub, "公共"],
+    ["我的准备", mine, "我的"],
   ]
     .map(
-      ([name, p]) =>
-        `<div class="card"><div class="muted">${name}</div><p><strong>${p.done}</strong><span class="muted"> / ${p.total} 项</span></p>${bar(p.done, p.total)}</div>`,
+      ([name, p, targetScope]) =>
+        `<button class="card preparation-stat" data-action="open-checklist" data-scope="${targetScope}" aria-label="查看${name}清单"><div class="muted">${name}</div><p><strong>${p.done}</strong><span class="muted"> / ${p.total} 项</span></p>${bar(p.done, p.total)}</button>`,
     )
     .join(
       "",
@@ -1014,6 +1014,12 @@ document.addEventListener("click", async (ev) => {
       case "tab":
         tab = b.dataset.value;
         if (tab === "people") trips = await api("trips");
+        render();
+        window.scrollTo(0, 0);
+        break;
+      case "open-checklist":
+        scope = b.dataset.scope;
+        tab = "list";
         render();
         window.scrollTo(0, 0);
         break;
