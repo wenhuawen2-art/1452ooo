@@ -622,10 +622,10 @@ function routePlaces(entry) {
   return `<div class="journey-route ${start && end ? "has-both-places" : "has-one-place"}">${parts.join("")}</div>`;
 }
 function eventAddress(entry) {
-  const hasRoutePlaces = String(entry.startPlace || "").trim() || String(entry.endPlace || "").trim();
-  const address = String(entry.address || "").trim();
-  if (hasRoutePlaces || !address) return "";
-  return `<div class="journey-address"><img src="/brand/map-marker.svg" alt="" aria-hidden="true"><span>${esc(address)}</span></div>`;
+  // 路线行程也应保留一个可定位地点：优先使用详细地址，再回退至目的地或起始地。
+  const place = String(entry.address || entry.endPlace || entry.startPlace || "").trim();
+  if (!place) return "";
+  return `<div class="journey-address"><img src="/brand/map-marker.svg" alt="" aria-hidden="true"><span>${esc(place)}</span></div>`;
 }
 function mapAction(entry) {
   const place = String(entry.address || entry.endPlace || entry.startPlace || "").trim();
@@ -771,7 +771,7 @@ function eventForm(id, date) {
     id ? "编辑行程安排" : "添加行程安排",
     form(
       "event",
-      `${field("做什么", "title", e.title || "", "text", true)}${field("日期", "date", e.date || date || selected, "date", true)}<div class="form-grid">${field("开始时间", "startTime", e.startTime || e.time || "", "time", true)}${field("结束时间", "endTime", e.endTime || "", "time", true)}</div><div class="period-rule"><strong>按开始时间自动归类</strong><span>上午 08:00—13:00 · 下午 13:00—18:00 · 晚上 18:00—23:00</span><span>跨越时段的安排会连续显示在多个时段卡中。</span></div><div class="form-grid">${field("起始地（选填）", "startPlace", e.startPlace || "")}${field("目的地（选填）", "endPlace", e.endPlace || "")}</div>${field("详细地址（选填）", "address", e.address || "")}${note("备注（选填）", "note", e.note || "")}`,
+      `${field("做什么", "title", e.title || "", "text", true)}${field("日期", "date", e.date || date || selected, "date", true)}<div class="form-grid">${field("开始时间", "startTime", e.startTime || e.time || "", "time", true)}${field("结束时间", "endTime", e.endTime || "", "time", true)}</div><div class="period-rule"><strong>按开始时间自动归类</strong><span>上午 08:00—13:00 · 下午 13:00—18:00 · 晚上 18:00—23:00</span><span>跨越时段的安排会连续显示在多个时段卡中。</span></div><div class="form-grid">${field("起始地（选填）", "startPlace", e.startPlace || "")}${field("目的地（选填）", "endPlace", e.endPlace || "")}</div>${field("详细地址 / 导航地点（选填）", "address", e.address || "")}${note("备注（选填）", "note", e.note || "")}`,
       e.id || "",
       e.id ? "deleteEvent" : "",
     ),
