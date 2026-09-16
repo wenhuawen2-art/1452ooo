@@ -500,7 +500,7 @@ p {
   font-weight: 750;
 }
 .journey-route .route-place {
-  flex: 0 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -551,6 +551,31 @@ p {
   background: linear-gradient(145deg, #9dce5e, #d0f486);
 }
 .journey-route.has-one-place .route-end-place { margin-left: auto; }
+@media (max-width: 600px) {
+  .journey-route {
+    gap: 8px;
+    min-height: 62px;
+    margin-top: 14px;
+    padding: 10px 12px;
+    font-size: 20px;
+  }
+  .journey-route .route-label {
+    width: 50px;
+    height: 38px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+  .journey-route .route-arrow {
+    flex-basis: 36px;
+  }
+  .journey-route .route-arrow::before { height: 3px; }
+  .journey-route .route-arrow::after {
+    width: 9px;
+    height: 9px;
+    border-top-width: 3px;
+    border-right-width: 3px;
+  }
+}
 .period-timeline {
   position: relative;
   display: grid;
