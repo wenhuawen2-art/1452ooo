@@ -1,0 +1,12 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "向野",
+    "navigationBarBackgroundColor": "#eef5ff",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#eef5ff"
+  },
+  "sitemapLocation": "sitemap.json"
+}

@@ -17,6 +17,7 @@ https://zdata-d4g6l75lwebf2dbb0-1485288642.tcloudbaseapp.com/
 - `cloudfunctions/suixing-api/`：创建、加入、同步、恢复、归档和删除业务。
 - `cloudfunctions/suixing-backup/`：每天写入云存储的数据库快照。
 - `cloudbase/`：函数安全规则和网关策略。
+- `wechat-miniprogram/`：微信开发者工具可直接导入的小程序容器工程，加载当前 CloudBase 手机网页。
 - `legacy-server/`：旧 Windows/SQLite 版本说明；旧数据不迁入 CloudBase。
 - `cloudbaserc.json`：CloudBase 声明式部署配置。
 
@@ -31,6 +32,14 @@ npm.cmd run cloudbase:secure
 ```
 
 `npm.cmd run deploy` 会依次构建网页、覆盖发布两个云函数，并用安全发布模式上传静态网站；上传失败会回滚本次静态资源。
+
+## 微信小程序开发工具
+
+在微信开发者工具中导入 `wechat-miniprogram/`。当前工程通过小程序 `web-view` 加载已发布网页，因此网页发布后小程序会自动使用最新界面和功能。
+
+提交审核前需要在 `wechat-miniprogram/project.config.json` 中填入正式小程序 AppID，并在微信公众平台的“开发管理 → 开发设置 → 业务域名”加入：
+
+`https://zdata-d4g6l75lwebf2dbb0-1485288642.tcloudbaseapp.com`
 
 首次使用先运行 `node_modules\.bin\tcb.cmd login --flow web`，在腾讯云官方页面完成授权。项目不需要 SecretId、SecretKey 或 API Key。
 

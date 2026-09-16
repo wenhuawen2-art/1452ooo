@@ -1,0 +1,20 @@
+{
+  "description": "向野微信小程序容器，加载已发布的 CloudBase 手机网页。",
+  "packOptions": {
+    "ignore": []
+  },
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.9.6",
+  "appid": "touristappid",
+  "projectname": "向野",
+  "miniprogramRoot": "miniprogram/",
+  "simulatorType": "wechat",
+  "condition": {}
+}
