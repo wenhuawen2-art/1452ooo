@@ -577,7 +577,7 @@ function today() {
     .filter((i) => i.remind && !i.done)
     .sort((a, b) => a.remind.localeCompare(b.remind));
   loadWeather(target);
-  const schedule = `<div class="section-head"><h2>${d > 0 ? "出发日安排" : nowDay() > day(trip.end) ? "最后一天安排" : "今天的安排"}</h2><span class="muted">${pretty(target)}</span></div>${weatherCard(target)}${eventsCard(target)}${hotelCard(target)}`;
+  const weather = weatherCard(target);
   const preparation = `<div class="section-head"><h2>出行准备</h2><button class="text-btn" data-action="tab" data-value="list">查看清单 →</button></div><div class="stats">${[
     ["公共准备", pub],
     ["我的准备", mine],
@@ -600,7 +600,7 @@ function today() {
       : { label: "本次旅程", value: totalDays, unit: "天" };
   const dateText = (value) => `${pretty(day(value))}${value.slice(11, 16)}`;
   const tripHero = `<section class="hero card trip-hero ${d <= 0 ? "on-trip" : ""}"><div class="trip-hero-heading"><h2>${esc(trip.name)}</h2><span class="trip-type-badge">${esc(trip.type || "自驾游")}</span></div><div class="trip-countdown"><span>${countdown.label}</span><strong>${countdown.value}</strong><span>${countdown.unit}</span></div><div class="trip-date-panel"><div class="trip-date-block"><span>出发日期</span><strong>${dateText(trip.start)}</strong></div><div class="trip-duration"><b>${totalDays}天</b><i aria-hidden="true"></i></div><div class="trip-date-block trip-date-end"><span>归来日期</span><strong>${dateText(trip.end)}</strong></div></div></section>`;
-  return `<div class="page-heading"><div><span class="eyebrow">${pretty(nowDay())} · ${weekday(nowDay())}</span><h1>${d > 0 ? "旅途将近，准备出发。" : nowDay() > day(trip.end) ? "到家了，好好休息。" : "今天，也有好风景。"}</h1></div></div>${tripHero}${nowDay() === day(trip.end) ? `<div class="notice">今天归来 · 预计 ${trip.end.slice(11)}，记得给返程留足时间。</div>` : ""}${d > 0 ? preparation + schedule : schedule + preparation}`;
+  return `<div class="page-heading"><div><span class="eyebrow">${pretty(nowDay())} · ${weekday(nowDay())}</span><h1>${d > 0 ? "旅途将近，准备出发。" : nowDay() > day(trip.end) ? "到家了，好好休息。" : "今天，也有好风景。"}</h1></div></div>${tripHero}${nowDay() === day(trip.end) ? `<div class="notice">今天归来 · 预计 ${trip.end.slice(11)}，记得给返程留足时间。</div>` : ""}${d > 0 ? preparation + weather : weather + preparation}`;
 }
 const eventList = (d) =>
   trip.events
