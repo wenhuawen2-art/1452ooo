@@ -553,20 +553,20 @@ p {
 .journey-route.has-one-place .route-end-place { margin-left: auto; }
 @media (max-width: 600px) {
   .journey-route {
-    gap: 8px;
-    min-height: 62px;
-    margin-top: 14px;
-    padding: 10px 12px;
-    font-size: 20px;
+    gap: 6px;
+    min-height: 56px;
+    margin-top: 12px;
+    padding: 9px 10px;
+    font-size: 17px;
   }
   .journey-route .route-label {
-    width: 50px;
-    height: 38px;
-    border-radius: 10px;
-    font-size: 14px;
+    width: 44px;
+    height: 34px;
+    border-radius: 9px;
+    font-size: 13px;
   }
   .journey-route .route-arrow {
-    flex-basis: 36px;
+    flex-basis: 28px;
   }
   .journey-route .route-arrow::before { height: 3px; }
   .journey-route .route-arrow::after {
@@ -575,6 +575,22 @@ p {
     border-top-width: 3px;
     border-right-width: 3px;
   }
+  .period-event-head { gap: 10px; }
+  .period-event-actions { gap: 8px; }
+  .period-event-actions .itinerary-map,
+  .period-event-actions .itinerary-edit,
+  .period-event .itinerary-edit {
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    flex-basis: 40px;
+  }
+  .period-event-actions .itinerary-map .icon,
+  .period-event-actions .itinerary-edit .icon { width: 19px; height: 19px; }
+  .period-event-actions .itinerary-map img { width: 20px; height: 20px; }
+  .period-event-time { font-size: 22px; line-height: 1.18; letter-spacing: -.35px; }
+  .period-event-time span { font-size: 13px; }
+  .period-event h4 { margin-top: 6px; font-size: 16px; }
 }
 .period-timeline {
   position: relative;
