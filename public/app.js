@@ -655,7 +655,7 @@ function route() {
     addDay(trip.start, i),
   );
   loadWeather(selected);
-  return `<div class="date-strip" aria-label="选择行程日期">${days.map((d) => `<button class="date-btn ${selected === d ? "active" : ""}" data-action="date" data-value="${d}" ${selected === d ? 'aria-current="date"' : ""}><span>${weekday(d)}</span><strong>${Number(d.slice(8))}</strong><span>${Number(d.slice(5, 7))} 月</span></button>`).join("")}</div><div class="section-head"><h2>${pretty(selected)} · 第 ${gap(trip.start, selected) + 1} 天</h2><button class="text-btn" data-action="event" data-date="${selected}" data-write>添加安排 +</button></div>${weatherCard(selected)}${eventsCard(selected)}${hotelCard(selected)}${ticketCard(selected)}`;
+  return `<div class="date-strip" aria-label="选择行程日期">${days.map((d) => `<button class="date-btn ${selected === d ? "active" : ""}" data-action="date" data-value="${d}" ${selected === d ? 'aria-current="date"' : ""}><span>${weekday(d)}</span><strong>${Number(d.slice(8))}</strong><span>${Number(d.slice(5, 7))} 月</span></button>`).join("")}</div><div class="section-head"><h2>${pretty(selected)} · 第 ${gap(trip.start, selected) + 1} 天</h2><button class="text-btn section-action-btn" data-action="event" data-date="${selected}" data-write>${icon("plus")} 添加安排</button></div>${weatherCard(selected)}${eventsCard(selected)}${hotelCard(selected)}${ticketCard(selected)}`;
 }
 function ticketCard(date) {
   const tickets = (trip.tickets || []).filter((ticket) => ticket.date === date);
@@ -698,7 +698,7 @@ function checklist() {
   return `<div class="segment">${["公共", "我的"].map((s) => `<button class="${scope === s ? "active" : ""}" data-action="scope" data-value="${s}">${s === "公共" ? "一起准备" : "我的物品"}</button>`).join("")}</div><section class="checklist-overview card"><div class="checklist-overview-head"><div><span class="muted">准备进度</span><div class="checklist-total"><strong>${p.done}</strong><span>/ ${p.total} 项</span></div></div><div class="checklist-actions"><button class="checklist-action-btn template-import-btn" data-action="templates" data-write>${filledIcon("template")}<span>导入模板</span></button><button class="checklist-action-btn" data-action="category" data-write>${filledIcon("category")}<span>新建分类</span></button></div></div><div class="checklist-progress"><i style="width:${p.total ? Math.round((p.done / p.total) * 100) : 0}%"></i></div></section>${gap(nowDay(), trip.start) <= 1 ? reviewSummary() : ""}${categories
     .map(
       (c) =>
-        `<section class="check-group"><div class="section-head category-head"><div><h2>${esc(c.name)}</h2><span class="muted">${items.filter((i) => i.categoryId === c.id).length} 项</span></div><button class="text-btn" data-action="item" data-category="${c.id}" aria-label="在${esc(c.name)}中新增条目" data-write>新增条目 +</button></div><div class="card check-card">${
+        `<section class="check-group"><div class="section-head category-head"><div><h2>${esc(c.name)}</h2><span class="muted">${items.filter((i) => i.categoryId === c.id).length} 项</span></div><button class="text-btn section-action-btn" data-action="item" data-category="${c.id}" aria-label="在${esc(c.name)}中新增条目" data-write>${icon("plus")} 新增条目</button></div><div class="card check-card">${
           items
             .filter((i) => i.categoryId === c.id)
             .map(itemRow)
@@ -831,8 +831,8 @@ function myTripCard(entry, own) {
 function memberCenter() {
   const me = trip.members.find((member) => member.id === trip.me);
   const own = trip.me === trip.creator;
-  return `<section class="my-profile-section"><div class="section-head"><h2>我的资料</h2><button class="text-btn" data-action="profile" data-write>${icon("edit")} 编辑资料</button></div><div class="card my-profile-card">${avatarImage(me, "profile-avatar")}<div class="my-profile-copy"><h2>${esc(me.name)}</h2><span class="pill">${own ? "创建者" : "同行成员"}</span><p class="muted">身份保存在这台设备</p></div></div></section>
-    <section class="my-trips-section"><div class="section-head"><h2>旅行管理</h2><button class="text-btn" data-action="create">${icon("plus")} 新建旅行</button></div><div class="my-trip-list">${trips.map((entry) => myTripCard(entry, own)).join("")}</div></section>`;
+  return `<section class="my-profile-section"><div class="section-head"><h2>我的资料</h2><button class="text-btn section-action-btn" data-action="profile" data-write>${icon("edit")} 编辑资料</button></div><div class="card my-profile-card">${avatarImage(me, "profile-avatar")}<div class="my-profile-copy"><h2>${esc(me.name)}</h2><span class="pill">${own ? "创建者" : "同行成员"}</span><p class="muted">身份保存在这台设备</p></div></div></section>
+    <section class="my-trips-section"><div class="section-head"><h2>旅行管理</h2><button class="text-btn section-action-btn" data-action="create">${icon("plus")} 新建旅行</button></div><div class="my-trip-list">${trips.map((entry) => myTripCard(entry, own)).join("")}</div></section>`;
 }
 function deleteItemPrompt(id) {
   const item = trip.items.find((entry) => entry.id === id);
