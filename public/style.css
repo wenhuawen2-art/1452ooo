@@ -486,7 +486,8 @@ p {
   overflow-wrap: anywhere;
 }
 .journey-route {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, auto) minmax(26px, 1fr) minmax(0, auto) auto;
   align-items: center;
   min-width: 0;
   gap: 8px;
@@ -500,14 +501,19 @@ p {
   font-weight: 700;
 }
 .journey-route .route-place {
-  flex: 1 1 0;
   min-width: 0;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #111820;
   font: inherit;
 }
+.journey-route .route-start-label { grid-column: 1; justify-self: start; }
+.journey-route .route-start-place { grid-column: 2; justify-self: start; text-align: left; }
+.journey-route .route-arrow { grid-column: 3; }
+.journey-route .route-end-place { grid-column: 4; justify-self: end; text-align: right; }
+.journey-route .route-end-label { grid-column: 5; justify-self: end; }
 .journey-route .route-label {
   display: inline-grid;
   width: 62px;
@@ -523,8 +529,8 @@ p {
 }
 .journey-route .route-arrow {
   display: flex;
-  flex: 1 1 70px;
   align-items: center;
+  width: 100%;
   min-width: 26px;
   color: #72a9e9;
   font-style: normal;
@@ -549,7 +555,6 @@ p {
 .journey-route .route-end-label {
   background: linear-gradient(145deg, #9dce5e, #d0f486);
 }
-.journey-route.has-one-place .route-end-place { margin-left: auto; }
 @media (max-width: 600px) {
   .journey-route {
     gap: 8px;
@@ -565,7 +570,7 @@ p {
     font-size: 12px;
   }
   .journey-route .route-arrow {
-    flex-basis: 28px;
+    min-width: 28px;
   }
   .journey-route .route-arrow::before { height: 3px; }
   .journey-route .route-arrow::after {
