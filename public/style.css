@@ -489,14 +489,14 @@ p {
   display: flex;
   align-items: center;
   min-width: 0;
-  gap: 16px;
+  gap: 8px;
   min-height: 76px;
   margin: 24px 0 0;
   padding: 12px 16px;
   border-radius: 14px;
   color: #172642;
   background: #f1f2f3;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
 }
 .journey-route .route-place {
