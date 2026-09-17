@@ -139,16 +139,20 @@ async function hydrateTripProfiles(source, trip) {
   return trip;
 }
 const authContext = async (context) => app.auth().getAuthContext(context);
-const resolvePrincipal = async (context, { optional = false } = {}) => {
+const resolvePrincipal = async (context, event, { optional = false } = {}) => {
   const auth = await authContext(context);
   const loginType = String(auth?.loginType || auth?.login_type || "").toUpperCase();
-  const openId = auth?.openId || auth?.openid;
+  // wx.cloud.callFunction injects userInfo server-side. It is trusted runtime
+  // context and cannot be supplied or forged by the mini-program payload.
+  const miniUser = event?.userInfo || {};
+  const openId = miniUser.openId || miniUser.openid || auth?.openId || auth?.openid;
+  const appId = miniUser.appId || miniUser.appid || auth?.appId || auth?.appid || "";
   if (openId) {
     return {
-      accountId: accountKeyForOpenId(auth.appId || auth.appid, openId),
+      accountId: accountKeyForOpenId(appId, openId),
       provider: "wechat",
       openId,
-      appId: auth.appId || auth.appid || "",
+      appId,
     };
   }
   if (auth?.uid && loginType !== "ANONYMOUS") return { accountId: auth.uid, provider: "custom" };
@@ -475,7 +479,7 @@ exports.main = async (event, context) => {
     if (operation === "createWebLoginSession") return { ok: true, data: await createWebLoginSession() };
     if (operation === "pollWebLogin") return { ok: true, data: await pollWebLogin(data) };
     if (operation === "exchangeWebLogin") return { ok: true, data: await exchangeWebLogin(data) };
-    const principal = await resolvePrincipal(context);
+    const principal = await resolvePrincipal(context, event);
     const accountId = principal.accountId;
     const result = operation === "bootstrapAccount" ? await bootstrapAccount(principal)
       : operation === "updateAccountProfile" ? await updateAccountProfile(principal, data)
