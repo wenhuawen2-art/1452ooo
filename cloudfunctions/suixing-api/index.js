@@ -1,7 +1,8 @@
 const cloudbase = require("@cloudbase/node-sdk");
-const { createHash } = require("node:crypto");
+const { createHash, randomBytes } = require("node:crypto");
 const { id, fail, createTrip, addMember, viewTrip, mutateTrip } = require("./domain.cjs");
 const { avatarIds, normalizeMembers } = require("./avatars.cjs");
+const { checklistTemplates } = require("./templates.cjs");
 
 const app = cloudbase.init({});
 const db = app.database();
@@ -13,11 +14,13 @@ const collections = {
   recoveries: db.collection("recovery_codes"),
   challenges: db.collection("delete_challenges"),
   weather: db.collection("weather_cache"),
+  users: db.collection("user_accounts"),
+  webLogins: db.collection("web_login_sessions"),
 };
 let collectionSetup;
 async function ensureCollections() {
   if (!collectionSetup) collectionSetup = Promise.all(
-    ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges", "weather_cache"].map(async (name) => {
+    ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges", "weather_cache", "user_accounts", "web_login_sessions"].map(async (name) => {
       try { await db.createCollection(name); }
       catch (error) {
         if (!/exist|already|重复|存在/i.test(String(error?.message || error))) throw error;
@@ -26,7 +29,9 @@ async function ensureCollections() {
   ).catch((error) => { collectionSetup = null; throw error; });
   return collectionSetup;
 }
-const memberKey = (uid, tripId) => createHash("sha256").update(`${uid}:${tripId}`).digest("hex");
+const hash = (value) => createHash("sha256").update(String(value)).digest("hex");
+const memberKey = (accountId, tripId) => hash(`${accountId}:${tripId}`);
+const accountKeyForOpenId = (appId, openId) => `wx_${hash(`${appId || "wechat"}:${openId}`).slice(0, 48)}`;
 const cleanDocument = (value) => {
   if (!value) return value;
   const { _id, ...clean } = value;
@@ -88,14 +93,76 @@ async function getWeather(uid, input) {
   return weather;
 }
 const first = async (reference) => cleanDocument((await reference.get()).data[0]);
+const defaultProfile = { nickname: "旅行者", avatarId: "avatar-01", avatarData: "" };
+const profileInput = (input = {}) => {
+  const nickname = String(input.nickname || input.name || "").trim();
+  const avatarId = avatarIds.includes(input.avatarId) ? input.avatarId : "";
+  const avatarData = typeof input.avatarData === "string" && /^data:image\/(?:jpeg|png|webp);base64,/.test(input.avatarData) && input.avatarData.length <= 220000
+    ? input.avatarData : "";
+  if (!nickname || nickname.length > 40) fail(400, "昵称须为 1 至 40 个字符");
+  if (!avatarId && !avatarData) fail(400, "请选择头像");
+  return { nickname, avatarId: avatarData ? "" : avatarId, avatarData };
+};
+async function ensureAccount(principal) {
+  let account = await first(collections.users.doc(principal.accountId));
+  if (!account) {
+    const now = Date.now();
+    account = {
+      id: principal.accountId,
+      ...defaultProfile,
+      provider: principal.provider,
+      appId: principal.appId || "",
+      openIdHash: principal.openId ? hash(principal.openId) : "",
+      profileComplete: false,
+      createdAt: now,
+      updatedAt: now,
+    };
+    await collections.users.doc(principal.accountId).set(account);
+  }
+  return account;
+}
+async function hydrateTripProfiles(source, trip) {
+  const links = (await source.collection("trip_members").where({ tripId: trip.id }).limit(100).get()).data || [];
+  const accounts = await Promise.all(links.map((link) => link.accountId ? first(source.collection("user_accounts").doc(link.accountId)) : null));
+  const profiles = new Map();
+  links.forEach((link, index) => {
+    if (accounts[index]) profiles.set(link.memberId, accounts[index]);
+  });
+  for (const member of trip.members || []) {
+    const profile = profiles.get(member.id);
+    if (!profile) continue;
+    member.accountId = profile.id;
+    member.name = profile.nickname;
+    member.avatarId = profile.avatarId;
+    member.avatarData = profile.avatarData || "";
+  }
+  return trip;
+}
+const authContext = async (context) => app.auth().getAuthContext(context);
+const resolvePrincipal = async (context, { optional = false } = {}) => {
+  const auth = await authContext(context);
+  const loginType = String(auth?.loginType || auth?.login_type || "").toUpperCase();
+  const openId = auth?.openId || auth?.openid;
+  if (openId) {
+    return {
+      accountId: accountKeyForOpenId(auth.appId || auth.appid, openId),
+      provider: "wechat",
+      openId,
+      appId: auth.appId || auth.appid || "",
+    };
+  }
+  if (auth?.uid && loginType !== "ANONYMOUS") return { accountId: auth.uid, provider: "custom" };
+  if (optional) return null;
+  fail(401, "请使用微信账号登录");
+};
 const requireUid = async (context) => {
   const auth = await app.auth().getAuthContext(context);
   if (!auth?.uid) fail(401, "请先完成匿名登录");
   return auth.uid;
 };
-const membership = async (source, uid, tripId) => {
-  const member = await first(source.collection("trip_members").where({ uid, tripId }).limit(1));
-  if (!member || member.uid !== uid || member.tripId !== tripId) fail(403, "无权访问此旅行");
+const membership = async (source, accountId, tripId) => {
+  const member = await first(source.collection("trip_members").where({ accountId, tripId }).limit(1));
+  if (!member || member.accountId !== accountId || member.tripId !== tripId) fail(403, "无权访问此旅行");
   return member;
 };
 const inviteFor = async (source, tripId) => first(source.collection("trip_invites").where({ tripId, active: true }).limit(1));
@@ -105,6 +172,7 @@ const loadTrip = async (source, tripId) => {
   return trip;
 };
 const asView = async (source, trip, member) => {
+  await hydrateTripProfiles(source, trip);
   const invite = member.memberId === trip.creator ? (await inviteFor(source, trip.id))?.token : undefined;
   return ticketView(viewTrip(trip, trip.members.find((entry) => entry.id === member.memberId), invite));
 };
@@ -130,25 +198,114 @@ async function ticketView(view) {
   return { ...view, tickets: view.tickets.map((ticket) => ({ ...ticket, imageUrl: urls.get(ticket.fileId) || "" })) };
 }
 
-async function listTrips(uid) {
-  const links = (await collections.members.where({ uid }).limit(100).get()).data;
+async function listTrips(accountId) {
+  const links = (await collections.members.where({ accountId }).limit(100).get()).data;
   const trips = await Promise.all(links.map((link) => first(collections.trips.doc(link.tripId))));
   return trips.filter(Boolean).map((trip) => ({ id: trip.id, name: trip.name, start: trip.start, end: trip.end, archived: trip.archived }));
 }
 
-async function create(uid, input) {
+async function bootstrapAccount(principal) {
+  const account = await ensureAccount(principal);
+  return { account, trips: await listTrips(principal.accountId) };
+}
+
+async function updateAccountProfile(principal, input) {
+  const current = await ensureAccount(principal);
+  const profile = profileInput(input);
+  const account = { ...current, ...profile, profileComplete: true, updatedAt: Date.now() };
+  await collections.users.doc(principal.accountId).set(account);
+  const links = (await collections.members.where({ accountId: principal.accountId }).limit(100).get()).data || [];
+  for (const link of links) {
+    await db.runTransaction(async (transaction) => {
+      const trip = await loadTrip(transaction, link.tripId);
+      const member = trip.members.find((entry) => entry.id === link.memberId);
+      if (!member) return;
+      const previousName = member.name;
+      Object.assign(member, { accountId: principal.accountId, name: profile.nickname, avatarId: profile.avatarId, avatarData: profile.avatarData });
+      for (const item of trip.items || []) {
+        if (item.byMemberId === member.id || (!item.byMemberId && item.by === previousName)) item.by = profile.nickname;
+        if (item.reviewByMemberId === member.id || (!item.reviewByMemberId && item.reviewBy === previousName)) item.reviewBy = profile.nickname;
+      }
+      trip.revision = Number(trip.revision || 0) + 1;
+      trip.updatedAt = Date.now();
+      await transaction.collection("trips").doc(trip.id).set(trip);
+    });
+  }
+  return { account };
+}
+
+const webLoginPayload = (sessionId, secret) => `xiangye-login:${sessionId}:${secret}`;
+async function createWebLoginSession() {
+  const sessionId = randomBytes(16).toString("hex");
+  const secret = randomBytes(16).toString("hex");
+  const expiresAt = Date.now() + 5 * 60 * 1000;
+  await collections.webLogins.doc(sessionId).set({
+    id: sessionId, secretHash: hash(secret), status: "pending", expiresAt, createdAt: Date.now(),
+  });
+  return { sessionId, secret, payload: webLoginPayload(sessionId, secret), expiresAt };
+}
+
+async function loadWebLogin(input) {
+  const sessionId = String(input.sessionId || "");
+  const secret = String(input.secret || "");
+  if (!/^[a-f0-9]{32}$/.test(sessionId) || !/^[a-f0-9]{32}$/.test(secret)) fail(400, "登录码无效");
+  const session = await first(collections.webLogins.doc(sessionId));
+  if (!session || session.secretHash !== hash(secret) || session.expiresAt <= Date.now()) fail(410, "登录码已过期");
+  return session;
+}
+
+async function confirmWebLogin(principal, input) {
+  const session = await loadWebLogin(input);
+  if (session.status !== "pending") fail(409, "登录码已被处理");
+  await ensureAccount(principal);
+  await collections.webLogins.doc(session.id).update({
+    status: "confirmed", accountId: principal.accountId, confirmedAt: Date.now(),
+  });
+  return { confirmed: true };
+}
+
+async function pollWebLogin(input) {
+  const session = await loadWebLogin(input);
+  return { status: session.status, expiresAt: session.expiresAt };
+}
+
+async function exchangeWebLogin(input) {
+  const session = await loadWebLogin(input);
+  if (session.status !== "confirmed" || !session.accountId) fail(409, "请先在小程序确认登录");
+  const claimed = await db.runTransaction(async (transaction) => {
+    const current = await first(transaction.collection("web_login_sessions").doc(session.id));
+    if (!current || current.status !== "confirmed" || current.expiresAt <= Date.now()) fail(409, "登录码已被使用");
+    await transaction.collection("web_login_sessions").doc(session.id).update({ status: "used", usedAt: Date.now() });
+    return current.accountId;
+  });
+  const ticket = await app.auth().createTicket(claimed);
+  return { ticket };
+}
+
+async function resolveLocation(accountId, input) {
+  await membership(db, accountId, input.tripId);
+  const place = String(input.place || "").trim().slice(0, 120);
+  if (!place) fail(400, "缺少地址");
+  const location = await geocodePlace(place);
+  if (!location) fail(404, "没有找到这个地址");
+  return { name: location.name || place, address: place, latitude: Number(location.latitude), longitude: Number(location.longitude) };
+}
+
+async function create(accountId, input) {
+  const account = await first(collections.users.doc(accountId));
+  if (!account?.profileComplete) fail(400, "请先设置昵称和头像");
   const result = await db.runTransaction(async (transaction) => {
     let reuseTrip, reuseMember;
     if (input.reuse) {
-      reuseMember = await membership(transaction, uid, input.reuse);
+      reuseMember = await membership(transaction, accountId, input.reuse);
       reuseTrip = await loadTrip(transaction, input.reuse);
       reuseMember = reuseTrip.members.find((entry) => entry.id === reuseMember.memberId);
     }
-    const created = createTrip(input, reuseTrip, reuseMember);
+    const created = createTrip({ ...input, accountId, nickname: account.nickname, avatarId: account.avatarId, avatarData: account.avatarData }, reuseTrip, reuseMember);
     const invite = id();
     await transaction.collection("trips").doc(created.trip.id).set(created.trip);
-    await transaction.collection("trip_members").doc(memberKey(uid, created.trip.id)).set({
-      uid, tripId: created.trip.id, memberId: created.member.id, createdAt: Date.now(),
+    await transaction.collection("trip_members").doc(memberKey(accountId, created.trip.id)).set({
+      accountId, tripId: created.trip.id, memberId: created.member.id, createdAt: Date.now(),
     });
     await transaction.collection("trip_invites").doc(invite).set({
       token: invite, tripId: created.trip.id, active: true, createdAt: Date.now(),
@@ -159,7 +316,9 @@ async function create(uid, input) {
   return { trip: await ticketView(viewTrip(result.trip, member, result.invite)) };
 }
 
-async function join(uid, input) {
+async function join(accountId, input) {
+  const account = await first(collections.users.doc(accountId));
+  if (!account?.profileComplete) fail(400, "请先设置昵称和头像");
   if (typeof input.invite !== "string" || !/^[a-f0-9]{48}$/.test(input.invite)) fail(404, "邀请已失效或旅行已归档");
   const result = await db.runTransaction(async (transaction) => {
     const invite = await first(transaction.collection("trip_invites").where({ token: input.invite, active: true }).limit(1));
@@ -169,13 +328,13 @@ async function join(uid, input) {
     let link = await first(
       transaction
         .collection("trip_members")
-        .where({ uid, tripId: trip.id })
+        .where({ accountId, tripId: trip.id })
         .limit(1),
     );
     if (!link) {
-      const member = addMember(trip, input.nickname, input.avatarId, input.avatarData);
-      link = { uid, tripId: trip.id, memberId: member.id, createdAt: Date.now() };
-      await transaction.collection("trip_members").doc(memberKey(uid, trip.id)).set(link);
+      const member = addMember(trip, account.nickname, account.avatarId, account.avatarData, accountId);
+      link = { accountId, tripId: trip.id, memberId: member.id, createdAt: Date.now() };
+      await transaction.collection("trip_members").doc(memberKey(accountId, trip.id)).set(link);
       await transaction.collection("trips").doc(trip.id).set(trip);
     }
     return { trip, memberId: link.memberId };
@@ -194,8 +353,8 @@ async function previewInvite(input) {
   return { tripName: trip.name, usedAvatarIds, allowDuplicates: avatarIds.every((id) => usedAvatarIds.includes(id)) };
 }
 
-async function get(uid, input) {
-  const link = await membership(db, uid, input.tripId);
+async function get(accountId, input) {
+  const link = await membership(db, accountId, input.tripId);
   const trip = await loadTrip(db, input.tripId);
   return asView(db, trip, link);
 }
@@ -220,28 +379,28 @@ async function recover(uid, input) {
   return { trip: await ticketView(viewTrip(result.trip, member, result.invite)) };
 }
 
-async function uploadTicket(uid, input) {
+async function uploadTicket(accountId, input) {
   if (!input.tripId) fail(400, "缺少旅行标识");
   if (typeof input.imageBase64 !== "string" || input.imageBase64.length > 4200000) fail(400, "图片过大，请选择更小的图片");
   if (!/^image\/(jpeg|png|webp)$/.test(input.mime || "")) fail(400, "仅支持 JPG、PNG 或 WebP 图片");
-  await membership(db, uid, input.tripId);
+  await membership(db, accountId, input.tripId);
   const extension = input.mime === "image/png" ? "png" : input.mime === "image/webp" ? "webp" : "jpg";
   const fileContent = Buffer.from(input.imageBase64, "base64");
   if (!fileContent.length || fileContent.length > 3000000) fail(400, "图片过大，请选择更小的图片");
   const cloudPath = `tickets/${input.tripId}/${id()}.${extension}`;
   const uploaded = await app.uploadFile({ cloudPath, fileContent });
   try {
-    return await mutate(uid, { ...input, action: "ticket", fileId: uploaded.fileID, imageBase64: undefined });
+    return await mutate(accountId, { ...input, action: "ticket", fileId: uploaded.fileID, imageBase64: undefined });
   } catch (error) {
     await app.deleteFile({ fileList: [uploaded.fileID] }).catch(() => {});
     throw error;
   }
 }
 
-async function mutate(uid, input) {
+async function mutate(accountId, input) {
   if (!input.tripId) fail(400, "缺少旅行标识");
   const result = await db.runTransaction(async (transaction) => {
-    const link = await membership(transaction, uid, input.tripId);
+    const link = await membership(transaction, accountId, input.tripId);
     const trip = await loadTrip(transaction, input.tripId);
     const member = trip.members.find((entry) => entry.id === link.memberId);
     if (!member) fail(403, "成员身份已经失效");
@@ -311,18 +470,26 @@ async function mutate(uid, input) {
 exports.main = async (event, context) => {
   try {
     await ensureCollections();
-    const uid = await requireUid(context);
     const operation = event?.operation;
     const data = event?.data || {};
-    const result = operation === "listTrips" ? await listTrips(uid)
-      : operation === "createTrip" ? await create(uid, data)
-      : operation === "joinTrip" ? await join(uid, data)
+    if (operation === "createWebLoginSession") return { ok: true, data: await createWebLoginSession() };
+    if (operation === "pollWebLogin") return { ok: true, data: await pollWebLogin(data) };
+    if (operation === "exchangeWebLogin") return { ok: true, data: await exchangeWebLogin(data) };
+    const principal = await resolvePrincipal(context);
+    const accountId = principal.accountId;
+    const result = operation === "bootstrapAccount" ? await bootstrapAccount(principal)
+      : operation === "updateAccountProfile" ? await updateAccountProfile(principal, data)
+      : operation === "confirmWebLogin" ? await confirmWebLogin(principal, data)
+      : operation === "listChecklistTemplates" ? checklistTemplates
+      : operation === "listTrips" ? await listTrips(accountId)
+      : operation === "createTrip" ? await create(accountId, data)
+      : operation === "joinTrip" ? await join(accountId, data)
       : operation === "previewInvite" ? await previewInvite(data)
-      : operation === "uploadTicket" ? await uploadTicket(uid, data)
-      : operation === "recoverMember" ? await recover(uid, data)
-      : operation === "getWeather" ? await getWeather(uid, data)
-      : operation === "getTrip" ? await get(uid, data)
-      : operation === "mutateTrip" ? await mutate(uid, data)
+      : operation === "uploadTicket" ? await uploadTicket(accountId, data)
+      : operation === "getWeather" ? await getWeather(accountId, data)
+      : operation === "resolveLocation" ? await resolveLocation(accountId, data)
+      : operation === "getTrip" ? await get(accountId, data)
+      : operation === "mutateTrip" ? await mutate(accountId, data)
       : fail(404, "接口不存在");
     return { ok: true, data: result };
   } catch (error) {

@@ -2,7 +2,7 @@ const cloudbase = require("@cloudbase/node-sdk");
 
 const app = cloudbase.init({});
 const db = app.database();
-const names = ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges"];
+const names = ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges", "weather_cache", "user_accounts", "web_login_sessions"];
 
 async function readAll(name) {
   const values = [];

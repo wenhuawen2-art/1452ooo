@@ -1,5 +1,5 @@
 {
   "*": { "invoke": false },
-  "suixing-api": { "invoke": "auth != null" },
+  "suixing-api": { "invoke": true },
   "suixing-backup": { "invoke": false }
 }

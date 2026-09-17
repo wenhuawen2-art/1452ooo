@@ -16,7 +16,8 @@
     "node": ">=22.13"
   },
   "dependencies": {
-    "@cloudbase/js-sdk": "3.9.3"
+    "@cloudbase/js-sdk": "3.9.3",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "@cloudbase/cli": "3.8.1",

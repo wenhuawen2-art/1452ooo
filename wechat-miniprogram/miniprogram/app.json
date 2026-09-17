@@ -6,7 +6,8 @@
     "navigationBarTitleText": "向野",
     "navigationBarBackgroundColor": "#eef5ff",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#eef5ff"
+    "backgroundColor": "#eef5ff",
+    "navigationStyle": "default"
   },
   "sitemapLocation": "sitemap.json"
 }

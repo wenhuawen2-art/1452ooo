@@ -104,13 +104,12 @@ test("CloudBase shared domain imports editable templates into the selected check
   assert.ok(!guestView.categories.some((entry) => entry.templateId === "travel-documents"));
 });
 
-test("avatar choice is required, unique while available, and reusable after sixteen members", () => {
+test("avatar choice is required and global account avatars may repeat between members", () => {
   assert.equal(avatars.length, 16);
   assert.throws(() => createTrip({ name: "无头像", nickname: "甲", start: "2026-10-01T08:00", end: "2026-10-02T18:00" }), /请选择头像/);
   const { trip } = createTrip({ name: "头像规则", nickname: "甲", avatarId: "avatar-01", start: "2026-10-01T08:00", end: "2026-10-02T18:00" });
-  assert.throws(() => addMember(trip, "乙", "avatar-01"), /头像刚被/);
-  for (let index = 2; index <= 16; index += 1) addMember(trip, `成员${index}`, `avatar-${String(index).padStart(2, "0")}`);
-  assert.equal(addMember(trip, "第十七人", "avatar-01").avatarId, "avatar-01");
+  assert.equal(addMember(trip, "乙", "avatar-01", "", "account-b").avatarId, "avatar-01");
+  assert.equal(trip.members[1].accountId, "account-b");
 });
 
 test("trip type is saved, editable and safely falls back to other", () => {

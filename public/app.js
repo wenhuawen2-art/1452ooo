@@ -5,6 +5,7 @@ import templatePackage from "../shared/templates.cjs";
 import schedulePackage from "../shared/schedule.cjs";
 import avatarPackage from "../shared/avatars.cjs";
 import tripTypePackage from "../shared/trip-types.cjs";
+import QRCode from "qrcode";
 
 const { checklistTemplates } = templatePackage;
 const { schedulePeriods, splitEventByPeriods } = schedulePackage;
@@ -13,14 +14,58 @@ const { tripTypes } = tripTypePackage;
 
 const cloud = cloudbase.init({ env: "zdata-d4g6l75lwebf2dbb0" });
 const auth = cloud.auth({ persistence: "local" });
+let accountState = null;
 let authReady;
+async function rawCall(operation, data = {}) {
+  const response = await cloud.callFunction({ name: "suixing-api", data: { operation, data }, parse: true });
+  const envelope = response?.result;
+  if (!envelope?.ok) throw Object.assign(Error(envelope?.error || "操作失败"), { status: envelope?.status || 500 });
+  return envelope.data;
+}
+function loginPanel(qr, expiresAt) {
+  let panel = document.querySelector("#wechat-login");
+  if (!panel) {
+    panel = document.createElement("div");
+    panel.id = "wechat-login";
+    panel.className = "wechat-login";
+    document.body.append(panel);
+  }
+  panel.innerHTML = `<div class="wechat-login-card"><img class="brand-logo" src="/brand/logo-512.png" alt="" width="56" height="56"><h1>微信登录向野</h1><p>打开“向野”小程序，在「我的」中点击<br><strong>扫一扫登录网页版</strong></p><img class="wechat-login-qr" src="${qr}" alt="向野网页登录二维码"><p class="muted">二维码将在 ${Math.max(1, Math.ceil((expiresAt - Date.now()) / 60000))} 分钟后失效</p></div>`;
+  return panel;
+}
+async function signInFromMiniProgram() {
+  await auth.signOut().catch(() => {});
+  const session = await rawCall("createWebLoginSession");
+  const qr = await QRCode.toDataURL(session.payload, { width: 320, margin: 1, color: { dark: "#111827", light: "#ffffff" } });
+  const panel = loginPanel(qr, session.expiresAt);
+  while (Date.now() < session.expiresAt) {
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    const state = await rawCall("pollWebLogin", session);
+    if (state.status !== "confirmed") continue;
+    const exchange = await rawCall("exchangeWebLogin", session);
+    const result = await auth.signInWithCustomTicket(() => Promise.resolve(exchange.ticket));
+    if (result?.error) throw Error(result.error.message || "微信登录失败");
+    panel.remove();
+    return;
+  }
+  panel.remove();
+  throw Error("登录二维码已过期，请刷新页面重试");
+}
 async function ensureAuth() {
   if (!authReady) authReady = (async () => {
     const state = await auth.getLoginState();
-    if (!state) {
-      const result = await auth.signInAnonymously();
-      if (result?.error) throw Error(result.error.message || "匿名登录失败");
+    if (state) {
+      try {
+        const bootstrapped = await rawCall("bootstrapAccount");
+        accountState = bootstrapped.account;
+        return;
+      } catch (error) {
+        if (error.status !== 401) throw error;
+      }
     }
+    await signInFromMiniProgram();
+    const bootstrapped = await rawCall("bootstrapAccount");
+    accountState = bootstrapped.account;
   })().catch((error) => { authReady = null; throw error; });
   return authReady;
 }
@@ -119,7 +164,9 @@ async function api(path, data) {
   try {
     await ensureAuth();
     let operation, payload;
-    if (path === "trips") [operation, payload] = ["listTrips", {}];
+    if (path === "account") [operation, payload] = ["bootstrapAccount", {}];
+    else if (path === "profile") [operation, payload] = ["updateAccountProfile", data];
+    else if (path === "trips") [operation, payload] = ["listTrips", {}];
     else if (path === "create") [operation, payload] = ["createTrip", data];
     else if (path === "join") [operation, payload] = ["joinTrip", data];
     else if (path === "invite-preview") [operation, payload] = ["previewInvite", data];
@@ -717,7 +764,7 @@ function tripForm(edit = false) {
     edit ? "编辑旅行" : "开启一段新旅程",
     form(
       edit ? "trip" : "create",
-      `${field("旅行名称", "name", edit ? trip.name : "", "text", true)}${typeSelect(edit ? trip.type || "自驾游" : "自驾游")}${edit ? "" : field("你的昵称", "nickname", trip?.members.find((m) => m.id === trip.me)?.name || "", "text", true)}${edit ? "" : avatarPicker()}${dateRangeField("出行日期", day(start), day(end))}<div class="form-grid">${field("出发时间（北京时间）", "startTime", start.slice(11, 16), "time", true)}${field("归来时间（北京时间）", "endTime", end.slice(11, 16), "time", true)}</div>${!edit && trips.length ? `<label class="field">复用已有清单<select name="reuse"><option value="">使用精简默认清单</option>${trips.map((t) => `<option value="${t.id}">${esc(t.name)}</option>`).join("")}</select></label><p class="muted">仅复用公共清单和你的个人清单，完成与复核状态都会清零。</p>` : ""}${edit ? '<p class="muted">修改日期或时间后，请同步更新已添加的手机日历。</p>' : ""}`,
+      `${field("旅行名称", "name", edit ? trip.name : "", "text", true)}${typeSelect(edit ? trip.type || "自驾游" : "自驾游")}${dateRangeField("出行日期", day(start), day(end))}<div class="form-grid">${field("出发时间（北京时间）", "startTime", start.slice(11, 16), "time", true)}${field("归来时间（北京时间）", "endTime", end.slice(11, 16), "time", true)}</div>${!edit && trips.length ? `<label class="field">复用已有清单<select name="reuse"><option value="">使用精简默认清单</option>${trips.map((t) => `<option value="${t.id}">${esc(t.name)}</option>`).join("")}</select></label><p class="muted">仅复用公共清单和你的个人清单，完成与复核状态都会清零。</p>` : ""}${edit ? '<p class="muted">修改日期或时间后，请同步更新已添加的手机日历。</p>' : ""}`,
     ),
   );
 }
@@ -794,14 +841,14 @@ function members() {
   const own = trip.me === trip.creator;
   show(
     "一起出发的人",
-    `<p class="muted">公共清单一起确认，个人物品各自准备。</p><div class="identity-note"><strong>你的身份会保存在这台设备</strong><span>正常关闭网页后再打开仍可继续使用。换手机、使用无痕模式或清除浏览器数据前，请先生成自己的恢复链接。</span></div>${own && !trip.archived ? `<button class="btn full" data-action="invite">${icon("users")} 复制邀请链接</button><p class="muted">链接仅分享给同行人。对方打开后填写昵称即可加入。</p>` : ""}<div class="members">${trip.members.map((m) => `<div><div class="row"><span class="member-name-row">${avatarImage(m)}<span>${esc(m.name)}</span> ${m.id === trip.creator ? '<span class="pill">创建者</span>' : ""}</span></div>${(own || m.id === trip.me) && !trip.archived ? `<div class="small-actions"><button data-action="recovery" data-id="${m.id}">${m.id === trip.me ? "保存我的恢复链接" : "为此成员生成恢复链接"}</button>${own && m.id !== trip.creator ? `<button data-action="removeMember" data-id="${m.id}">移除成员</button>` : ""}</div>` : ""}</div>`).join("")}</div>${own && !trip.archived ? '<div class="subtle"><button class="text-btn" data-action="rotate">使旧邀请失效，生成新链接</button></div>' : ""}`,
+    `<p class="muted">公共清单一起确认，个人物品各自准备。</p><div class="identity-note"><strong>身份已绑定微信账号</strong><span>换设备后使用同一微信登录，旅行数据会自动恢复。</span></div>${own && !trip.archived ? `<button class="btn full" data-action="invite">${icon("users")} 复制邀请链接</button><p class="muted">链接仅分享给同行人，对方登录微信账号后即可加入。</p>` : ""}<div class="members">${trip.members.map((m) => `<div><div class="row"><span class="member-name-row">${avatarImage(m)}<span>${esc(m.name)}</span> ${m.id === trip.creator ? '<span class="pill">创建者</span>' : ""}</span></div>${own && m.id !== trip.creator && !trip.archived ? `<div class="small-actions"><button data-action="removeMember" data-id="${m.id}">移除成员</button></div>` : ""}</div>`).join("")}</div>${own && !trip.archived ? '<div class="subtle"><button class="text-btn" data-action="rotate">使旧邀请失效，生成新链接</button></div>' : ""}`,
   );
 }
 async function settings() {
   trips = await api("trips");
   show(
     "旅行与设置",
-    `<p class="muted">${esc(trip.name)} · ${trip.archived ? "已归档" : "当前旅行"}</p><div class="stack"><button class="btn secondary full" data-action="create">新建旅行</button>${!trip.archived ? '<button class="btn secondary full" data-action="edit-trip">编辑名称与出发归来时间</button>' : ""}${trip.me === trip.creator ? '<button class="btn secondary full" data-action="export-trip">下载旅行备份</button>' : ""}${trip.me === trip.creator && !trip.archived ? '<button class="btn danger full" data-action="archive">归档当前旅行</button>' : ""}</div><div class="section-head"><h3>我的旅行</h3></div>${trips.map((t) => `<button class="archive-item" data-action="switch" data-id="${t.id}"><strong>${esc(t.name)}</strong><span>${pretty(day(t.start))} — ${pretty(day(t.end))} · ${t.archived ? "已归档" : "进行中"}</span></button>`).join("")}<p class="muted">所有时间按北京时间显示。正常关闭网页不会丢失身份；换设备或清除浏览器数据前，请在“同行成员”中保存自己的恢复链接。</p>`,
+    `<p class="muted">${esc(trip.name)} · ${trip.archived ? "已归档" : "当前旅行"}</p><div class="stack"><button class="btn secondary full" data-action="create">新建旅行</button>${!trip.archived ? '<button class="btn secondary full" data-action="edit-trip">编辑名称与出发归来时间</button>' : ""}${trip.me === trip.creator ? '<button class="btn secondary full" data-action="export-trip">下载旅行备份</button>' : ""}${trip.me === trip.creator && !trip.archived ? '<button class="btn danger full" data-action="archive">归档当前旅行</button>' : ""}</div><div class="section-head"><h3>我的旅行</h3></div>${trips.map((t) => `<button class="archive-item" data-action="switch" data-id="${t.id}"><strong>${esc(t.name)}</strong><span>${pretty(day(t.start))} — ${pretty(day(t.end))} · ${t.archived ? "已归档" : "进行中"}</span></button>`).join("")}<p class="muted">所有时间按北京时间显示。身份已绑定微信账号，换设备后可通过小程序扫码登录。</p>`,
   );
   if (trip.me === trip.creator) {
     const area = document.createElement("div");
@@ -812,15 +859,11 @@ async function settings() {
   }
 }
 function profileForm() {
-  const me = trip.members.find((member) => member.id === trip.me);
-  const used = trip.members.filter((member) => member.id !== trip.me).map((member) => member.avatarId);
-  const allUsed = trip.members.map((member) => member.avatarId);
-  const allowDuplicates = avatars.every((avatar) => allUsed.includes(avatar.id));
-  show("编辑我的资料", form("profile", `${field("昵称", "name", me.name, "text", true)}${avatarPicker(me.avatarId, used, allowDuplicates, me.avatarData || "")}`));
+  show("编辑我的资料", form("profile", `${field("昵称", "nickname", accountState.nickname, "text", true)}${avatarPicker(accountState.avatarId, [], true, accountState.avatarData || "")}`));
 }
 function myTripMember(member, own) {
   const canManage = (own || member.id === trip.me) && !trip.archived;
-  return `<div class="my-trip-member"><div class="my-trip-member-main">${avatarImage(member, "list-avatar")}<div><strong>${esc(member.name)}</strong><span>${member.id === trip.creator ? "创建者" : "同行成员"}${member.id === trip.me ? " · 我" : ""}</span></div></div>${canManage ? `<div class="my-trip-member-actions"><button data-action="recovery" data-id="${member.id}">${member.id === trip.me ? "身份恢复" : "恢复链接"}</button>${own && member.id !== trip.creator ? `<button class="danger-link" data-action="removeMember" data-id="${member.id}">移除</button>` : ""}</div>` : ""}</div>`;
+  return `<div class="my-trip-member"><div class="my-trip-member-main">${avatarImage(member, "list-avatar")}<div><strong>${esc(member.name)}</strong><span>${member.id === trip.creator ? "创建者" : "同行成员"}${member.id === trip.me ? " · 我" : ""}</span></div></div>${canManage && own && member.id !== trip.creator ? `<div class="my-trip-member-actions"><button class="danger-link" data-action="removeMember" data-id="${member.id}">移除</button></div>` : ""}</div>`;
 }
 function myTripCard(entry, own) {
   const current = entry.id === trip.id;
@@ -831,7 +874,7 @@ function myTripCard(entry, own) {
 function memberCenter() {
   const me = trip.members.find((member) => member.id === trip.me);
   const own = trip.me === trip.creator;
-  return `<section class="my-profile-section"><div class="section-head"><h2>我的资料</h2><button class="text-btn section-action-btn" data-action="profile" data-write>${icon("edit")} 编辑资料</button></div><div class="card my-profile-card">${avatarImage(me, "profile-avatar")}<div class="my-profile-copy"><h2>${esc(me.name)}</h2><span class="pill">${own ? "创建者" : "同行成员"}</span><p class="muted">身份保存在这台设备</p></div></div></section>
+  return `<section class="my-profile-section"><div class="section-head"><h2>我的资料</h2><button class="text-btn section-action-btn" data-action="profile" data-write>${icon("edit")} 编辑资料</button></div><div class="card my-profile-card">${avatarImage(me, "profile-avatar")}<div class="my-profile-copy"><h2>${esc(me.name)}</h2><span class="pill">${own ? "创建者" : "同行成员"}</span><p class="muted">微信账号已绑定</p></div></div></section>
     <section class="my-trips-section"><div class="section-head"><h2>旅行管理</h2><button class="text-btn section-action-btn" data-action="create">${icon("plus")} 新建旅行</button></div><div class="my-trip-list">${trips.map((entry) => myTripCard(entry, own)).join("")}</div></section>`;
 }
 function deleteItemPrompt(id) {
@@ -1210,13 +1253,21 @@ document.addEventListener("submit", async (ev) => {
     data[input.name] = input.dataset.value || "";
   });
   try {
-    if ((kind === "create" || kind === "join" || kind === "profile") && !data.avatarId && !data.avatarData)
+    if (kind === "profile" && !data.avatarId && !data.avatarData)
       throw Error("请选择一个头像");
     if ((kind === "create" || kind === "trip") && data.startDate && data.endDate) {
       data.start = `${data.startDate}T${data.startTime || "08:00"}`;
       data.end = `${data.endDate}T${data.endTime || "18:00"}`;
     }
-    if (kind === "ticketCreate") {
+    if (kind === "profile") {
+      const result = await api("profile", data);
+      accountState = result.account;
+      trip = await api("trips/" + trip.id);
+      modal.close();
+      render();
+      toast("资料已同步到所有旅行");
+      return;
+    } else if (kind === "ticketCreate") {
       const file = f.querySelector("[data-ticket-file]")?.files?.[0];
       if (!file) throw Error("请选择票据图片");
       toast("正在处理并上传票据…");
@@ -1305,22 +1356,9 @@ async function boot() {
       const preview = await api("invite-preview", { invite });
       show(
         `加入 · ${preview.tripName}`,
-        form(
-          "join",
-          field("你的昵称", "nickname", "", "text", true) +
-            avatarPicker("", preview.usedAvatarIds, preview.allowDuplicates) +
-            '<p class="muted">无需注册。昵称仅用于同行展示；加入后可以共同编辑行程、住宿和公共清单。本机浏览器会记住你的身份。</p>',
-        ),
+        form("join", `<div class="identity-note"><strong>使用微信账号加入</strong><span>将以“${esc(accountState.nickname)}”加入，昵称和头像与小程序保持一致。</span></div>`),
       );
     }
-    if (recovery)
-      show(
-        "在这台手机恢复身份",
-        form(
-          "recover",
-          "<p>恢复后，旧设备的访问身份将失效。请确认这是创建者发给你的专属链接。</p>",
-        ),
-      );
   } catch (e) {
     render();
     toast(e.message);

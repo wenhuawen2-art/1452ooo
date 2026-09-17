@@ -2405,3 +2405,24 @@ button.my-trip-card { cursor: pointer; }
   .bottom-nav { border-radius: 26px; }
   .hero { padding: 24px; }
 }
+.wechat-login {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: linear-gradient(180deg, #e6f2ff, #f7f9fc);
+}
+.wechat-login-card {
+  width: min(100%, 390px);
+  padding: 32px 24px;
+  border: 1px solid rgba(255, 255, 255, .9);
+  border-radius: 32px;
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 24px 70px rgba(40, 78, 120, .16);
+  text-align: center;
+}
+.wechat-login-card h1 { margin: 16px 0 8px; font-size: 24px; }
+.wechat-login-card p { line-height: 1.7; }
+.wechat-login-qr { width: 240px; height: 240px; margin: 16px auto; border-radius: 16px; }

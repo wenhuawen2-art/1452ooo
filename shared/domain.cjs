@@ -1,7 +1,7 @@
 const { randomBytes } = require("node:crypto");
 const { getChecklistTemplate } = require("./templates.cjs");
 const { periodForStart } = require("./schedule.cjs");
-const { avatarInput, normalizeMembers, avatarSelection } = require("./avatars.cjs");
+const { avatarInput, normalizeMembers } = require("./avatars.cjs");
 const { isTripType, normalizeTripType } = require("./trip-types.cjs");
 
 const id = () => randomBytes(24).toString("hex");
@@ -82,7 +82,7 @@ function createTrip(input, reuseTrip, reuseMember) {
   validateDates(input.start, input.end);
   const selectedAvatar = avatarInput(input.avatarId, input.avatarData);
   if (!selectedAvatar) fail(400, "请选择头像");
-  const member = { id: id(), name: text(input.nickname, 40), ...selectedAvatar };
+  const member = { id: id(), accountId: String(input.accountId || ""), name: text(input.nickname, 40), ...selectedAvatar };
   const trip = ensureCategories({
     id: id(), name: text(input.name), type: isTripType(input.type) ? input.type : "其他", start: input.start, end: input.end,
     creator: member.id, members: [member], items: defaultItems(member.id),
@@ -108,15 +108,11 @@ function createTrip(input, reuseTrip, reuseMember) {
   return { trip, member };
 }
 
-function addMember(trip, nickname, avatarId, avatarData) {
+function addMember(trip, nickname, avatarId, avatarData, accountId = "") {
   normalizeMembers(trip);
   const selectedAvatar = avatarInput(avatarId, avatarData);
   if (!selectedAvatar) fail(400, "请选择头像");
-  if (selectedAvatar.avatarId) {
-    const choice = avatarSelection(trip, null, selectedAvatar.avatarId);
-    if (!choice.available) fail(409, "这个头像刚被同行人选走，请换一个");
-  }
-  const member = { id: id(), name: text(nickname, 40), ...selectedAvatar };
+  const member = { id: id(), accountId: String(accountId || ""), name: text(nickname, 40), ...selectedAvatar };
   trip.members.push(member);
   trip.items.push(...defaultItems(member.id).filter((item) => item.owner));
   ensureCategories(trip);
@@ -154,10 +150,6 @@ function mutateTrip(trip, member, input) {
       const nextName = text(input.name, 40);
       const selectedAvatar = avatarInput(input.avatarId, input.avatarData);
       if (!selectedAvatar) fail(400, "请选择头像");
-      if (selectedAvatar.avatarId) {
-        const choice = avatarSelection(trip, member.id, selectedAvatar.avatarId);
-        if (!choice.available) fail(409, "这个头像刚被同行人选走，请换一个");
-      }
       member.name = nextName;
       member.avatarId = selectedAvatar.avatarId;
       member.avatarData = selectedAvatar.avatarData;

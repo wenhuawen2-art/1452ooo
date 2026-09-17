@@ -21,7 +21,7 @@ api("ModifyLoginConfig", {
   PhoneNumberLogin: !!login.PhoneNumberLogin,
   EmailLogin: !!login.EmailLogin,
   UserNameLogin: !!login.UserNameLogin,
-  AnonymousLogin: true,
+  AnonymousLogin: false,
 });
 
 api("ModifyResourcePermission", {
@@ -37,7 +37,7 @@ run(["policy", "set", policy, "-e", envId, "--json"], "y\n");
 writeFileSync(".cloudbase-bootstrap.json", JSON.stringify({ operation: "listTrips", data: {} }));
 run(["fn", "invoke", "suixing-api", "-e", envId, "-d", "@.cloudbase-bootstrap.json", "--json"]);
 
-for (const Resource of ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges"])
+for (const Resource of ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges", "weather_cache", "user_accounts", "web_login_sessions"])
   api("ModifyResourcePermission", {
     EnvId: envId,
     ResourceType: "collection",
@@ -45,4 +45,4 @@ for (const Resource of ["trips", "trip_members", "trip_invites", "recovery_codes
     Permission: "ADMINONLY",
   });
 
-console.log("CloudBase 匿名登录、云函数和数据库权限已配置。");
+console.log("CloudBase 微信账号、自定义登录、云函数和数据库权限已配置；匿名登录已关闭。");
