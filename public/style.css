@@ -1753,9 +1753,9 @@ h3 { font-size: var(--type-headline); line-height: 1.3; font-weight: 500; letter
 .trip-countdown strong {
   margin: 0 8px;
   color: #1c2732;
-  font-size: 72px;
+  font-size: 52px;
   line-height: .9;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -4px;
   font-variant-numeric: tabular-nums;
 }
