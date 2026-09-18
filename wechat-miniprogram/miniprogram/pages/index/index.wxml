@@ -90,8 +90,7 @@
             <view class="section-head"><strong>同行成员</strong><text>{{trip.members.length}} 人</text></view>
             <view wx:for="{{trip.members}}" wx:key="id" class="member"><image src="{{item.avatarSrc}}" mode="aspectFill"/><view class="grow"><strong>{{item.name}}</strong><text>{{item.id === trip.creator ? '创建者' : '同行成员'}}</text></view><button wx:if="{{isOwner && item.id !== trip.creator}}" class="danger-text" data-action="removeMember" data-id="{{item.id}}" bindtap="confirmDelete">移除</button></view>
             <button wx:if="{{isOwner && !trip.archived}}" class="primary" open-type="share">邀请同行人</button>
-            <button wx:if="{{isOwner && !trip.archived}}" class="outline full" bindtap="copyInvite">复制网页邀请链接</button>
-            <view class="manage-grid"><button wx:if="{{!trip.archived}}" bindtap="openEditTrip">编辑旅行</button><button bindtap="exportCalendar">导出日历</button><button wx:if="{{isOwner}}" bindtap="exportTrip">导出备份</button><button wx:if="{{isOwner && !trip.archived}}" data-action="archive" bindtap="confirmDelete">归档旅行</button><button wx:if="{{isOwner}}" class="danger-text" bindtap="deleteTrip">删除旅行</button></view>
+            <view class="manage-grid"><button wx:if="{{!trip.archived}}" bindtap="openEditTrip">编辑旅行</button><button bindtap="exportCalendar">导出日历</button><button wx:if="{{isOwner}}" bindtap="exportTrip">导出备份</button><button wx:if="{{isOwner}}" class="danger-text" bindtap="deleteTrip">删除旅行</button></view>
           </view>
         </block>
       </main>
