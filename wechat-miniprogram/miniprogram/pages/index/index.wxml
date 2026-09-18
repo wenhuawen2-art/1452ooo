@@ -55,7 +55,7 @@
               <view class="icon-actions"><button data-id="{{event.id}}" bindtap="openEvent">✎</button><button data-place="{{event.locationText}}" bindtap="openMap">⌖</button></view>
             </view>
           </view>
-          <view wx:if="{{!periods.length}}" class="empty card"><text>这一天还没有行程</text><button class="outline" data-date="{{selectedDate}}" bindtap="openEvent">添加安排</button></view>
+          <view wx:if="{{!periods.length}}" class="empty card"><text>这一天还没有行程</text></view>
           <view class="section-head"><text class="section-title plain">住宿</text><button class="outline" data-date="{{selectedDate}}" bindtap="openHotel">＋ 添加住宿</button></view>
           <view wx:if="{{hotel}}" class="hotel card"><view class="grow"><strong>{{hotel.name}}</strong><text>{{hotel.city}} · {{hotel.checkin}} 至 {{hotel.checkout}}</text><text class="address">⌖ {{hotel.address}}</text></view><view class="icon-actions"><button data-id="{{hotel.id}}" bindtap="openHotel">✎</button><button data-place="{{hotel.address}}" bindtap="openMap">⌖</button></view></view>
           <view wx:else class="empty card"><text>当晚尚未填写住宿</text></view>
