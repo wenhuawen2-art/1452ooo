@@ -18,7 +18,7 @@
     </view>
 
     <block wx:else>
-      <scroll-view class="date-strip" scroll-x enable-flex show-scrollbar="false">
+      <scroll-view wx:if="{{tab !== 'people'}}" class="date-strip" scroll-x enable-flex show-scrollbar="false">
         <button wx:for="{{dates}}" wx:key="value" class="date-chip {{item.active ? 'active' : ''}}" data-date="{{item.value}}" bindtap="selectDate">
           <text>{{item.weekday}}</text><strong>{{item.day}}</strong><small>{{item.month}}月</small>
         </button>
