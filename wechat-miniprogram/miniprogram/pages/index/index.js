@@ -16,9 +16,11 @@ const dayNumber = (value) => Date.parse(`${day(value)}T00:00:00Z`);
 const gap = (a, b) => Math.round((dayNumber(b) - dayNumber(a)) / 86400000);
 const addDay = (value, amount) => new Date(dayNumber(value) + amount * 86400000).toISOString().slice(0, 10);
 const pretty = (value) => `${Number(value.slice(5, 7))}月${Number(value.slice(8, 10))}日`;
+const dateTimeDisplay = (value) => String(value || "").replace("T", " ").slice(0, 16);
 const weekday = (value) => ["周日", "周一", "周二", "周三", "周四", "周五", "周六"][new Date(`${value}T00:00:00Z`).getUTCDay()];
 const avatarSrc = (value) => value?.avatarData || AVATARS.find((entry) => entry.id === value?.avatarId)?.src || AVATARS[0].src;
-const decorateTrip = (trip) => trip ? ({ ...trip, members: (trip.members || []).map((member) => ({ ...member, avatarSrc: avatarSrc(member) })) }) : trip;
+const decorateTripSummary = (trip) => trip ? ({ ...trip, startDisplay: dateTimeDisplay(trip.start), endDisplay: dateTimeDisplay(trip.end) }) : trip;
+const decorateTrip = (trip) => trip ? ({ ...decorateTripSummary(trip), members: (trip.members || []).map((member) => ({ ...member, avatarSrc: avatarSrc(member) })) }) : trip;
 const progress = (items) => ({ done: items.filter((item) => item.done).length, total: items.length });
 const percent = (done, total) => total ? Math.round(done / total * 100) : 0;
 
@@ -43,7 +45,7 @@ Page({
     try {
       const result = await this.call("bootstrapAccount");
       const account = { ...result.account, avatarSrc: avatarSrc(result.account) };
-      this.setData({ account, trips: result.trips || [] });
+      this.setData({ account, trips: (result.trips || []).map(decorateTripSummary) });
       if (!account.profileComplete) { this.openProfile(true); this.setData({ loading: false }); return; }
       if (this.pendingInvite) { await this.prepareInvite(this.pendingInvite); this.setData({ loading: false }); return; }
       const stored = wx.getStorageSync("xiangye-current-trip");
@@ -54,7 +56,7 @@ Page({
   },
   retry() { this.bootstrap(); },
   async loadTrip(id) {
-    const trip = await this.call("getTrip", { tripId: id });
+    let trip = await this.call("getTrip", { tripId: id });
     trip = decorateTrip(trip);
     wx.setStorageSync("xiangye-current-trip", id);
     this.setData({ trip, selectedDate: this.clampDate(this.data.selectedDate, trip), invite: trip.invite || "" });
@@ -86,7 +88,7 @@ Page({
   setScope(event) { this.setData({ scope: event.currentTarget.dataset.scope }, () => this.derive()); },
   selectDate(event) { this.setData({ selectedDate: event.currentTarget.dataset.date }, () => { this.derive(); if (this.data.tab === "today") this.loadWeather(); }); },
   openChecklist(event) { this.setData({ scope: event.currentTarget.dataset.scope, tab: "list" }, () => this.derive()); },
-  async reloadTrips() { try { this.setData({ trips: await this.call("listTrips") }); } catch (error) { this.notify(error.message); } },
+  async reloadTrips() { try { this.setData({ trips: (await this.call("listTrips")).map(decorateTripSummary) }); } catch (error) { this.notify(error.message); } },
   async loadWeather() { if (!this.data.trip) return; this.setData({ weatherLoading: true }); try { this.setData({ weather: await this.call("getWeather", { tripId: this.data.trip.id, date: this.data.selectedDate }) }); } catch (error) { this.setData({ weather: { available: false, reason: error.message } }); } finally { this.setData({ weatherLoading: false }); } },
   openProfile(required = false) { const account = this.data.account || {}; this.setData({ modal: { type: "profile", title: required ? "设置你的资料" : "编辑我的资料", required, values: { nickname: account.nickname || "旅行者", avatarId: account.avatarId || "avatar-01", avatarData: account.avatarData || "" } } }); },
   openProfileTap() { this.openProfile(false); },

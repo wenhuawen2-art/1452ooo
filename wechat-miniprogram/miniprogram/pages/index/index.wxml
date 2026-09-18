@@ -18,7 +18,7 @@
     </view>
 
     <block wx:else>
-      <scroll-view wx:if="{{tab !== 'people'}}" class="date-strip" scroll-x enable-flex show-scrollbar="false">
+      <scroll-view wx:if="{{tab === 'route'}}" class="date-strip" scroll-x enable-flex show-scrollbar="false">
         <button wx:for="{{dates}}" wx:key="value" class="date-chip {{item.active ? 'active' : ''}}" data-date="{{item.value}}" bindtap="selectDate">
           <text>{{item.weekday}}</text><strong>{{item.day}}</strong><small>{{item.month}}月</small>
         </button>
@@ -32,14 +32,13 @@
           <view class="trip-hero card">
             <view class="row"><text class="card-title">{{trip.name}}</text><text class="tag">{{trip.type}}</text></view>
             <view class="countdown"><text>距离出发</text><strong>{{daysUntil}}</strong><text>天</text></view>
-            <view class="trip-dates"><view><text>出发日期</text><strong>{{trip.start}}</strong></view><text class="arrow">→</text><view><text>归来日期</text><strong>{{trip.end}}</strong></view></view>
+            <view class="trip-dates"><view><text>出发日期</text><strong>{{trip.startDisplay}}</strong></view><text class="arrow">→</text><view><text>归来日期</text><strong>{{trip.endDisplay}}</strong></view></view>
           </view>
           <view class="section-title"><text>出行准备</text></view>
           <view class="stats">
             <button class="stat-card" data-scope="公共" bindtap="openChecklist"><text>公共准备</text><view><strong>{{publicProgress.done}}</strong><small> / {{publicProgress.total}} 项</small></view><view class="progress"><i style="width:{{publicProgress.percent}}%"></i></view></button>
             <button class="stat-card" data-scope="我的" bindtap="openChecklist"><text>我的准备</text><view><strong>{{mineProgress.done}}</strong><small> / {{mineProgress.total}} 项</small></view><view class="progress"><i style="width:{{mineProgress.percent}}%"></i></view></button>
           </view>
-          <view class="section-title"><text>{{dateLabel}}</text></view>
           <view class="weather card">
             <view wx:if="{{weatherLoading}}"><text class="muted">正在获取天气…</text></view>
             <view wx:elif="{{weather && weather.available}}" class="weather-row"><text class="weather-icon">{{weather.code < 3 ? '☀️' : weather.code < 60 ? '☁️' : '🌧️'}}</text><view class="grow"><strong>{{weather.location}}</strong><text>{{weather.condition}}</text><small>天气 Open-Meteo · 地点 {{weather.geoSource}}</small></view><strong class="temp">{{weather.high}}°</strong><text class="muted">{{weather.low}}°</text></view>
@@ -86,7 +85,7 @@
           <view class="profile card"><image src="{{account.avatarSrc}}" mode="aspectFill"/><view><strong>{{account.nickname}}</strong><text>微信账号已绑定</text></view></view>
           <button class="scan-login card" bindtap="scanWebLogin"><strong>扫一扫登录网页版</strong><text>在电脑网页显示登录码后使用</text></button>
           <view class="section-head"><text class="section-title plain">旅行管理</text><button class="outline" bindtap="openCreateTrip">＋ 新建旅行</button></view>
-          <view wx:for="{{trips}}" wx:key="id" class="trip-card card {{item.id === trip.id ? 'current' : ''}}" data-id="{{item.id}}" bindtap="switchTrip"><view class="row"><strong>{{item.name}}</strong><text class="tag">{{item.archived ? '已归档' : item.id === trip.id ? '当前旅程' : '进行中'}}</text></view><text>{{item.start}} → {{item.end}}</text></view>
+          <view wx:for="{{trips}}" wx:key="id" class="trip-card card {{item.id === trip.id ? 'current' : ''}}" data-id="{{item.id}}" bindtap="switchTrip"><view class="row"><strong>{{item.name}}</strong><text class="tag">{{item.archived ? '已归档' : item.id === trip.id ? '当前旅程' : '进行中'}}</text></view><text>{{item.startDisplay}} → {{item.endDisplay}}</text></view>
           <view class="manage card">
             <view class="section-head"><strong>同行成员</strong><text>{{trip.members.length}} 人</text></view>
             <view wx:for="{{trip.members}}" wx:key="id" class="member"><image src="{{item.avatarSrc}}" mode="aspectFill"/><view class="grow"><strong>{{item.name}}</strong><text>{{item.id === trip.creator ? '创建者' : '同行成员'}}</text></view><button wx:if="{{isOwner && item.id !== trip.creator}}" class="danger-text" data-action="removeMember" data-id="{{item.id}}" bindtap="confirmDelete">移除</button></view>
