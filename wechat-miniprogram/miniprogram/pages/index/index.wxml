@@ -69,7 +69,7 @@
 
         <block wx:elif="{{tab === 'list'}}">
           <view class="segment"><button class="{{scope === '公共' ? 'active' : ''}}" data-scope="公共" bindtap="setScope">一起准备</button><button class="{{scope === '我的' ? 'active' : ''}}" data-scope="我的" bindtap="setScope">我的物品</button></view>
-          <view class="progress-card card"><view><text>准备进度</text><text class="strong">{{scope === '公共' ? publicProgress.done : mineProgress.done}}<text class="small"> / {{scope === '公共' ? publicProgress.total : mineProgress.total}} 项</text></text></view><view class="top-actions"><button class="outline" bindtap="openTemplates">▦ 导入模板</button><button class="outline" bindtap="openCategory">＋ 新建分类</button></view></view>
+          <view class="progress-card card"><view class="progress-copy"><text class="progress-label">准备进度</text><view class="progress-value"><text class="strong">{{scope === '公共' ? publicProgress.done : mineProgress.done}}</text><text class="small">/ {{scope === '公共' ? publicProgress.total : mineProgress.total}} 项</text></view></view><view class="top-actions"><button class="outline" bindtap="openTemplates">▦ 导入模板</button><button class="outline" bindtap="openCategory">＋ 新建分类</button></view></view>
           <view wx:for="{{checklistGroups}}" wx:key="id" class="check-group">
             <view class="section-head"><text class="section-title plain">{{item.name}} <text class="small">{{item.items.length}} 项</text></text><button class="outline" data-category="{{item.id}}" bindtap="openItem">新增条目 ＋</button></view>
             <view class="card list-card">
