@@ -111,7 +111,7 @@
         <block wx:if="{{modal.type === 'profile'}}">
           <label class="field"><text>昵称</text><input value="{{modal.values.nickname}}" maxlength="40" data-field="nickname" bindinput="bindInput"/></label>
           <text class="field-label">选择头像</text>
-          <view class="avatar-grid"><button class="avatar custom {{modal.values.avatarData ? 'selected' : ''}}" open-type="chooseAvatar" bindchooseavatar="chooseCustomAvatar"><image wx:if="{{modal.values.avatarData}}" src="{{modal.values.avatarData}}"/><text wx:else>＋</text></button><button wx:for="{{avatars}}" wx:key="id" class="avatar {{modal.values.avatarId === item.id ? 'selected' : ''}}" data-id="{{item.id}}" bindtap="chooseAvatar"><image src="{{item.src}}"/></button></view>
+          <view class="avatar-grid"><button class="avatar custom {{modal.values.avatarData ? 'selected' : ''}}" bindtap="chooseCustomAvatar"><image wx:if="{{modal.values.avatarData}}" src="{{modal.values.avatarData}}"/><text wx:else>＋</text></button><button wx:for="{{avatars}}" wx:key="id" class="avatar {{modal.values.avatarId === item.id ? 'selected' : ''}}" data-id="{{item.id}}" bindtap="chooseAvatar"><image src="{{item.src}}"/></button></view>
         </block>
         <block wx:elif="{{modal.type === 'trip'}}">
           <label class="field"><text>旅行名称</text><input value="{{modal.values.name}}" data-field="name" bindinput="bindInput"/></label>

@@ -108,7 +108,21 @@ Page({
   bindType(event) { this.setData({ "modal.values.type": TRIP_TYPES[Number(event.detail.value)] }); },
   bindCategory(event) { const index = Number(event.detail.value); this.setData({ "modal.categoryIndex": index, "modal.values.categoryId": this.data.modal.categories[index].id }); },
   chooseAvatar(event) { this.setData({ "modal.values.avatarId": event.currentTarget.dataset.id, "modal.values.avatarData": "" }); },
-  chooseCustomAvatar(event) { const url = event.detail.avatarUrl; if (!url) return; wx.getFileSystemManager().readFile({ filePath: url, encoding: "base64", success: ({ data }) => this.setData({ "modal.values.avatarId": "", "modal.values.avatarData": `data:image/jpeg;base64,${data}` }), fail: () => this.notify("头像读取失败") }); },
+  async chooseCustomAvatar() {
+    if (this.avatarChoosing) return;
+    this.avatarChoosing = true;
+    try {
+      const media = await wx.chooseMedia({ count: 1, mediaType: ["image"], sourceType: ["album", "camera"], sizeType: ["compressed"] });
+      const path = media.tempFiles?.[0]?.tempFilePath;
+      if (!path) return;
+      const data = wx.getFileSystemManager().readFileSync(path, "base64");
+      this.setData({ "modal.values.avatarId": "", "modal.values.avatarData": `data:image/jpeg;base64,${data}` });
+    } catch (error) {
+      if (!/cancel/i.test(error.errMsg || "")) this.notify("头像读取失败");
+    } finally {
+      this.avatarChoosing = false;
+    }
+  },
   async submitModal() {
     const modal = this.data.modal; if (!modal || this.data.busy) return; this.setData({ busy: true }); wx.showLoading({ title: "正在保存" });
     try {
