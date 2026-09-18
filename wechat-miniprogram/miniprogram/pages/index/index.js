@@ -81,7 +81,11 @@ Page({
     const hotel = (trip.hotels || []).find((entry) => entry.checkin <= selectedDate && selectedDate < entry.checkout) || null;
     const selectedTickets = (trip.tickets || []).filter((entry) => entry.date === selectedDate);
     const categories = trip.categories.filter((entry) => this.data.scope === "公共" ? !entry.owner : entry.owner === trip.me);
-    const checklistGroups = categories.map((category) => ({ ...category, items: trip.items.filter((item) => item.categoryId === category.id && (this.data.scope === "公共" ? !item.owner : item.owner === trip.me)) }));
+    const membersById = new Map((trip.members || []).map((member) => [member.id, member]));
+    const checklistGroups = categories.map((category) => ({ ...category, items: trip.items.filter((item) => item.categoryId === category.id && (this.data.scope === "公共" ? !item.owner : item.owner === trip.me)).map((item) => {
+      const confirmer = membersById.get(item.byMemberId);
+      return { ...item, confirmerName: confirmer?.name || item.by || "", confirmerAvatarSrc: confirmer ? avatarSrc(confirmer) : "" };
+    }) }));
     this.setData({ selectedDate, dates, dateLabel: `${pretty(selectedDate)} · 第 ${gap(trip.start, selectedDate) + 1} 天`, daysUntil: Math.max(0, gap(todayKey(), trip.start)), tripDays: Math.max(1, gap(trip.start, trip.end) + 1), me: me ? { ...me, avatarSrc: avatarSrc(me) } : null, isOwner: trip.me === trip.creator, publicProgress: { ...pub, percent: percent(pub.done, pub.total) }, mineProgress: { ...mine, percent: percent(mine.done, mine.total) }, periods, hotel, selectedTickets, checklistGroups });
   },
   periodFor(time = "") { return time < "13:00" ? "上午" : time < "18:00" ? "下午" : "晚上"; },
