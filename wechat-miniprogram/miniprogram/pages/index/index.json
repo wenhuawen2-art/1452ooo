@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "向野"
+  "navigationBarTitleText": "向野",
+  "usingComponents": {
+    "check-control": "/components/check-control/index"
+  }
 }

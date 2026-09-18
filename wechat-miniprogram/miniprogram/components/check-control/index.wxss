@@ -1,0 +1,3 @@
+:host{display:inline-flex;flex:none;width:48rpx;height:48rpx}
+.control{width:48rpx;height:48rpx;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border:2rpx solid #d3dbe7;border-radius:50%;background:#fff;color:#fff;font-size:30rpx;font-weight:500;line-height:1}
+.control.checked{border-color:#739ae0;background:linear-gradient(145deg,#8fb3f2,#5c84d4);box-shadow:0 4rpx 10rpx rgba(81,124,202,.22)}

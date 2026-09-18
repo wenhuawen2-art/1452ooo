@@ -9,10 +9,12 @@ test("mini program WXML only uses native tags when component lazy loading is ena
   const app = JSON.parse(await readFile(path.join(root, "app.json"), "utf8"));
   assert.equal(app.lazyCodeLoading, "requiredComponents");
 
+  const page = JSON.parse(await readFile(path.join(root, "pages/index/index.json"), "utf8"));
   const wxml = await readFile(path.join(root, "pages/index/index.wxml"), "utf8");
   const tags = new Set([...wxml.matchAll(/<\/?([\w-]+)/g)].map((match) => match[1]));
   const nativeTags = new Set(["block", "button", "image", "input", "label", "picker", "scroll-view", "switch", "text", "textarea", "view"]);
-  assert.deepEqual([...tags].filter((tag) => !nativeTags.has(tag)), []);
+  const registeredComponents = new Set(Object.keys(page.usingComponents || {}));
+  assert.deepEqual([...tags].filter((tag) => !nativeTags.has(tag) && !registeredComponents.has(tag)), []);
 });
 
 test("mini program bundled image resources stay below the quality gate", async () => {

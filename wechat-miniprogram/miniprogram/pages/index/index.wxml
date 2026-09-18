@@ -74,7 +74,7 @@
             <view class="section-head"><text class="section-title plain">{{item.name}} <text class="small">{{item.items.length}} 项</text></text><button class="outline" data-category="{{item.id}}" bindtap="openItem">新增条目 ＋</button></view>
             <view class="card list-card">
               <view wx:for="{{item.items}}" wx:for-item="entry" wx:key="id" class="check-row">
-                <button class="check {{entry.done ? 'done' : ''}}" data-action="toggle" data-id="{{entry.id}}" bindtap="mutateAction">{{entry.done ? '✓' : ''}}</button>
+                <check-control checked="{{entry.done}}" data-action="toggle" data-id="{{entry.id}}" bind:toggle="mutateAction" />
                 <view class="grow"><text class="item-title {{entry.done ? 'done' : ''}}">{{entry.title}}</text><text wx:if="{{entry.key}}" class="key-tag">关键项</text><view wx:if="{{entry.done && entry.confirmerName}}" class="confirmation"><image wx:if="{{entry.confirmerAvatarSrc}}" src="{{entry.confirmerAvatarSrc}}" mode="aspectFill"/><text class="confirmation-name">{{entry.confirmerName}}</text><text class="confirmation-status">已确认</text></view></view>
                 <button wx:if="{{entry.done && entry.key}}" class="review {{entry.reviewed ? 'active' : ''}}" data-action="review" data-id="{{entry.id}}" bindtap="mutateAction">复核</button>
                 <button class="mini-btn" data-id="{{entry.id}}" bindtap="openItem"><image src="/assets/icons/edit.svg" mode="aspectFit" /></button>

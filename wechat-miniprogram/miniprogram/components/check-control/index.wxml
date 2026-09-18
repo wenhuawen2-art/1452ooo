@@ -1,0 +1,1 @@
+<button class="control {{checked ? 'checked' : ''}}" bindtap="toggle" aria-label="{{checked ? '取消确认' : '确认完成'}}"><text wx:if="{{checked}}">✓</text></button>
