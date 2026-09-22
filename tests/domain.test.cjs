@@ -1,6 +1,59 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { createTrip, addMember, viewTrip, mutateTrip } = require("../shared/domain.cjs");
+const { createTrip, duplicateTrip, addMember, viewTrip, mutateTrip } = require("../shared/domain.cjs");
+
+test("trip duplicate preserves visible content while remaining independent", () => {
+  const { trip: source, member: owner } = createTrip({
+    name: "原旅行", nickname: "创建者", avatarId: "avatar-01", type: "自驾游",
+    start: "2026-10-01T08:00", end: "2026-10-03T18:00",
+  });
+  const guest = addMember(source, "同行者", "avatar-02");
+  const owned = source.items.find((item) => item.owner === owner.id);
+  owned.done = true;
+  owned.byMemberId = owner.id;
+  source.events.push({ id: "event-original", date: "2026-10-01", title: "出发", note: "早点走" });
+  source.hotels.push({ id: "hotel-original", name: "山景酒店", note: "靠窗" });
+  source.tickets.push({ id: "ticket-original", type: "门票", fileId: "cloud://original/image.jpg", mime: "image/jpeg" });
+  const before = structuredClone(source);
+  const { trip: copy, member } = duplicateTrip(source, owner, {
+    accountId: "account-1", nickname: "创建者", avatarId: "avatar-01",
+  }, "原旅行（副本）");
+  assert.deepEqual(source, before);
+  assert.notEqual(copy.id, source.id);
+  assert.notEqual(member.id, owner.id);
+  assert.equal(copy.creator, member.id);
+  assert.equal(copy.members.length, 1);
+  assert.equal(copy.members.some((entry) => entry.id === guest.id), false);
+  assert.deepEqual([copy.name, copy.type, copy.start, copy.end], ["原旅行（副本）", source.type, source.start, source.end]);
+  assert.equal(copy.events[0].note, source.events[0].note);
+  assert.equal(copy.hotels[0].note, source.hotels[0].note);
+  assert.equal(copy.tickets[0].fileId, source.tickets[0].fileId);
+  assert.notEqual(copy.events[0].id, source.events[0].id);
+  assert.notEqual(copy.hotels[0].id, source.hotels[0].id);
+  assert.notEqual(copy.tickets[0].id, source.tickets[0].id);
+  assert.equal(copy.items.find((item) => item.title === owned.title).done, true);
+  assert.equal(copy.items.find((item) => item.title === owned.title).owner, member.id);
+  assert.ok(copy.categories.every((category) => !category.owner || category.owner === member.id));
+  mutateTrip(copy, member, { action: "trip", revision: copy.revision, name: "仅修改副本", type: copy.type, start: copy.start, end: copy.end });
+  assert.equal(source.name, "原旅行");
+  assert.deepEqual(source, before);
+});
+
+test("checklist categories can be renamed or deleted with their items", () => {
+  const { trip, member } = createTrip({
+    name: "分类测试", nickname: "创建者", avatarId: "avatar-01",
+    start: "2026-10-01T08:00", end: "2026-10-03T18:00",
+  });
+  const category = trip.categories.find((entry) => !entry.owner && trip.items.some((item) => item.categoryId === entry.id));
+  const initialCount = trip.items.filter((item) => item.categoryId === category.id).length;
+  mutateTrip(trip, member, { action: "category", id: category.id, scope: "公共", name: "改名后的分类", revision: trip.revision });
+  assert.equal(category.name, "改名后的分类");
+  assert.ok(trip.items.filter((item) => item.categoryId === category.id).every((item) => item.category === category.name));
+  const itemCount = trip.items.length;
+  mutateTrip(trip, member, { action: "deleteCategory", id: category.id, revision: trip.revision });
+  assert.equal(trip.categories.some((entry) => entry.id === category.id), false);
+  assert.equal(trip.items.length, itemCount - initialCount);
+});
 const { checklistTemplates } = require("../shared/templates.cjs");
 const { periodForStart, splitEventByPeriods } = require("../shared/schedule.cjs");
 const { avatars, normalizeMembers } = require("../shared/avatars.cjs");

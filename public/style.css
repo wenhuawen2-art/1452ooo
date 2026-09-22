@@ -7,6 +7,9 @@
   --bg: #f2f2f7;
   --line: #d1d1d6;
   --amber: #9a6700;
+  --blue: #3978d4;
+  --blue-pale: #e5effc;
+  --red: #d85b5b;
   --white: #fff;
   color-scheme: light;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -909,7 +912,7 @@ p {
 .template-card {
   width: 100%;
   display: grid;
-  grid-template-columns: 46px minmax(0, 1fr) 20px;
+  grid-template-columns: 58px minmax(0, 1fr) 20px;
   align-items: center;
   gap: 12px;
   min-height: 76px;
@@ -924,53 +927,28 @@ p {
   transform: scale(.985);
 }
 .template-symbol {
-  width: 46px;
-  height: 46px;
+  width: 58px;
+  height: 58px;
   display: grid;
   place-items: center;
-  border: 1px solid #d6eafd;
-  border-radius: 15px;
-  color: #257fd6;
-  background: linear-gradient(145deg, #fafdff 10%, #e4f2ff 100%);
-  box-shadow: inset 0 1px 0 #fff, 0 4px 10px #337bc21c;
-  font-size: 14px;
-  font-weight: 700;
+  border-radius: 12px;
+  background: transparent;
 }
 .module-icon {
-  width: 27px;
-  height: 27px;
-  overflow: visible;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.7;
-  filter: drop-shadow(0 1px 0 #fff9);
+  display: block;
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
 }
 .template-symbol.large .module-icon {
-  width: 31px;
-  height: 31px;
-}
-.module-travel-medicine,
-.module-road-emergency { color: #e48a61; background: linear-gradient(145deg, #fff8f2, #ffe8dd); }
-.module-travel-documents,
-.module-lodging-checkin { color: #6b8fda; background: linear-gradient(145deg, #f4f7ff, #e4ecff); }
-.module-vehicle-check,
-.module-electronics-navigation { color: #4b9acb; background: linear-gradient(145deg, #f1fbff, #dff3ff); }
-.module-home-safety,
-.module-family-travel { color: #70a97f; background: linear-gradient(145deg, #f4fff8, #e2f5e9); }
-.module-road-trip-comfort,
-.module-clothing-toiletries { color: #a68bd0; background: linear-gradient(145deg, #fbf7ff, #eee5ff); }
-.module-camping-outdoor,
-.module-pet-travel { color: #5ca59c; background: linear-gradient(145deg, #f1fffd, #ddf5f0); }
-.module-long-drive-safety { color: #d49b52; background: linear-gradient(145deg, #fffaf0, #ffedc7); }
+  width: 68px;
+  height: 68px;
 }
 .template-symbol.large {
-  flex: 0 0 54px;
-  width: 54px;
-  height: 54px;
-  border-radius: 17px;
-  font-size: 16px;
+  flex: 0 0 68px;
+  width: 68px;
+  height: 68px;
+  border-radius: 14px;
 }
 .template-copy {
   min-width: 0;
@@ -1382,6 +1360,22 @@ dialog::backdrop {
 .category-head > .text-btn {
   flex-shrink: 0;
 }
+.category-head .category-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+.category-menu { position: relative; }
+.category-menu > summary { list-style: none; cursor: pointer; }
+.category-menu > summary::-webkit-details-marker { display: none; }
+.category-menu-trigger { width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--blue-pale); color: var(--blue); font-size: 20px; font-weight: 700; letter-spacing: 2px; }
+.category-menu-panel { position: absolute; right: 0; top: calc(100% + 8px); z-index: 8; min-width: 108px; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.98); box-shadow: 0 12px 28px rgba(27,48,78,.16); }
+.category-menu-panel button { width: 100%; display: flex; align-items: center; gap: 7px; padding: 9px 10px; border-radius: 10px; color: var(--blue); white-space: nowrap; }
+.category-menu-panel button:hover, .category-menu-panel button:focus-visible { background: var(--blue-pale); }
+.category-menu-panel button.danger-link { color: var(--red); }
+.category-menu-panel .icon { width: 15px; height: 15px; }
 .event-time {
   color: var(--green);
   font-weight: 500;
@@ -1707,6 +1701,25 @@ h3 { font-size: var(--type-headline); line-height: 1.3; font-weight: 500; letter
   right: 0;
   bottom: 0;
 }
+
+/* 旅行记账 */
+.expense-page { position: relative; padding-bottom: 92px; }
+.expense-summary-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-bottom:18px; }
+.expense-stat { padding:16px; display:flex; flex-direction:column; gap:6px; }
+.expense-stat span,.expense-stat small { color:var(--muted,#778399); font-size:12px; }
+.expense-stat strong { font-size:21px; }
+.positive { color:#15936a !important; }.negative { color:#df5964 !important; }
+.expense-segment { margin:14px 0 18px; }
+.expense-card { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px; padding:16px; }
+.expense-title-row { display:flex; align-items:center; gap:12px; font-size:16px; }.expense-amount { font-weight:700; white-space:nowrap; }
+.expense-meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; color:var(--muted,#778399); font-size:12px; }.expense-note { margin:8px 0 0; color:var(--muted,#778399); font-size:13px; }
+.expense-actions { display:flex; gap:6px; }.expense-actions button { width:34px; height:34px; border:0; border-radius:50%; background:#edf4ff; color:#367fe6; }.expense-actions .delete { background:#fff0f0; color:#e65d6b; }
+.split-overview { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:18px; text-align:center; }.split-overview span,.split-overview strong { display:block; }.split-overview span { color:var(--muted,#778399); font-size:12px; }.split-overview strong { margin-top:6px; }
+.expense-member-row,.settlement-row { display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center; padding:12px 0; border-bottom:1px solid #eef1f5; }.expense-member-row:last-child,.settlement-row:last-child { border-bottom:0; }.expense-member-row small { color:var(--muted,#778399); }.settlement-row strong { white-space:nowrap; }
+.expense-chart { padding:18px; margin-bottom:12px; }.chart-row { display:grid; grid-template-columns:64px 1fr 78px; gap:8px; align-items:center; margin:12px 0; font-size:12px; }.chart-row i { height:8px; border-radius:8px; background:#edf1f7; overflow:hidden; }.chart-row b { display:block; height:100%; background:#5a9cf4; border-radius:8px; }.chart-row strong { text-align:right; }
+.floating-expense { position:fixed; right:max(24px,calc((100vw - 920px)/2 + 24px)); bottom:88px; z-index:10; border:0; border-radius:28px; background:#101a2d; color:#fff; padding:14px 20px; box-shadow:0 10px 24px #14213a33; }
+.participant-fields { display:flex; flex-wrap:wrap; gap:8px; padding:8px 0; }.field-label { width:100%; color:var(--muted,#778399); font-size:13px; }.check-option { padding:8px 10px; border-radius:10px; background:#f2f6fc; font-size:13px; }
+@media (max-width:600px) { .expense-summary-grid { grid-template-columns:1fr 1fr; }.expense-summary-grid .expense-stat:last-child { grid-column:1 / -1; }.expense-member-row { grid-template-columns:1fr auto; }.expense-member-row small { grid-column:1 / -1; }.settlement-row { grid-template-columns:1fr auto; }.settlement-row .text-btn { grid-column:1 / -1; text-align:left; }.floating-expense { right:22px; bottom:82px; } }
 #app[data-view="today"] .trip-hero {
   display: flex;
   min-height: 330px;
@@ -2426,3 +2439,5 @@ button.my-trip-card { cursor: pointer; }
 .wechat-login-card h1 { margin: 16px 0 8px; font-size: 24px; }
 .wechat-login-card p { line-height: 1.7; }
 .wechat-login-qr { width: 240px; height: 240px; margin: 16px auto; border-radius: 16px; }
+.category-menu-trigger { padding: 0; line-height: 1; }
+.my-trip-actions button[data-action="clone-trip"] { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.3; }

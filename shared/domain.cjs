@@ -108,6 +108,42 @@ function createTrip(input, reuseTrip, reuseMember) {
   return { trip, member };
 }
 
+function duplicateTrip(source, sourceMember, account, requestedName) {
+  const selectedAvatar = avatarInput(account.avatarId, account.avatarData);
+  if (!selectedAvatar) fail(400, "请先设置头像");
+  const member = {
+    id: id(), accountId: String(account.accountId || ""),
+    name: text(account.nickname, 40), ...selectedAvatar,
+  };
+  const categoryMap = new Map();
+  const categories = (source.categories || [])
+    .filter((category) => !category.owner || category.owner === sourceMember.id)
+    .map((category) => {
+      const copy = { ...category, id: id(), owner: category.owner ? member.id : null };
+      categoryMap.set(category.id, copy.id);
+      return copy;
+    });
+  const items = (source.items || [])
+    .filter((item) => !item.owner || item.owner === sourceMember.id)
+    .map((item) => ({
+      ...item, id: id(), owner: item.owner ? member.id : null,
+      categoryId: categoryMap.get(item.categoryId),
+      byMemberId: item.byMemberId === sourceMember.id ? member.id : null,
+      reviewByMemberId: item.reviewByMemberId === sourceMember.id ? member.id : null,
+    }));
+  const now = Date.now();
+  const trip = ensureCategories({
+    id: id(), name: text(requestedName || `${source.name}（副本）`),
+    type: normalizeTripType(source.type), start: source.start, end: source.end,
+    creator: member.id, members: [member], items, categories,
+    events: (source.events || []).map((event) => ({ ...event, id: id() })),
+    hotels: (source.hotels || []).map((hotel) => ({ ...hotel, id: id() })),
+    tickets: (source.tickets || []).map((ticket) => ({ ...ticket, id: id(), uploadedByMemberId: null })),
+    archived: false, revision: 0, createdAt: now, updatedAt: now,
+  });
+  return { trip, member };
+}
+
 function addMember(trip, nickname, avatarId, avatarData, accountId = "") {
   normalizeMembers(trip);
   const selectedAvatar = avatarInput(avatarId, avatarData);
@@ -186,9 +222,23 @@ function mutateTrip(trip, member, input) {
       break;
     case "category": {
       const name = text(input.name, 40), categoryOwner = input.scope === "我的" ? member.id : null;
-      if (trip.categories.some((category) => category.owner === categoryOwner && category.name === name))
+      const existing = input.id ? trip.categories.find((category) => category.id === input.id) : null;
+      if (input.id && !existing) fail(404, "分类不存在");
+      if (existing && existing.owner !== categoryOwner) fail(403, "只能编辑当前清单的分类");
+      if (trip.categories.some((category) => category.id !== input.id && category.owner === categoryOwner && category.name === name))
         fail(400, "这个清单里已有同名分类");
-      trip.categories.push({ id: id(), name, owner: categoryOwner });
+      if (existing) {
+        existing.name = name;
+        for (const item of trip.items) if (item.categoryId === existing.id) item.category = name;
+      } else trip.categories.push({ id: id(), name, owner: categoryOwner });
+      break;
+    }
+    case "deleteCategory": {
+      const category = trip.categories.find((entry) => entry.id === input.id);
+      if (!category) fail(404, "分类不存在");
+      if (category.owner && category.owner !== member.id) fail(403, "只能删除自己的分类");
+      trip.categories = trip.categories.filter((entry) => entry.id !== category.id);
+      trip.items = trip.items.filter((item) => item.categoryId !== category.id);
       break;
     }
     case "importTemplate": {
@@ -313,4 +363,4 @@ function mutateTrip(trip, member, input) {
   return effects;
 }
 
-module.exports = { id, day, fail, createTrip, addMember, viewTrip, mutateTrip, ensureCategories };
+module.exports = { id, day, fail, createTrip, duplicateTrip, addMember, viewTrip, mutateTrip, ensureCategories };

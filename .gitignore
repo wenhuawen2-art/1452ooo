@@ -9,6 +9,9 @@ output/
 *.log
 .playwright-cli/
 wechat-miniprogram/project.private.config.json
+project.private.config.json
+/project.config.json
+tmp/
 .env
 .env.*
 !.env.example

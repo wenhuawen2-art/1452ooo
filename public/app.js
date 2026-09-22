@@ -87,10 +87,12 @@ const paths = {
   arrow: "M5 12h14m-5-5 5 5-5 5",
   close: "m6 6 12 12M6 18 18 6",
   edit: "m16 3 5 5-12 12-6 1 1-6L16 3m-2 2 5 5",
+  copy: "M8 4h11a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1ZM4 16H3V3a1 1 0 0 1 1-1h11v1",
   trash: "M4 7h16M9 7V4h6v3m3 0-1 14H7L6 7m4 4v6m4-6v6",
   calendar: "M4 5h16v16H4V5m3-3v6m10-6v6M4 11h16",
   mapPin: "M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Zm0-8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z",
   template: "M4 4h7v7H4V4m9 0h7v7h-7V4M4 13h7v7H4v-7m9 0h7v7h-7v-7",
+  wallet: "M3 6h18v14H3V6m3-3h12v3H6V3m1 8h4m-4 4h8",
 };
 const icon = (n) =>
   `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="${paths[n] || paths.road}"/></svg>`;
@@ -100,23 +102,8 @@ const filledIconPaths = {
 };
 const filledIcon = (n) =>
   `<svg class="icon filled-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="${filledIconPaths[n]}"/></svg>`;
-const moduleIconPaths = {
-  "travel-medicine": '<path d="M9 3h6v4h3a2 2 0 0 1 2 2v9H4V9a2 2 0 0 1 2-2h3V3Z"/><path d="M12 10v6m-3-3h6"/>',
-  "travel-documents": '<path d="M7 3h7l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5M8 12h6m-6 4h6"/>',
-  "vehicle-check": '<path d="m4 15 1.5-5h13l1.5 5v4H4v-4Z"/><path d="m7 10 1-3h8l1 3M7 19v2m10-2v2M7 15h.01M17 15h.01"/>',
-  "home-safety": '<path d="m3 11 9-7 9 7v9H3v-9Z"/><path d="M9 20v-6h6v6M7 10h.01M17 10h.01"/>',
-  "road-emergency": '<path d="M5 7h14v13H5zM8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M12 10v6m-3-3h6"/>',
-  "road-trip-comfort": '<path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M7 6H5a3 3 0 0 0 0 6h2m5 2v6m-4 0h8"/>',
-  "electronics-navigation": '<rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M10 5h4M11 18.5h2"/>',
-  "clothing-toiletries": '<path d="m9 4 3 2 3-2 5 4-3 4-2-1v10H9V11l-2 1-3-4 5-4Z"/>',
-  "lodging-checkin": '<path d="M4 19V6a2 2 0 0 1 2-2h5v15M4 13h16v6M11 8h2m-2 3h2M17 13v6"/>',
-  "camping-outdoor": '<path d="m3 20 9-16 9 16H3Z"/><path d="m9 20 3-6 3 6M6 16h12"/>',
-  "family-travel": '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3 20a6 6 0 0 1 12 0M14 20a5 5 0 0 1 7 0"/>',
-  "pet-travel": '<path d="M8 11c-2 0-4 2-4 5 0 2 1 3 3 3 2 0 3-1 5-1s3 1 5 1c2 0 3-1 3-3 0-3-2-5-4-5-1 0-2 .5-4 .5S9 11 8 11Z"/><circle cx="7" cy="7" r="1.5"/><circle cx="12" cy="5.5" r="1.5"/><circle cx="17" cy="7" r="1.5"/>',
-  "long-drive-safety": '<path d="m12 3 8 3v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><path d="m8 12 2.5 2.5L16 9"/>',
-};
-const moduleIcon = (id, fallback) =>
-  `<svg class="module-icon" viewBox="0 0 24 24" aria-hidden="true">${moduleIconPaths[id] || `<path d="M5 5h14v14H5z"/><path d="M8 12h8"/>`}</svg>`;
+const moduleIcon = (id) =>
+  `<img class="module-icon" src="/template-icons/template-${id}.webp" alt="" loading="lazy">`;
 const esc = (v) =>
   String(v ?? "").replace(
     /[&<>"']/g,
@@ -145,7 +132,9 @@ let trip = null,
   connection = true,
   weatherByDate = {},
   weatherLoading = {},
-  weatherTripId = null;
+  weatherTripId = null,
+  expenseData = null,
+  expenseSegment = "details";
 const authQuery = new URLSearchParams(location.search),
   authFragment = new URLSearchParams(location.hash.slice(1));
 let invite = authQuery.get("invite") || authFragment.get("invite"),
@@ -168,11 +157,17 @@ async function api(path, data) {
     else if (path === "profile") [operation, payload] = ["updateAccountProfile", data];
     else if (path === "trips") [operation, payload] = ["listTrips", {}];
     else if (path === "create") [operation, payload] = ["createTrip", data];
+    else if (path === "clone") [operation, payload] = ["cloneTrip", data];
     else if (path === "join") [operation, payload] = ["joinTrip", data];
     else if (path === "invite-preview") [operation, payload] = ["previewInvite", data];
     else if (path === "upload-ticket") [operation, payload] = ["uploadTicket", data];
     else if (path === "recover") [operation, payload] = ["recoverMember", data];
     else if (path === "weather") [operation, payload] = ["getWeather", data];
+    else if (path === "expenses") {
+      operation = data?.operation || "listExpenses";
+      payload = { ...(data || {}) }; delete payload.operation;
+      payload.tripId ||= trip?.id;
+    }
     else if (path.startsWith("trips/")) {
       operation = data ? "mutateTrip" : "getTrip";
       payload = { ...(data || {}), tripId: path.slice(6) };
@@ -194,6 +189,7 @@ async function api(path, data) {
 }
 function remember(v) {
   trip = v.trip;
+  expenseData = null;
   localStorage.setItem("suixing-trip", trip.id);
   selected = clampDay();
 }
@@ -208,6 +204,7 @@ const clampDay = () =>
 async function refresh() {
   if (!trip) return;
   trip = await api("trips/" + trip.id);
+  expenseData = null;
   if (selected < day(trip.start) || selected > day(trip.end))
     selected = clampDay();
   render();
@@ -331,14 +328,14 @@ const dateRangeField = (label, start, end, required = true) => {
   const value = `${start}|${end}`;
   return `<label class="field picker-field range-field">${label}<input class="picker-input" name="travelDates" type="text" value="${esc(pickerDisplay(value, "range"))}" data-picker="range" data-start="${esc(start)}" data-end="${esc(end)}" data-start-name="${start === end ? "" : "startDate"}" data-end-name="${end === start ? "" : "endDate"}" autocomplete="off" readonly ${required ? "required" : ""}><input type="hidden" name="startDate" value="${esc(start)}"><input type="hidden" name="endDate" value="${esc(end)}"></label>`;
 };
-const select = (label, name, values, current) =>
-  `<label class="field">${label}<select name="${name}">${values.map((v) => `<option ${v === current ? "selected" : ""}>${esc(v)}</option>`).join("")}</select></label>`;
+const select = (label, name, values, current, labels = values) =>
+  `<label class="field">${label}<select name="${name}">${values.map((v, index) => `<option value="${esc(v)}" ${v === current ? "selected" : ""}>${esc(labels[index] ?? v)}</option>`).join("")}</select></label>`;
 const typeSelect = (current = "自驾游") =>
   `<label class="field picker-field trip-type-field">类型<input class="picker-input" name="type" type="text" value="${esc(current)}" data-value="${esc(current)}" data-picker="trip-type" autocomplete="off" readonly required></label>`;
 const note = (label, name, value = "") =>
   `<label class="field">${label}<textarea name="${name}" maxlength="2000">${esc(value)}</textarea></label>`;
 function form(kind, fields, id = "", del = "") {
-  return `<form data-form="${kind}" data-id="${id}" data-revision="${trip?.revision ?? 0}">${fields}<p class="error" role="alert"></p><div class="form-actions">${del ? `<button type="button" class="btn danger" data-action="${del}" data-id="${id}">删除</button>` : ""}<button class="btn" type="submit">${kind === "create" ? "创建旅行" : kind === "join" ? "加入旅行" : kind === "recover" ? "恢复我的身份" : kind === "ticketCreate" ? "添加票据" : "保存"}</button></div></form>`;
+  return `<form data-form="${kind}" data-id="${id}" data-revision="${trip?.revision ?? 0}">${fields}<p class="error" role="alert"></p><div class="form-actions">${del ? `<button type="button" class="btn danger" data-action="${del}" data-id="${id}">删除</button>` : ""}<button class="btn" type="submit">${kind === "create" ? "创建旅行" : kind === "cloneTrip" ? "创建副本" : kind === "join" ? "加入旅行" : kind === "recover" ? "恢复我的身份" : kind === "ticketCreate" ? "添加票据" : "保存"}</button></div></form>`;
 }
 const avatarInfo = (avatarId) => avatars.find((entry) => entry.id === avatarId);
 function avatarImage(member, className = "") {
@@ -561,10 +558,11 @@ function render() {
       )}<p class="muted">已有同行邀请？请直接打开朋友发来的邀请链接。</p></section></main>`;
     return;
   }
-  app.innerHTML = `${!navigator.onLine || !connection ? '<div class="offline-bar" role="alert">连接已断开 · 当前内容尚未更新，联网后才能保存</div>' : ""}<main class="shell">${brand()}${trip.archived ? '<div class="notice">这趟旅行已归档，内容仅供查看。<button class="text-btn" data-action="create">新建旅行</button></div>' : ""}${tab === "today" ? today() : tab === "route" ? route() : tab === "list" ? checklist() : memberCenter()}</main><nav class="bottom-nav" aria-label="主要导航">${[
+  app.innerHTML = `${!navigator.onLine || !connection ? '<div class="offline-bar" role="alert">连接已断开 · 当前内容尚未更新，联网后才能保存</div>' : ""}<main class="shell">${brand()}${trip.archived ? '<div class="notice">这趟旅行已归档，内容仅供查看。<button class="text-btn" data-action="create">新建旅行</button></div>' : ""}${tab === "today" ? today() : tab === "route" ? route() : tab === "list" ? checklist() : tab === "expenses" ? expensesView() : memberCenter()}</main><nav class="bottom-nav" aria-label="主要导航">${[
     ["today", "sun", "今天"],
     ["route", "map", "行程"],
     ["list", "list", "清单"],
+    ["expenses", "wallet", "记账"],
     ["people", "users", "我的"],
   ]
     .map(
@@ -745,7 +743,7 @@ function checklist() {
   return `<div class="segment">${["公共", "我的"].map((s) => `<button class="${scope === s ? "active" : ""}" data-action="scope" data-value="${s}">${s === "公共" ? "一起准备" : "我的物品"}</button>`).join("")}</div><section class="checklist-overview card"><div class="checklist-overview-head"><div><span class="muted">准备进度</span><div class="checklist-total"><strong>${p.done}</strong><span>/ ${p.total} 项</span></div></div><div class="checklist-actions"><button class="checklist-action-btn template-import-btn" data-action="templates" data-write>${filledIcon("template")}<span>导入模板</span></button><button class="checklist-action-btn" data-action="category" data-write>${filledIcon("category")}<span>新建分类</span></button></div></div><div class="checklist-progress"><i style="width:${p.total ? Math.round((p.done / p.total) * 100) : 0}%"></i></div></section>${gap(nowDay(), trip.start) <= 1 ? reviewSummary() : ""}${categories
     .map(
       (c) =>
-        `<section class="check-group"><div class="section-head category-head"><div><h2>${esc(c.name)}</h2><span class="muted">${items.filter((i) => i.categoryId === c.id).length} 项</span></div><button class="text-btn section-action-btn" data-action="item" data-category="${c.id}" aria-label="在${esc(c.name)}中新增条目" data-write>${icon("plus")} 新增条目</button></div><div class="card check-card">${
+        `<section class="check-group"><div class="section-head category-head"><div><h2>${esc(c.name)}</h2><span class="muted">${items.filter((i) => i.categoryId === c.id).length} 项</span></div><div class="category-actions"><button class="text-btn section-action-btn" data-action="item" data-category="${c.id}" aria-label="在${esc(c.name)}中新增条目" data-write>${icon("plus")} 新增条目</button><details class="category-menu"><summary class="category-menu-trigger" aria-label="${esc(c.name)}分类更多操作">···</summary><div class="category-menu-panel"><button data-action="category" data-id="${c.id}" data-write>${icon("edit")} 编辑</button><button class="danger-link" data-action="delete-category" data-id="${c.id}" data-write>${icon("trash")} 删除</button></div></details></div></div><div class="card check-card">${
           items
             .filter((i) => i.categoryId === c.id)
             .map(itemRow)
@@ -768,20 +766,28 @@ function tripForm(edit = false) {
     ),
   );
 }
-function categoryForm() {
+function categoryForm(id = "") {
+  const current = id ? trip.categories.find((entry) => entry.id === id) : null;
   show(
-    "新建分类",
+    current ? "编辑分类" : "新建分类",
     form(
       "category",
-      `<p class="muted">添加到${scope === "公共" ? "“一起准备”，同行人都能使用" : "“我的物品”，仅你自己使用"}。</p><input type="hidden" name="scope" value="${scope}"><label class="field">分类名称<input name="name" maxlength="40" required placeholder="例如：露营装备"></label>`,
+      `<p class="muted">${current ? "修改分类名称后，其中的条目会同步更新。" : `添加到${scope === "公共" ? "“一起准备”，同行人都能使用" : "“我的物品”，仅你自己使用"}。`}</p><input type="hidden" name="scope" value="${current ? current.owner ? "我的" : "公共" : scope}"><label class="field">分类名称<input name="name" maxlength="40" value="${esc(current?.name || "")}" required placeholder="例如：露营装备"></label>`,
+      id,
     ),
   );
+}
+function deleteCategoryPrompt(id) {
+  const category = trip.categories.find((entry) => entry.id === id);
+  if (!category) return;
+  const count = trip.items.filter((item) => item.categoryId === id).length;
+  show("删除分类？", `<div class="notice warn"><strong>${esc(category.name)}</strong><p>将同时删除其中 ${count} 条清单内容，此操作无法撤销。</p></div><div class="form-actions"><button class="btn secondary" data-action="close">取消</button><button class="btn danger" data-action="confirm-delete-category" data-id="${id}">确认删除</button></div>`);
 }
 function templateLibrary() {
   const destination = scope === "公共" ? "一起准备" : "我的物品";
   show(
     "导入清单模板",
-    `<p class="template-import-note">将模板添加到<strong>${destination}</strong>。导入后，每一条内容都可以编辑或删除。</p><div class="template-list">${checklistTemplates.map((template) => `<button class="template-card" data-action="template-preview" data-id="${template.id}"><span class="template-symbol module-${template.id}" aria-hidden="true">${moduleIcon(template.id, template.symbol)}</span><span class="template-copy"><strong>${esc(template.name)}</strong><small>${template.items.length} 项 · 建议放入${template.recommendedScope === "公共" ? "一起准备" : "我的物品"}</small></span><span class="template-arrow" aria-hidden="true">›</span></button>`).join("")}</div>`,
+    `<p class="template-import-note">将模板添加到<strong>${destination}</strong>。导入后，每一条内容都可以编辑或删除。</p><div class="template-list">${checklistTemplates.map((template) => `<button class="template-card" data-action="template-preview" data-id="${template.id}"><span class="template-symbol module-${template.id}" aria-hidden="true">${moduleIcon(template.id, template.symbol)}</span><span class="template-copy"><strong>${esc(template.name)}</strong><small>${template.items.length} 项</small></span><span class="template-arrow" aria-hidden="true">›</span></button>`).join("")}</div>`,
   );
 }
 function templateDetail(templateId) {
@@ -844,6 +850,9 @@ function members() {
     `<p class="muted">公共清单一起确认，个人物品各自准备。</p><div class="identity-note"><strong>身份已绑定微信账号</strong><span>换设备后使用同一微信登录，旅行数据会自动恢复。</span></div>${own && !trip.archived ? `<button class="btn full" data-action="invite">${icon("users")} 复制邀请链接</button><p class="muted">链接仅分享给同行人，对方登录微信账号后即可加入。</p>` : ""}<div class="members">${trip.members.map((m) => `<div><div class="row"><span class="member-name-row">${avatarImage(m)}<span>${esc(m.name)}</span> ${m.id === trip.creator ? '<span class="pill">创建者</span>' : ""}</span></div>${own && m.id !== trip.creator && !trip.archived ? `<div class="small-actions"><button data-action="removeMember" data-id="${m.id}">移除成员</button></div>` : ""}</div>`).join("")}</div>${own && !trip.archived ? '<div class="subtle"><button class="text-btn" data-action="rotate">使旧邀请失效，生成新链接</button></div>' : ""}`,
   );
 }
+function cloneTripForm() {
+  show("创建旅行副本", form("cloneTrip", `<p class="muted">复制日期、行程、住宿、清单和票据；原旅行不会改变。同行人需要重新邀请。</p>${field("副本名称", "name", `${trip.name}（副本）`, "text", true)}`, trip.id));
+}
 async function settings() {
   trips = await api("trips");
   show(
@@ -869,21 +878,13 @@ function myTripCard(entry, own) {
   const current = entry.id === trip.id;
   const status = entry.archived ? "已归档" : current ? "当前旅程" : "进行中";
   if (!current) return `<button class="my-trip-card archive" data-action="switch" data-id="${entry.id}"><div class="my-trip-card-head"><strong>${esc(entry.name)}</strong><span class="trip-status">${status}</span></div><div class="my-trip-dates">${pretty(day(entry.start))}<span>→</span>${pretty(day(entry.end))}</div></button>`;
-  return `<article class="my-trip-card current ${entry.archived ? "archived" : ""}"><div class="my-trip-card-head"><div><h3>${esc(entry.name)}</h3><span class="trip-status">${status}</span></div><span class="my-trip-count">${trip.members.length} 人同行</span></div><div class="my-trip-dates">${pretty(day(entry.start))}<span>→</span>${pretty(day(entry.end))}</div>${own && !entry.archived ? `<div class="my-trip-invite"><span>把邀请链接发给同行人</span><button data-action="invite">复制邀请链接</button></div>` : ""}<div class="my-trip-members">${trip.members.map((member) => myTripMember(member, own)).join("")}</div><div class="my-trip-actions">${!entry.archived ? `<button data-action="edit-trip" data-write>${icon("edit")} 编辑旅行</button>` : ""}${own ? `<button data-action="export-trip">${icon("arrow")} 导出备份</button>` : ""}${own && !entry.archived ? `<button data-action="archive" data-write>${icon("more")} 归档旅行</button>` : ""}${own ? `<button class="danger" data-action="delete-trip" data-write>${icon("trash")} 删除旅行</button>` : ""}</div>${own && !entry.archived ? `<button class="text-btn rotate-link" data-action="rotate">更换邀请链接，使旧链接失效</button>` : ""}</article>`;
+  return `<article class="my-trip-card current ${entry.archived ? "archived" : ""}"><div class="my-trip-card-head"><div><h3>${esc(entry.name)}</h3><span class="trip-status">${status}</span></div><span class="my-trip-count">${trip.members.length} 人同行</span></div><div class="my-trip-dates">${pretty(day(entry.start))}<span>→</span>${pretty(day(entry.end))}</div>${own && !entry.archived ? `<div class="my-trip-invite"><span>把邀请链接发给同行人</span><button data-action="invite">复制邀请链接</button></div>` : ""}<div class="my-trip-members">${trip.members.map((member) => myTripMember(member, own)).join("")}</div><div class="my-trip-actions"><button data-action="clone-trip">${icon("copy")} 创建副本</button>${!entry.archived ? `<button data-action="edit-trip" data-write>${icon("edit")} 编辑旅行</button>` : ""}${own ? `<button data-action="export-trip">${icon("arrow")} 导出备份</button>` : ""}${own && !entry.archived ? `<button data-action="archive" data-write>${icon("more")} 归档旅行</button>` : ""}${own ? `<button class="danger" data-action="delete-trip" data-write>${icon("trash")} 删除旅行</button>` : ""}</div>${own && !entry.archived ? `<button class="text-btn rotate-link" data-action="rotate">更换邀请链接，使旧链接失效</button>` : ""}</article>`;
 }
 function memberCenter() {
   const me = trip.members.find((member) => member.id === trip.me);
   const own = trip.me === trip.creator;
   return `<section class="my-profile-section"><div class="section-head"><h2>我的资料</h2><button class="text-btn section-action-btn" data-action="profile" data-write>${icon("edit")} 编辑资料</button></div><div class="card my-profile-card">${avatarImage(me, "profile-avatar")}<div class="my-profile-copy"><h2>${esc(me.name)}</h2><span class="pill">${own ? "创建者" : "同行成员"}</span><p class="muted">微信账号已绑定</p></div></div></section>
     <section class="my-trips-section"><div class="section-head"><h2>旅行管理</h2><button class="text-btn section-action-btn" data-action="create">${icon("plus")} 新建旅行</button></div><div class="my-trip-list">${trips.map((entry) => myTripCard(entry, own)).join("")}</div></section>`;
-}
-function deleteItemPrompt(id) {
-  const item = trip.items.find((entry) => entry.id === id);
-  if (!item) return;
-  show(
-    "删除清单条目",
-    `<div class="notice warn"><strong>${esc(item.title)}</strong><p>${item.owner ? "这条内容只会从你的个人清单中移除。" : "删除后，同行人的公共清单中也会移除这条内容。"}</p></div><div class="form-actions"><button class="btn secondary" data-action="close">取消</button><button class="btn danger" data-action="confirm-delete-item" data-id="${item.id}">确认删除</button></div>`,
-  );
 }
 function deleteTripPrompt() {
   show(
@@ -1057,8 +1058,35 @@ document.addEventListener("click", async (ev) => {
       case "tab":
         tab = b.dataset.value;
         if (tab === "people") trips = await api("trips");
+        if (tab === "expenses") await ensureExpenses();
         render();
         window.scrollTo(0, 0);
+        break;
+      case "expense-segment":
+        expenseSegment = b.dataset.value;
+        render();
+        break;
+      case "add-expense":
+        expenseForm();
+        break;
+      case "edit-expense":
+        await ensureExpenses();
+        expenseForm(id);
+        break;
+      case "delete-expense":
+        if (confirm("确认删除这笔费用？删除后分账和统计会同步更新。")) {
+          await api("expenses", { operation: "deleteExpense", id, revision: trip.revision });
+          expenseData = null;
+          modal.close();
+          await refresh();
+          toast("费用已删除");
+        }
+        break;
+      case "settle-expense":
+        settlementForm(b.dataset.from, b.dataset.to, b.dataset.amount);
+        break;
+      case "expense-settings":
+        expenseSettingsForm();
         break;
       case "open-checklist":
         scope = b.dataset.scope;
@@ -1116,11 +1144,22 @@ document.addEventListener("click", async (ev) => {
       case "edit-trip":
         tripForm(true);
         break;
+      case "clone-trip":
+        cloneTripForm();
+        break;
       case "item":
         itemForm(id, b.dataset.category);
         break;
       case "category":
-        categoryForm();
+        categoryForm(id);
+        break;
+      case "delete-category":
+        deleteCategoryPrompt(id);
+        break;
+      case "confirm-delete-category":
+        await mutate({ action: "deleteCategory", id });
+        modal.close();
+        toast("分类已删除");
         break;
       case "templates":
         templateLibrary();
@@ -1249,6 +1288,7 @@ document.addEventListener("submit", async (ev) => {
   submit.disabled = true;
   const data = Object.fromEntries(new FormData(f)),
     kind = f.dataset.form;
+  data.participantMemberIds = [...f.querySelectorAll('input[name="participantMemberId"]:checked')].map((input) => input.value);
   f.querySelectorAll("[data-picker]").forEach((input) => {
     data[input.name] = input.dataset.value || "";
   });
@@ -1284,6 +1324,50 @@ document.addEventListener("submit", async (ev) => {
       render();
       toast("票据已添加");
       return;
+    } else if (kind === "expense") {
+      const splitMode = data.isAA === "on" ? (data.splitMode || "equal") : "personal";
+      const receiptFile = f.querySelector('input[name="receipt"]')?.files?.[0];
+      let receiptFileId = "";
+      if (receiptFile) {
+        toast("正在处理票据图片…");
+        const image = await prepareTicketImage(receiptFile);
+        const uploaded = await api("expenses", { operation: "uploadExpenseReceipt", ...image });
+        receiptFileId = uploaded.fileId;
+      }
+      if (splitMode === "custom" && data.customAmounts) {
+        data.participantMemberIds = [];
+        data.participants = data.customAmounts.split(",").map((pair) => {
+          const [label, amount] = pair.split(":").map((value) => value.trim());
+          const member = trip.members.find((entry) => entry.id === label || entry.name === label);
+          if (!member) throw Error(`找不到成员：${label}`);
+          data.participantMemberIds.push(member.id);
+          return { memberId: member.id, amountMinor: toMinor(amount) };
+        });
+      } else data.participants = data.participantMemberIds;
+      const result = await api("expenses", { operation: "saveExpense", id: f.dataset.id || undefined, revision: Number(f.dataset.revision), date: data.date, title: data.title, amount: data.amount, currency: data.currency, category: data.category, payerMemberId: data.payerMemberId, splitMode, participants: data.participants, note: data.note, receiptFileId });
+      expenseData = null;
+      trip.expenseSummary = result.summary;
+      modal.close();
+      await refresh();
+      toast("费用已保存");
+      return;
+    } else if (kind === "settlement") {
+      const result = await api("expenses", { operation: "saveSettlement", revision: Number(f.dataset.revision), date: data.date, fromMemberId: data.fromMemberId, toMemberId: data.toMemberId, amountMinor: toMinor(data.amount), note: data.note });
+      expenseData = null;
+      trip.expenseSummary = result.summary;
+      modal.close();
+      await refresh();
+      toast("已标记结清");
+      return;
+    } else if (kind === "expenseSettings") {
+      const categories = String(data.expenseCategories || "").split(",").map((value) => value.trim()).filter(Boolean);
+      const result = await api("expenses", { operation: "updateExpenseSettings", revision: Number(f.dataset.revision), baseCurrency: data.baseCurrency, budgetMinor: data.budget ? toMinor(data.budget) : null, expenseCategories: categories });
+      expenseData = null;
+      trip.expenseSummary = result.summary;
+      modal.close();
+      await refresh();
+      toast("记账设置已保存");
+      return;
     } else if (kind === "deleteTrip") {
       await api("trips/" + trip.id, {
         action: "deleteTrip",
@@ -1298,6 +1382,12 @@ document.addEventListener("submit", async (ev) => {
       await boot();
       toast("整趟旅行已删除");
       return;
+    } else if (kind === "cloneTrip") {
+      const v = await api("clone", { tripId: f.dataset.id, name: data.name });
+      remember(v);
+      trips = await api("trips");
+      tab = "people";
+      toast("副本已创建，原旅行未改动");
     } else if (kind === "create" || kind === "join" || kind === "recover") {
       const v = await api(kind, { ...data, invite, code: recovery });
       remember(v);
@@ -1396,3 +1486,54 @@ setInterval(async () => {
   }
 }, 4000);
 boot();
+async function ensureExpenses() {
+  if (!trip) return;
+  if (!expenseData || expenseData.tripId !== trip.id) {
+    expenseData = await api("expenses", { operation: "listExpenses" });
+    expenseData.tripId = trip.id;
+  }
+}
+const expenseMemberName = (id) => trip?.members.find((member) => member.id === id)?.name || "未知成员";
+const expenseMoney = (minor, currency = "CNY") => `${currency === "CNY" ? "¥" : currency + " "}${(Number(minor || 0) / 100).toFixed(2)}`;
+function expenseSummaryCards(summary) {
+  const me = summary?.me || { netMinor: 0 }, budget = summary?.budgetMinor;
+  return `<div class="expense-summary-grid"><div class="card expense-stat"><span>旅行总支出</span><strong>${expenseMoney(summary?.totalMinor)}</strong><small>${summary?.baseCurrency || "CNY"}</small></div><div class="card expense-stat"><span>${budget == null ? "预算" : "预算剩余"}</span><strong>${budget == null ? "未设置" : expenseMoney(summary.remainingBudgetMinor)}</strong><small>${budget == null ? "可在设置中添加" : `预算 ${expenseMoney(budget)}`}</small></div><div class="card expense-stat"><span>我的结余</span><strong class="${me.netMinor >= 0 ? "positive" : "negative"}">${me.netMinor >= 0 ? "应收 " : "应付 "}${expenseMoney(Math.abs(me.netMinor))}</strong><small>${summary?.memberCountPending || 0} 人待结算</small></div></div>`;
+}
+function expenseDetails() {
+  const entries = expenseData?.expenses || [], grouped = {};
+  for (const entry of entries) (grouped[entry.date] ||= []).push(entry);
+  const groups = Object.entries(grouped).sort((a, b) => b[0].localeCompare(a[0])).map(([date, list]) => `<section class="expense-day"><div class="section-head"><h3>${pretty(date)}</h3><span class="muted">${list.length} 笔</span></div>${list.map((entry) => `<article class="card expense-card"><div class="expense-title-row"><strong>${esc(entry.title)}</strong><span class="expense-amount">${expenseMoney(entry.amountMinor, entry.currency)}</span></div><div class="expense-meta"><span class="pill">${esc(entry.category || "其他")}</span><span>${entry.splitMode === "personal" ? "个人" : `${entry.participants?.length || 0} 人 AA`}</span><span>${esc(expenseMemberName(entry.payerMemberId))} 先付</span></div>${entry.note ? `<p class="expense-note">${esc(entry.note)}</p>` : ""}<div class="expense-actions"><button data-action="edit-expense" data-id="${entry.id}" data-write>${icon("edit")}</button><button class="delete" data-action="delete-expense" data-id="${entry.id}" data-write>${icon("trash")}</button></div></article>`).join("")}</section>`).join("");
+  return groups || `<div class="card empty-state"><strong>还没有费用</strong><p class="muted">记录一笔旅行消费，同行人就能看到分账结果。</p></div>`;
+}
+function expenseSplits() {
+  const summary = expenseData?.summary || {}, balances = summary.balances || [], plan = summary.plan || [];
+  return `<div class="card split-overview"><div><span>总支出</span><strong>${expenseMoney(summary.totalMinor)}</strong></div><div><span>已结算</span><strong>${expenseMoney(summary.settledMinor)}</strong></div><div><span>未结算</span><strong>${expenseMoney(summary.unsettledMinor)}</strong></div></div><div class="section-head"><h3>成员结余</h3></div><div class="card expense-members">${balances.map((entry) => `<div class="expense-member-row"><span>${esc(entry.name)}</span><small>已付 ${expenseMoney(entry.paidMinor)} · 应承担 ${expenseMoney(entry.owedMinor)}</small><b class="${entry.netMinor >= 0 ? "positive" : "negative"}">${entry.netMinor >= 0 ? "应收 " : "应付 "}${expenseMoney(Math.abs(entry.netMinor))}</b></div>`).join("")}</div><div class="section-head"><h3>建议结算方案</h3></div>${plan.length ? `<div class="card settlement-list">${plan.map((item) => `<div class="settlement-row"><span>${esc(expenseMemberName(item.fromMemberId))} → ${esc(expenseMemberName(item.toMemberId))}</span><strong>${expenseMoney(item.amountMinor)}</strong><button class="text-btn" data-action="settle-expense" data-from="${item.fromMemberId}" data-to="${item.toMemberId}" data-amount="${item.amountMinor}" data-write>标记已结清</button></div>`).join("")}</div>` : `<div class="card empty-state"><p class="muted">目前没有待结算金额。</p></div>`}`;
+}
+function expenseStats() {
+  const summary = expenseData?.summary || {}, categories = Object.entries(summary.categoryTotals || {}).sort((a, b) => b[1] - a[1]), max = categories[0]?.[1] || 1;
+  return `<div class="card expense-chart"><h3>按分类</h3>${categories.map(([name, value]) => `<div class="chart-row"><span>${esc(name)}</span><i><b style="width:${Math.round(value / max * 100)}%"></b></i><strong>${expenseMoney(value)}</strong></div>`).join("") || '<p class="muted">暂无统计</p>'}</div><div class="card expense-chart"><h3>按日期</h3>${Object.entries(summary.dateTotals || {}).sort((a, b) => a[0].localeCompare(b[0])).map(([date, value]) => `<div class="chart-row"><span>${pretty(date)}</span><i><b style="width:${Math.round(value / max * 100)}%"></b></i><strong>${expenseMoney(value)}</strong></div>`).join("")}</div>`;
+}
+function expensesView() {
+  const summary = expenseData?.summary || trip.expenseSummary || { totalMinor: 0, balances: [], categoryTotals: {}, dateTotals: {} };
+  return `<section class="expense-page"><div class="section-head"><div><h1>旅行记账</h1><p class="muted">${esc(trip.name)} · ${pretty(day(trip.start))}—${pretty(day(trip.end))}</p></div>${trip.me === trip.creator ? '<button class="text-btn" data-action="expense-settings" data-write>记账设置</button>' : ""}</div>${expenseSummaryCards(summary)}<div class="segment expense-segment">${[["details", "明细"], ["split", "分账"], ["stats", "统计"]].map(([value, label]) => `<button class="${expenseSegment === value ? "active" : ""}" data-action="expense-segment" data-value="${value}">${label}</button>`).join("")}</div>${expenseSegment === "details" ? expenseDetails() : expenseSegment === "split" ? expenseSplits() : expenseStats()}${!trip.archived ? '<button class="floating-expense" data-action="add-expense">＋ 记一笔</button>' : ""}</section>`;
+}
+function expenseForm(id) {
+  const entry = (expenseData?.expenses || []).find((item) => item.id === id) || {}, settings = expenseData?.settings || { expenseCategories: DEFAULT_EXPENSE_CATEGORIES }, participants = entry.participants?.map((part) => part.memberId) || trip.members.map((member) => member.id);
+  const categories = settings.expenseCategories?.length ? settings.expenseCategories : DEFAULT_EXPENSE_CATEGORIES;
+  show(id ? "编辑费用" : "记一笔", form("expense", `${field("哪一天", "date", entry.date || selected, "date", true)}${field("干什么", "title", entry.title || "", "text", true)}<div class="form-grid">${field("金额", "amount", entry.amountMinor ? (entry.amountMinor / 100).toFixed(2) : "", "number", true)}${select("币种", "currency", ["CNY", "USD", "EUR", "JPY", "HKD"], entry.currency || "CNY")}</div>${select("分类", "category", categories, entry.category || categories[0])}${select("谁先支付", "payerMemberId", trip.members.map((member) => member.id), entry.payerMemberId || trip.me, trip.members.map((member) => member.name))}<label class="field inline"><input name="isAA" type="checkbox" ${entry.splitMode !== "personal" ? "checked" : ""}> AA 分账</label><div class="participant-fields"><span class="field-label">参与分账成员</span>${trip.members.map((member) => `<label class="check-option"><input type="checkbox" name="participantMemberId" value="${member.id}" ${participants.includes(member.id) ? "checked" : ""}> ${esc(member.name)}</label>`).join("")}<select name="splitMode"><option value="equal" ${entry.splitMode !== "custom" ? "selected" : ""}>均分</option><option value="custom" ${entry.splitMode === "custom" ? "selected" : ""}>自定义金额（保存时校验）</option><option value="personal" ${entry.splitMode === "personal" ? "selected" : ""}>个人消费</option></select><label class="field">自定义分摊金额（成员:金额，逗号分隔）<input name="customAmounts" placeholder="小王:100,小李:50"></label></div><label class="field">票据图片（选填）<input type="file" name="receipt" accept="image/jpeg,image/png,image/webp"></label>${note("备注（选填）", "note", entry.note || "")}`, id, id ? "delete-expense" : ""));
+}
+function settlementForm(from, to, amount) {
+  show("标记结清", form("settlement", `${field("日期", "date", selected, "date", true)}${select("付款人", "fromMemberId", trip.members.map((member) => member.id), from, trip.members.map((member) => member.name))}${select("收款人", "toMemberId", trip.members.map((member) => member.id), to, trip.members.map((member) => member.name))}${field("金额", "amount", (Number(amount || 0) / 100).toFixed(2), "number", true)}${note("备注（选填）", "note", "")}`));
+}
+function expenseSettingsForm() {
+  const settings = expenseData?.settings || { baseCurrency: "CNY", budgetMinor: null, expenseCategories: DEFAULT_EXPENSE_CATEGORIES };
+  show("记账设置", form("expenseSettings", `${select("旅行主币种", "baseCurrency", ["CNY", "USD", "EUR", "JPY", "HKD"], settings.baseCurrency)}${field("旅行预算（选填）", "budget", settings.budgetMinor == null ? "" : (settings.budgetMinor / 100).toFixed(2), "number")}${field("费用分类（用逗号分隔）", "expenseCategories", (settings.expenseCategories || DEFAULT_EXPENSE_CATEGORIES).join(","), "text")}`));
+}
+function deleteItemPrompt(id) {
+  const item = trip.items.find((entry) => entry.id === id);
+  if (!item) return;
+  show(
+    "删除清单条目",
+    `<div class="notice warn"><strong>${esc(item.title)}</strong><p>${item.owner ? "这条内容只会从你的个人清单中移除。" : "删除后，同行人的公共清单中也会移除这条内容。"}</p></div><div class="form-actions"><button class="btn secondary" data-action="close">取消</button><button class="btn danger" data-action="confirm-delete-item" data-id="${item.id}">确认删除</button></div>`,
+  );
+}

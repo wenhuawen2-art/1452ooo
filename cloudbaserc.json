@@ -16,7 +16,8 @@
     {
       "name": "suixing-api",
       "description": "向野旅行协作与微信账号 API",
-      "dir": "cloudfunctions/suixing-api"
+      "dir": "cloudfunctions/suixing-api",
+      "timeout": 60
     },
     {
       "name": "suixing-backup",

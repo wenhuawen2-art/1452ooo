@@ -1,8 +1,10 @@
 const cloudbase = require("@cloudbase/node-sdk");
 const { createHash, randomBytes } = require("node:crypto");
-const { id, fail, createTrip, addMember, viewTrip, mutateTrip } = require("./domain.cjs");
+const { id, fail, createTrip, duplicateTrip, addMember, viewTrip, mutateTrip } = require("./domain.cjs");
 const { avatarIds, normalizeMembers } = require("./avatars.cjs");
 const { checklistTemplates } = require("./templates.cjs");
+const expensePackage = require("./expenses.cjs");
+const { DEFAULT_EXPENSE_CATEGORIES, normalizeExpense, buildExpenseSummary, buildSettlementPlan } = expensePackage;
 
 const app = cloudbase.init({});
 const db = app.database();
@@ -16,11 +18,14 @@ const collections = {
   weather: db.collection("weather_cache"),
   users: db.collection("user_accounts"),
   webLogins: db.collection("web_login_sessions"),
+  expenses: db.collection("trip_expenses"),
+  settlements: db.collection("trip_settlements"),
+  expenseSettings: db.collection("trip_expense_settings"),
 };
 let collectionSetup;
 async function ensureCollections() {
   if (!collectionSetup) collectionSetup = Promise.all(
-    ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges", "weather_cache", "user_accounts", "web_login_sessions"].map(async (name) => {
+    ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges", "weather_cache", "user_accounts", "web_login_sessions", "trip_expenses", "trip_settlements", "trip_expense_settings"].map(async (name) => {
       try { await db.createCollection(name); }
       catch (error) {
         if (!/exist|already|重复|存在/i.test(String(error?.message || error))) throw error;
@@ -204,8 +209,8 @@ async function ticketView(view) {
 
 async function listTrips(accountId) {
   const links = (await collections.members.where({ accountId }).limit(100).get()).data;
-  const trips = await Promise.all(links.map((link) => first(collections.trips.doc(link.tripId))));
-  return trips.filter(Boolean).map((trip) => ({ id: trip.id, name: trip.name, start: trip.start, end: trip.end, archived: trip.archived }));
+  const entries = await Promise.all(links.map(async (link) => ({ link, trip: await first(collections.trips.doc(link.tripId)) })));
+  return entries.filter((entry) => entry.trip).map(({ link, trip }) => ({ id: trip.id, name: trip.name, start: trip.start, end: trip.end, archived: trip.archived, revision: trip.revision, canDelete: link.memberId === trip.creator }));
 }
 
 async function bootstrapAccount(principal) {
@@ -308,6 +313,17 @@ async function create(accountId, input) {
     const created = createTrip({ ...input, accountId, nickname: account.nickname, avatarId: account.avatarId, avatarData: account.avatarData }, reuseTrip, reuseMember);
     const invite = id();
     await transaction.collection("trips").doc(created.trip.id).set(created.trip);
+    if (input.reuse) {
+      const sourceExpenses = (await transaction.collection("trip_expenses").where({ tripId: input.reuse }).limit(1000).get()).data || [];
+      for (const source of sourceExpenses) {
+        const copied = { ...cleanDocument(source), id: id(), tripId: created.trip.id, createdByMemberId: source.createdByMemberId === reuseMember.id ? created.member.id : source.createdByMemberId, payerMemberId: source.payerMemberId === reuseMember.id ? created.member.id : source.payerMemberId, participants: (source.participants || []).map((part) => ({ ...part, memberId: part.memberId === reuseMember.id ? created.member.id : part.memberId })) };
+        await transaction.collection("trip_expenses").doc(copied.id).set(copied);
+      }
+      const sourceSettings = await first(transaction.collection("trip_expense_settings").where({ tripId: input.reuse }).limit(1));
+      if (sourceSettings) await transaction.collection("trip_expense_settings").doc(created.trip.id).set({ ...sourceSettings, tripId: created.trip.id, updatedAt: Date.now() });
+      const sourceSettlements = (await transaction.collection("trip_settlements").where({ tripId: input.reuse }).limit(1000).get()).data || [];
+      for (const source of sourceSettlements) { const settlementId = id(); await transaction.collection("trip_settlements").doc(settlementId).set({ ...cleanDocument(source), id: settlementId, tripId: created.trip.id, fromMemberId: source.fromMemberId === reuseMember.id ? created.member.id : source.fromMemberId, toMemberId: source.toMemberId === reuseMember.id ? created.member.id : source.toMemberId, createdByMemberId: source.createdByMemberId === reuseMember.id ? created.member.id : source.createdByMemberId }); }
+    }
     await transaction.collection("trip_members").doc(memberKey(accountId, created.trip.id)).set({
       accountId, tripId: created.trip.id, memberId: created.member.id, createdAt: Date.now(),
     });
@@ -318,6 +334,54 @@ async function create(accountId, input) {
   });
   const member = result.trip.members.find((entry) => entry.id === result.memberId);
   return { trip: await ticketView(viewTrip(result.trip, member, result.invite)) };
+}
+
+async function clone(accountId, input) {
+  if (!input.tripId) fail(400, "请选择要复制的旅行");
+  const account = await first(collections.users.doc(accountId));
+  if (!account?.profileComplete) fail(400, "请先设置昵称和头像");
+  const link = await membership(db, accountId, input.tripId);
+  const source = await loadTrip(db, input.tripId);
+  const sourceMember = source.members.find((entry) => entry.id === link.memberId);
+  if (!sourceMember) fail(403, "成员身份已经失效");
+  const created = duplicateTrip(source, sourceMember, { ...account, accountId }, input.name);
+  const copiedFiles = [];
+  let committed = false;
+  try {
+    for (const ticket of created.trip.tickets) {
+      if (!ticket.fileId) continue;
+      const downloaded = await app.downloadFile({ fileID: ticket.fileId });
+      if (!Buffer.isBuffer(downloaded.fileContent)) fail(502, "票据图片复制失败，请稍后重试");
+      const extension = ticket.mime === "image/png" ? "png" : ticket.mime === "image/webp" ? "webp" : "jpg";
+      const uploaded = await app.uploadFile({
+        cloudPath: `tickets/${created.trip.id}/${ticket.id}.${extension}`,
+        fileContent: downloaded.fileContent,
+      });
+      if (!uploaded.fileID) fail(502, "票据图片复制失败，请稍后重试");
+      copiedFiles.push(uploaded.fileID);
+      ticket.fileId = uploaded.fileID;
+    }
+    const invite = id();
+    await db.runTransaction(async (transaction) => {
+      await membership(transaction, accountId, input.tripId);
+      const current = await loadTrip(transaction, input.tripId);
+      if (current.revision !== source.revision) fail(409, "原旅行刚刚更新，请重新创建副本");
+      await transaction.collection("trips").doc(created.trip.id).set(created.trip);
+      await transaction.collection("trip_members").doc(memberKey(accountId, created.trip.id)).set({
+        accountId, tripId: created.trip.id, memberId: created.member.id, createdAt: Date.now(),
+      });
+      await transaction.collection("trip_invites").doc(invite).set({
+        token: invite, tripId: created.trip.id, active: true, createdAt: Date.now(),
+      });
+    });
+    committed = true;
+    return { trip: await ticketView(viewTrip(created.trip, created.member, invite)) };
+  } catch (error) {
+    if (!committed)
+      for (let index = 0; index < copiedFiles.length; index += 50)
+        await app.deleteFile({ fileList: copiedFiles.slice(index, index + 50) }).catch(() => {});
+    throw error;
+  }
 }
 
 async function join(accountId, input) {
@@ -360,7 +424,133 @@ async function previewInvite(input) {
 async function get(accountId, input) {
   const link = await membership(db, accountId, input.tripId);
   const trip = await loadTrip(db, input.tripId);
-  return asView(db, trip, link);
+  const view = await asView(db, trip, link);
+  view.expenseSummary = await getExpenseSummaryData(db, trip, link.memberId);
+  return view;
+}
+
+async function expenseSettings(tripId, source = db) {
+  const record = await first(source.collection("trip_expense_settings").where({ tripId }).limit(1));
+  return record || { tripId, baseCurrency: "CNY", budgetMinor: null, expenseCategories: [...DEFAULT_EXPENSE_CATEGORIES], updatedAt: Date.now() };
+}
+async function expenseDocs(tripId, source = db) {
+  const result = await source.collection("trip_expenses").where({ tripId }).limit(1000).get();
+  return (result.data || []).map(cleanDocument).sort((a, b) => String(a.date).localeCompare(String(b.date)) || Number(a.createdAt || 0) - Number(b.createdAt || 0));
+}
+async function settlementDocs(tripId, source = db) {
+  const result = await source.collection("trip_settlements").where({ tripId }).limit(1000).get();
+  return (result.data || []).map(cleanDocument).sort((a, b) => String(a.date).localeCompare(String(b.date)) || Number(a.createdAt || 0) - Number(b.createdAt || 0));
+}
+async function getExpenseSummaryData(source, trip, memberId) {
+  const settings = await expenseSettings(trip.id, source);
+  const expenses = await expenseDocs(trip.id, source);
+  const settlements = await settlementDocs(trip.id, source);
+  const summary = buildExpenseSummary(expenses, settlements, trip.members || [], settings);
+  summary.me = summary.balances.find((entry) => entry.memberId === memberId) || null;
+  summary.plan = buildSettlementPlan(summary);
+  return summary;
+}
+async function listExpenses(accountId, input) {
+  const link = await membership(db, accountId, input.tripId);
+  const trip = await loadTrip(db, input.tripId);
+  const [expenses, settlements, settings] = await Promise.all([expenseDocs(trip.id), settlementDocs(trip.id), expenseSettings(trip.id)]);
+  const summary = buildExpenseSummary(expenses, settlements, trip.members || [], settings);
+  summary.me = summary.balances.find((entry) => entry.memberId === link.memberId) || null;
+  summary.plan = buildSettlementPlan(summary);
+  return { expenses, settlements, settings, summary, members: trip.members };
+}
+async function saveExpense(accountId, input) {
+  const result = await db.runTransaction(async (transaction) => {
+    const link = await membership(transaction, accountId, input.tripId);
+    const trip = await loadTrip(transaction, input.tripId);
+    if (trip.archived) fail(409, "旅行已归档，内容仅供查看");
+    if (input.revision != null && Number(input.revision) !== Number(trip.revision)) fail(409, "同行人刚刚更新了内容，请查看最新状态后重试");
+    const member = trip.members.find((entry) => entry.id === link.memberId);
+    let existing;
+    if (input.id) existing = await first(transaction.collection("trip_expenses").where({ id: input.id, tripId: trip.id }).limit(1));
+    if (existing && existing.createdByMemberId !== member.id && member.id !== trip.creator) fail(403, "只能编辑自己创建的费用");
+    const expense = normalizeExpense(input, trip, trip.members, member.id, existing);
+    await transaction.collection("trip_expenses").doc(expense.id).set(expense);
+    trip.revision = Number(trip.revision || 0) + 1; trip.updatedAt = Date.now();
+    await transaction.collection("trips").doc(trip.id).set(trip);
+    return { trip, memberId: member.id, expense };
+  });
+  return { expense: result.expense, summary: await getExpenseSummaryData(db, result.trip, result.memberId), revision: result.trip.revision };
+}
+async function deleteExpense(accountId, input) {
+  const result = await db.runTransaction(async (transaction) => {
+    const link = await membership(transaction, accountId, input.tripId); const trip = await loadTrip(transaction, input.tripId);
+    if (trip.archived) fail(409, "旅行已归档，内容仅供查看");
+    if (input.revision != null && Number(input.revision) !== Number(trip.revision)) fail(409, "同行人刚刚更新了内容，请查看最新状态后重试");
+    const member = trip.members.find((entry) => entry.id === link.memberId); const expense = await first(transaction.collection("trip_expenses").where({ id: input.id, tripId: trip.id }).limit(1));
+    if (!expense) fail(404, "费用不存在");
+    if (expense.createdByMemberId !== member.id && member.id !== trip.creator) fail(403, "只能删除自己创建的费用");
+    await transaction.collection("trip_expenses").doc(expense.id).delete(); trip.revision = Number(trip.revision || 0) + 1; trip.updatedAt = Date.now(); await transaction.collection("trips").doc(trip.id).set(trip);
+    return { trip, memberId: member.id, fileId: expense.receiptFileId };
+  });
+  if (result.fileId) await app.deleteFile({ fileList: [result.fileId] }).catch(() => {});
+  return { summary: await getExpenseSummaryData(db, result.trip, result.memberId), revision: result.trip.revision };
+}
+async function saveSettlement(accountId, input) {
+  const result = await db.runTransaction(async (transaction) => {
+    const link = await membership(transaction, accountId, input.tripId); const trip = await loadTrip(transaction, input.tripId);
+    if (trip.archived) fail(409, "旅行已归档，内容仅供查看");
+    if (input.revision != null && Number(input.revision) !== Number(trip.revision)) fail(409, "同行人刚刚更新了内容，请查看最新状态后重试");
+    const member = trip.members.find((entry) => entry.id === link.memberId); const settings = await expenseSettings(trip.id, transaction);
+    if (!trip.members.some((entry) => entry.id === input.fromMemberId) || !trip.members.some((entry) => entry.id === input.toMemberId) || input.fromMemberId === input.toMemberId) fail(400, "结算成员无效");
+    const amountMinor = Number(input.amountMinor); if (!Number.isSafeInteger(amountMinor) || amountMinor <= 0) fail(400, "结算金额必须大于 0");
+    let existing = input.id ? await first(transaction.collection("trip_settlements").where({ id: input.id, tripId: trip.id }).limit(1)) : null;
+    if (existing && existing.createdByMemberId !== member.id && member.id !== trip.creator) fail(403, "无权修改此结算记录");
+    const settlementDate = String(input.date || new Date().toISOString().slice(0, 10)).slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(settlementDate) || settlementDate < String(trip.start).slice(0, 10) || settlementDate > String(trip.end).slice(0, 10)) fail(400, "结算日期必须在旅行日期范围内");
+    const settlement = { ...existing, id: existing?.id || input.id || id(), tripId: trip.id, date: settlementDate, fromMemberId: input.fromMemberId, toMemberId: input.toMemberId, amountMinor, currency: String(input.currency || settings.baseCurrency || "CNY").toUpperCase(), note: String(input.note || "").trim().slice(0, 500), createdByMemberId: existing?.createdByMemberId || member.id, createdAt: existing?.createdAt || Date.now(), updatedAt: Date.now() };
+    await transaction.collection("trip_settlements").doc(settlement.id).set(settlement); trip.revision = Number(trip.revision || 0) + 1; trip.updatedAt = Date.now(); await transaction.collection("trips").doc(trip.id).set(trip); return { trip, memberId: member.id };
+  });
+  return { summary: await getExpenseSummaryData(db, result.trip, result.memberId), revision: result.trip.revision };
+}
+async function deleteSettlement(accountId, input) {
+  const result = await db.runTransaction(async (transaction) => {
+    const link = await membership(transaction, accountId, input.tripId); const trip = await loadTrip(transaction, input.tripId); const member = trip.members.find((entry) => entry.id === link.memberId); const settlement = await first(transaction.collection("trip_settlements").where({ id: input.id, tripId: trip.id }).limit(1));
+    if (!settlement) fail(404, "结算记录不存在"); if (settlement.createdByMemberId !== member.id && member.id !== trip.creator) fail(403, "无权删除此结算记录");
+    await transaction.collection("trip_settlements").doc(settlement.id).delete(); trip.revision = Number(trip.revision || 0) + 1; trip.updatedAt = Date.now(); await transaction.collection("trips").doc(trip.id).set(trip); return { trip, memberId: member.id };
+  });
+  return { summary: await getExpenseSummaryData(db, result.trip, result.memberId), revision: result.trip.revision };
+}
+async function updateExpenseSettings(accountId, input) {
+  const result = await db.runTransaction(async (transaction) => {
+    const link = await membership(transaction, accountId, input.tripId); const trip = await loadTrip(transaction, input.tripId); if (link.memberId !== trip.creator) fail(403, "只有创建者可以管理记账设置");
+    const budgetMinor = input.budgetMinor == null || input.budgetMinor === "" ? null : Number(input.budgetMinor); if (budgetMinor != null && (!Number.isSafeInteger(budgetMinor) || budgetMinor < 0)) fail(400, "预算金额无效");
+    const categories = [...new Set((Array.isArray(input.expenseCategories) ? input.expenseCategories : DEFAULT_EXPENSE_CATEGORIES).map((value) => String(value).trim().slice(0, 40)).filter(Boolean))];
+    const settings = { tripId: trip.id, baseCurrency: String(input.baseCurrency || "CNY").toUpperCase(), budgetMinor, expenseCategories: categories.length ? categories : [...DEFAULT_EXPENSE_CATEGORIES], updatedAt: Date.now() };
+    await transaction.collection("trip_expense_settings").doc(trip.id).set(settings); trip.revision = Number(trip.revision || 0) + 1; trip.updatedAt = Date.now(); await transaction.collection("trips").doc(trip.id).set(trip); return { trip, memberId: link.memberId, settings };
+  });
+  return { settings: result.settings, summary: await getExpenseSummaryData(db, result.trip, result.memberId), revision: result.trip.revision };
+}
+async function uploadExpenseReceipt(accountId, input) {
+  if (!input.tripId || typeof input.imageBase64 !== "string" || input.imageBase64.length > 4200000) fail(400, "图片过大，请选择更小的图片");
+  if (!/^image\/(jpeg|png|webp)$/.test(input.mime || "")) fail(400, "仅支持 JPG、PNG 或 WebP 图片");
+  await membership(db, accountId, input.tripId); const extension = input.mime === "image/png" ? "png" : input.mime === "image/webp" ? "webp" : "jpg"; const fileContent = Buffer.from(input.imageBase64, "base64"); if (!fileContent.length || fileContent.length > 3000000) fail(400, "图片过大，请选择更小的图片");
+  const uploaded = await app.uploadFile({ cloudPath: `expenses/${input.tripId}/${id()}.${extension}`, fileContent }); return { fileId: uploaded.fileID };
+}
+
+async function recover(uid, input) {
+  if (typeof input.code !== "string" || !/^[a-f0-9]{48}$/.test(input.code)) fail(404, "恢复链接无效或已过期");
+  const result = await db.runTransaction(async (transaction) => {
+    const recovery = await first(transaction.collection("recovery_codes").where({ code: input.code }).limit(1));
+    if (!recovery || recovery.expires <= Date.now()) fail(404, "恢复链接无效或已过期");
+    const trip = await loadTrip(transaction, recovery.tripId);
+    const member = trip.members.find((entry) => entry.id === recovery.memberId);
+    if (!member) fail(404, "成员不存在");
+    await transaction.collection("trip_members").where({ tripId: trip.id, memberId: member.id }).remove();
+    await transaction.collection("trip_members").doc(memberKey(uid, trip.id)).set({
+      uid, tripId: trip.id, memberId: member.id, createdAt: Date.now(),
+    });
+    await transaction.collection("recovery_codes").doc(input.code).delete();
+    const invite = member.id === trip.creator ? (await inviteFor(transaction, trip.id))?.token : undefined;
+    return { trip, memberId: member.id, invite };
+  });
+  const member = result.trip.members.find((entry) => entry.id === result.memberId);
+  return { trip: await ticketView(viewTrip(result.trip, member, result.invite)) };
 }
 
 async function recover(uid, input) {
@@ -421,8 +611,8 @@ async function mutate(accountId, input) {
     if (input.action === "deleteTrip") {
       if (member.id !== trip.creator) fail(403, "只有创建者可以操作");
       const pending = await first(transaction.collection("delete_challenges").where({ tripId: trip.id, memberId: member.id }).limit(1));
-      if (!pending || pending.expires <= Date.now() || pending.challenge !== input.challenge || input.confirmName !== trip.name)
-        fail(400, "请重新发起删除，并输入正确的旅行名称进行二次确认");
+      if (!pending || pending.expires <= Date.now() || pending.challenge !== input.challenge)
+        fail(400, "删除确认已失效，请重新操作");
       const ticketFiles = (trip.tickets || []).map((ticket) => ticket.fileId).filter(Boolean);
       await transaction.collection("trip_members").where({ tripId: trip.id }).remove();
       await transaction.collection("trip_invites").where({ tripId: trip.id }).remove();
@@ -487,9 +677,18 @@ exports.main = async (event, context) => {
       : operation === "listChecklistTemplates" ? checklistTemplates
       : operation === "listTrips" ? await listTrips(accountId)
       : operation === "createTrip" ? await create(accountId, data)
+      : operation === "cloneTrip" ? await clone(accountId, data)
       : operation === "joinTrip" ? await join(accountId, data)
       : operation === "previewInvite" ? await previewInvite(data)
       : operation === "uploadTicket" ? await uploadTicket(accountId, data)
+      : operation === "listExpenses" ? await listExpenses(accountId, data)
+      : operation === "saveExpense" ? await saveExpense(accountId, data)
+      : operation === "deleteExpense" ? await deleteExpense(accountId, data)
+      : operation === "saveSettlement" ? await saveSettlement(accountId, data)
+      : operation === "deleteSettlement" ? await deleteSettlement(accountId, data)
+      : operation === "updateExpenseSettings" ? await updateExpenseSettings(accountId, data)
+      : operation === "uploadExpenseReceipt" ? await uploadExpenseReceipt(accountId, data)
+      : operation === "getExpenseSummary" ? await (async () => { const link = await membership(db, accountId, data.tripId); const trip = await loadTrip(db, data.tripId); return getExpenseSummaryData(db, trip, link.memberId); })()
       : operation === "getWeather" ? await getWeather(accountId, data)
       : operation === "resolveLocation" ? await resolveLocation(accountId, data)
       : operation === "getTrip" ? await get(accountId, data)
