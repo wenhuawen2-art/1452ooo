@@ -68,9 +68,10 @@ test("template icons are complete, compact, transparent, and use phone-compatibl
 
 test("mini program uses native login, optimistic checklist, safe deletion, and direct ticket upload", async () => {
   const pageDir = path.join(root, "pages/index");
-  const [js, wxml] = await Promise.all([
+  const [js, wxml, wxss] = await Promise.all([
     readFile(path.join(pageDir, "index.js"), "utf8"),
     readFile(path.join(pageDir, "index.wxml"), "utf8"),
+    readFile(path.join(pageDir, "index.wxss"), "utf8"),
   ]);
 
   assert.match(wxml, /open-type="chooseAvatar"/);
@@ -89,6 +90,8 @@ test("mini program uses native login, optimistic checklist, safe deletion, and d
   assert.match(js, /stage: "confirm"/);
   assert.match(js, /mode: "edit"/);
   assert.match(js, /wx\.chooseMedia/);
+  assert.match(wxss, /\.profile-avatar-grid button\{[^}]*width:112rpx;[^}]*height:112rpx;/);
+  assert.match(wxss, /\.profile-avatar-grid\{[^}]*grid-template-columns:repeat\(5,112rpx\);[^}]*gap:20rpx;/);
   assert.match(js, /trip: null, trips: \[\]/);
   assert.match(wxml, /class="check-toggle-zone"[^>]+data-action="toggle"/);
   assert.match(wxml, /wx:if="\{\{item\.id !== trip\.id && item\.canDelete\}\}" class="trip-delete"/);
