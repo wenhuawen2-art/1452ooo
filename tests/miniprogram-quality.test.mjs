@@ -90,8 +90,8 @@ test("mini program uses native login, optimistic checklist, safe deletion, and d
   assert.match(js, /stage: "confirm"/);
   assert.match(js, /mode: "edit"/);
   assert.match(js, /wx\.chooseMedia/);
-  assert.match(wxss, /\.profile-avatar-grid button\{[^}]*width:112rpx;[^}]*height:112rpx;/);
-  assert.match(wxss, /\.profile-avatar-grid\{[^}]*grid-template-columns:repeat\(5,112rpx\);[^}]*gap:20rpx;/);
+  assert.match(wxss, /\.profile-avatar-grid button\{[^}]*width:114rpx;[^}]*height:114rpx;[^}]*padding:0;/);
+  assert.match(wxss, /\.profile-avatar-grid\{[^}]*grid-template-columns:repeat\(5,114rpx\);[^}]*gap:20rpx;[^}]*justify-content:space-between/);
   assert.match(js, /trip: null, trips: \[\]/);
   assert.match(wxml, /class="check-toggle-zone"[^>]+data-action="toggle"/);
   assert.match(wxml, /wx:if="\{\{item\.id !== trip\.id && item\.canDelete\}\}" class="trip-delete"/);
