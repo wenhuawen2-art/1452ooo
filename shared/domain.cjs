@@ -31,25 +31,6 @@ const validateDates = (start, end) => {
     fail(400, "归来时间须晚于出发时间，旅行不超过 365 天");
 };
 
-function defaultItems(owner) {
-  return [
-    ["公共", "携带物品", "车载应急工具", true],
-    ["公共", "携带物品", "饮用水与纸巾", false],
-    ["公共", "准备事项", "检查轮胎、胎压和油量", true],
-    ["公共", "准备事项", "下载离线地图", false],
-    ["公共", "准备事项", "检查门窗与水电", true],
-    ["我的", "携带物品", "身份证", true],
-    ["我的", "携带物品", "驾驶证（驾驶人）", true],
-    ["我的", "携带物品", "常用药品", true],
-    ["我的", "携带物品", "手机、充电线与充电宝", false],
-    ["我的", "携带物品", "换洗衣物与洗漱用品", false],
-  ].map(([scope, category, title, key]) => ({
-    id: id(), owner: scope === "我的" ? owner : null, category, title, key,
-    done: false, reviewed: false, by: null, byMemberId: null,
-    reviewBy: null, reviewByMemberId: null, remind: "", linkedDate: "",
-  }));
-}
-
 function ensureCategories(trip) {
   trip.categories ||= [];
   trip.tickets ||= [];
@@ -66,8 +47,6 @@ function ensureCategories(trip) {
     }
     return category;
   };
-  for (const owner of [null, ...trip.members.map((member) => member.id)])
-    for (const name of ["携带物品", "准备事项"]) ensure(name, owner);
   for (const item of trip.items) {
     const category = trip.categories.find((entry) => entry.id === item.categoryId && entry.owner === item.owner)
       || ensure(item.category || "携带物品", item.owner);
@@ -85,7 +64,7 @@ function createTrip(input, reuseTrip, reuseMember) {
   const member = { id: id(), accountId: String(input.accountId || ""), name: text(input.nickname, 40), ...selectedAvatar };
   const trip = ensureCategories({
     id: id(), name: text(input.name), type: isTripType(input.type) ? input.type : "其他", start: input.start, end: input.end,
-    creator: member.id, members: [member], items: defaultItems(member.id),
+    creator: member.id, members: [member], items: [],
     categories: [], events: [], hotels: [], tickets: [], archived: false, revision: 0,
     createdAt: Date.now(), updatedAt: Date.now(),
   });
@@ -150,7 +129,6 @@ function addMember(trip, nickname, avatarId, avatarData, accountId = "") {
   if (!selectedAvatar) fail(400, "请选择头像");
   const member = { id: id(), accountId: String(accountId || ""), name: text(nickname, 40), ...selectedAvatar };
   trip.members.push(member);
-  trip.items.push(...defaultItems(member.id).filter((item) => item.owner));
   ensureCategories(trip);
   trip.revision += 1;
   trip.updatedAt = Date.now();

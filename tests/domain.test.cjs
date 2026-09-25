@@ -2,11 +2,24 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const { createTrip, duplicateTrip, addMember, viewTrip, mutateTrip } = require("../shared/domain.cjs");
 
+test("a new trip starts without generated content or checklist categories", () => {
+  const { trip, member } = createTrip({
+    name: "第一趟旅行", nickname: "创建者", avatarId: "avatar-01", type: "自驾游",
+    start: "2026-10-01T08:00", end: "2026-10-03T18:00",
+  });
+  assert.deepEqual({ items: trip.items, categories: trip.categories, events: trip.events, hotels: trip.hotels, tickets: trip.tickets }, { items: [], categories: [], events: [], hotels: [], tickets: [] });
+  addMember(trip, "同行者", "avatar-02");
+  assert.deepEqual(trip.categories, []);
+  assert.deepEqual(trip.items, []);
+  assert.equal(member.id, trip.creator);
+});
+
 test("trip duplicate preserves visible content while remaining independent", () => {
   const { trip: source, member: owner } = createTrip({
     name: "原旅行", nickname: "创建者", avatarId: "avatar-01", type: "自驾游",
     start: "2026-10-01T08:00", end: "2026-10-03T18:00",
   });
+  mutateTrip(source, owner, { action: "importTemplate", revision: source.revision, templateId: "travel-documents", scope: "我的" });
   const guest = addMember(source, "同行者", "avatar-02");
   const owned = source.items.find((item) => item.owner === owner.id);
   owned.done = true;
@@ -44,6 +57,7 @@ test("checklist categories can be renamed or deleted with their items", () => {
     name: "分类测试", nickname: "创建者", avatarId: "avatar-01",
     start: "2026-10-01T08:00", end: "2026-10-03T18:00",
   });
+  mutateTrip(trip, member, { action: "importTemplate", revision: trip.revision, templateId: "travel-documents", scope: "公共" });
   const category = trip.categories.find((entry) => !entry.owner && trip.items.some((item) => item.categoryId === entry.id));
   const initialCount = trip.items.filter((item) => item.categoryId === category.id).length;
   mutateTrip(trip, member, { action: "category", id: category.id, scope: "公共", name: "改名后的分类", revision: trip.revision });
@@ -109,6 +123,7 @@ test("CloudBase shared domain resets review after a checklist toggle", () => {
     name: "测试旅行", nickname: "创建者", avatarId: "avatar-01",
     start: "2026-10-01T08:00", end: "2026-10-03T18:00",
   });
+  mutateTrip(trip, member, { action: "importTemplate", revision: trip.revision, templateId: "travel-documents", scope: "我的" });
   const item = trip.items.find((entry) => entry.key && entry.owner === member.id);
   mutateTrip(trip, member, { action: "toggle", revision: trip.revision, id: item.id });
   mutateTrip(trip, member, { action: "review", revision: trip.revision, id: item.id });
@@ -217,6 +232,7 @@ test("custom avatar can be created, joined and updated without consuming a syste
 
 test("profile changes update member references and legacy confirmations are matched safely", () => {
   const { trip, member } = createTrip({ name: "资料测试", nickname: "旧名字", avatarId: "avatar-01", start: "2026-10-01T08:00", end: "2026-10-02T18:00" });
+  mutateTrip(trip, member, { action: "importTemplate", revision: trip.revision, templateId: "travel-documents", scope: "公共" });
   const item = trip.items.find((entry) => !entry.owner);
   item.done = true; item.by = "旧名字"; delete item.byMemberId;
   normalizeMembers(trip);
@@ -225,6 +241,9 @@ test("profile changes update member references and legacy confirmations are matc
   assert.equal(member.avatarId, "avatar-03");
   assert.equal(item.by, "新名字");
   const guest = addMember(trip, "同名", "avatar-02");
+  mutateTrip(trip, guest, { action: "category", revision: trip.revision, name: "个人物品", scope: "我的" });
+  const personalCategory = trip.categories.find((entry) => entry.owner === guest.id && entry.name === "个人物品");
+  mutateTrip(trip, guest, { action: "item", revision: trip.revision, title: "个人条目", scope: "我的", categoryId: personalCategory.id });
   addMember(trip, "同名", "avatar-04");
   const ambiguous = trip.items.find((entry) => entry.owner === guest.id);
   ambiguous.by = "同名"; delete ambiguous.byMemberId;

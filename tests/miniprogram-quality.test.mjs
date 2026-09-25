@@ -75,6 +75,21 @@ test("mini program uses native login, optimistic checklist, safe deletion, and d
 
   assert.match(wxml, /open-type="chooseAvatar"/);
   assert.match(wxml, /type="nickname"/);
+  assert.match(wxml, /bindtap="startWechatLogin"/);
+  assert.match(wxml, /bindtap="confirmWechatProfile"/);
+  assert.match(wxml, /bindtap="cancelWechatLogin"/);
+  assert.match(wxml, /编辑个人资料/);
+  assert.match(wxml, /bindtap="chooseLocalAvatar"/);
+  assert.match(wxml, /bindtap="selectProfileAvatar"/);
+  assert.match(wxml, /bindtap="saveProfileEdit"/);
+  assert.match(wxml, /account\.profileComplete/);
+  assert.doesNotMatch(wxml, /chooseCustomAvatar/);
+  assert.doesNotMatch(wxml, /modal\.type === 'profile'/);
+  assert.match(js, /wx\.getUserProfile/);
+  assert.match(js, /stage: "confirm"/);
+  assert.match(js, /mode: "edit"/);
+  assert.match(js, /wx\.chooseMedia/);
+  assert.match(js, /trip: null, trips: \[\]/);
   assert.match(wxml, /class="check-toggle-zone"[^>]+data-action="toggle"/);
   assert.match(wxml, /wx:if="\{\{item\.id !== trip\.id && item\.canDelete\}\}" class="trip-delete"/);
   assert.doesNotMatch(js, /editable:\s*true/);

@@ -1,28 +1,33 @@
 <view class="page">
   <view wx:if="{{loading}}" class="state-screen"><view class="spinner"></view><text>正在连接向野…</text></view>
   <view wx:elif="{{error}}" class="state-screen"><text class="state-title">暂时无法登录</text><text class="muted">{{error}}</text><button class="primary small" bindtap="retry">重新尝试</button></view>
-  <view wx:elif="{{loginProfile}}" class="login-screen">
-    <view class="login-brand"><image src="/assets/brand/logo-144.png" mode="aspectFill"/><text class="login-title">登录向野</text><text class="muted">使用微信头像和昵称开始旅程</text></view>
-    <button class="wechat-avatar" open-type="chooseAvatar" bindchooseavatar="chooseWechatAvatar"><image wx:if="{{loginProfile.avatarUrl}}" src="{{loginProfile.avatarUrl}}" mode="aspectFill"/><text wx:else>选择微信头像</text></button>
-    <input class="wechat-nickname" type="nickname" value="{{loginProfile.nickname}}" placeholder="填写微信昵称" bindinput="bindWechatNickname"/>
-    <button class="primary wechat-login" disabled="{{busy}}" bindtap="loginWithWechat">微信一键登录</button>
-    <text class="login-tip">登录后可在“我的”中更换为向野默认头像并修改昵称</text>
-  </view>
   <block wx:else>
     <view class="brandbar">
       <image class="brand-logo" src="/assets/brand/logo-144.png" mode="aspectFill" />
       <view><text class="brand-name">向野</text><text class="brand-en">INTO THE WILD</text></view>
     </view>
 
-    <view wx:if="{{!trip}}" class="welcome">
-      <text class="eyebrow">把准备留下，把风景带走</text>
-      <text class="welcome-title">下一程，\n从容出发。</text>
-      <text class="welcome-copy">路线、住宿、随身物品。\n出门需要记住的事，都放在这里。</text>
-      <view class="hero-card"><text class="pill">你的自驾随身助手</text><view class="route-line"></view><text class="hero-foot">准备好，就出发。</text></view>
-      <button class="primary" bindtap="openCreateTrip">＋ 创建我的旅行</button>
-      <view class="welcome-point"><text class="point-icon">⌖</text><view><text class="point-title">每天的路线与住宿</text><text class="muted">打开手机，就知道下一站。</text></view></view>
-      <view class="welcome-point"><text class="point-icon">✓</text><view><text class="point-title">一起准备，各自确认</text><text class="muted">公共物品共享，个人清单独立。</text></view></view>
-    </view>
+    <block wx:if="{{!trip}}">
+      <view wx:if="{{tab === 'today'}}" class="welcome">
+        <block wx:if="{{account.profileComplete}}">
+          <text class="eyebrow">把准备留下，把风景带走</text>
+          <text class="welcome-title">下一程，\n从容出发。</text>
+          <text class="welcome-copy">还没有旅行，先填写名称和出发归来时间。</text>
+          <view class="hero-card"><text class="pill">你的自驾随身助手</text><view class="route-line"></view><text class="hero-foot">准备好，就出发。</text></view>
+          <button class="primary" bindtap="openCreateTrip">＋ 新建旅行</button>
+        </block>
+        <block wx:else>
+          <view class="empty-onboarding card"><image src="/assets/brand/logo-144.png" mode="aspectFill"/><text class="state-title">还没有旅行</text><text class="muted">请先到“我的”完成微信授权登录。</text><button class="primary" data-tab="people" bindtap="setTab">前往我的</button></view>
+        </block>
+      </view>
+      <view wx:elif="{{tab === 'route'}}" class="content empty-tab"><view class="empty card"><text class="state-title">暂无行程</text><text class="muted">{{account.profileComplete ? '请先新建旅行，再添加每天的行程。' : '请先到“我的”完成微信授权登录。'}}</text></view></view>
+      <view wx:elif="{{tab === 'list'}}" class="content empty-tab"><view class="empty card"><text class="state-title">暂无清单</text><text class="muted">{{account.profileComplete ? '请先新建旅行，再添加自己的清单。' : '请先到“我的”完成微信授权登录。'}}</text></view></view>
+      <view wx:elif="{{tab === 'expenses'}}" class="content empty-tab"><view class="empty card"><text class="state-title">暂无记账</text><text class="muted">{{account.profileComplete ? '请先新建旅行，再记录旅行费用。' : '请先到“我的”完成微信授权登录。'}}</text></view></view>
+      <view wx:else class="content empty-profile-page">
+        <block wx:if="{{account.profileComplete}}"><view class="section-head"><text class="section-title plain">我的资料</text></view><view class="profile card"><image src="{{account.avatarSrc}}" mode="aspectFill"/><view class="grow"><text class="strong">{{account.nickname}}</text><text>微信账号已绑定</text></view><button class="profile-edit" aria-label="编辑资料" bindtap="openProfileTap">✎</button></view><view class="empty card"><text class="state-title">还没有旅行</text><text class="muted">创建第一趟旅行，开始安排路线和清单。</text><button class="primary" bindtap="openCreateTrip">＋ 新建旅行</button></view></block>
+        <block wx:else><view class="login-card card"><image src="/assets/brand/logo-144.png" mode="aspectFill"/><text class="state-title">登录后开始使用</text><text class="muted">使用微信头像和昵称建立你的同行身份。</text><button class="primary" disabled="{{busy}}" bindtap="startWechatLogin">微信授权登录</button></view></block>
+      </view>
+    </block>
 
     <block wx:else>
       <scroll-view wx:if="{{tab === 'route'}}" class="date-strip" scroll-x enable-flex show-scrollbar="false">
@@ -118,26 +123,54 @@
         </block>
       </view>
 
-      <view class="bottom-nav">
-        <button class="{{tab === 'today' ? 'active' : ''}}" data-tab="today" bindtap="setTab"><image src="/assets/icons/nav-today.svg" mode="aspectFit" /><text class="small">今天</text></button>
-        <button class="{{tab === 'route' ? 'active' : ''}}" data-tab="route" bindtap="setTab"><image src="/assets/icons/nav-route.svg" mode="aspectFit" /><text class="small">行程</text></button>
-        <button class="{{tab === 'list' ? 'active' : ''}}" data-tab="list" bindtap="setTab"><image src="/assets/icons/nav-list.svg" mode="aspectFit" /><text class="small">清单</text></button>
-        <button class="{{tab === 'expenses' ? 'active' : ''}}" data-tab="expenses" bindtap="setTab"><image src="/assets/icons/nav-list.svg" mode="aspectFit" /><text class="small">记账</text></button>
-        <button class="{{tab === 'people' ? 'active' : ''}}" data-tab="people" bindtap="setTab"><image src="/assets/icons/nav-people.svg" mode="aspectFit" /><text class="small">我的</text></button>
-      </view>
     </block>
+
+    <view class="bottom-nav">
+      <button class="{{tab === 'today' ? 'active' : ''}}" data-tab="today" bindtap="setTab"><image src="/assets/icons/nav-today.svg" mode="aspectFit" /><text class="small">今天</text></button>
+      <button class="{{tab === 'route' ? 'active' : ''}}" data-tab="route" bindtap="setTab"><image src="/assets/icons/nav-route.svg" mode="aspectFit" /><text class="small">行程</text></button>
+      <button class="{{tab === 'list' ? 'active' : ''}}" data-tab="list" bindtap="setTab"><image src="/assets/icons/nav-list.svg" mode="aspectFit" /><text class="small">清单</text></button>
+      <button class="{{tab === 'expenses' ? 'active' : ''}}" data-tab="expenses" bindtap="setTab"><image src="/assets/icons/nav-list.svg" mode="aspectFit" /><text class="small">记账</text></button>
+      <button class="{{tab === 'people' ? 'active' : ''}}" data-tab="people" bindtap="setTab"><image src="/assets/icons/nav-people.svg" mode="aspectFit" /><text class="small">我的</text></button>
+    </view>
   </block>
+
+  <view wx:if="{{loginProfile}}" class="modal-mask" bindtap="cancelWechatLogin">
+    <view class="modal auth-modal" catchtap="stopBubble">
+      <view class="modal-head"><text>{{loginProfile.mode === 'edit' ? '编辑个人资料' : '微信授权登录'}}</text><button bindtap="cancelWechatLogin">×</button></view>
+      <scroll-view wx:if="{{loginProfile.mode === 'edit'}}" class="profile-editor" scroll-y>
+        <image class="profile-preview" src="{{loginProfile.avatarUrl || loginProfile.avatarData}}" mode="aspectFill"/>
+        <text class="profile-label">切换头像</text>
+        <view class="profile-source-actions">
+          <button open-type="chooseAvatar" bindchooseavatar="chooseWechatAvatar">选择微信头像</button>
+          <button bindtap="chooseLocalAvatar">上传图片</button>
+        </view>
+        <text class="profile-label">选择默认头像</text>
+        <view class="profile-avatar-grid">
+          <button wx:for="{{avatars}}" wx:key="id" class="{{loginProfile.avatarId === item.id ? 'selected' : ''}}" data-id="{{item.id}}" bindtap="selectProfileAvatar" aria-label="{{item.name}}"><image src="{{item.src}}" mode="aspectFill"/></button>
+        </view>
+        <label class="field profile-name"><text>昵称</text><input value="{{loginProfile.nickname}}" maxlength="40" placeholder="请输入昵称" bindinput="bindWechatNickname"/></label>
+        <view class="auth-actions"><button bindtap="cancelWechatLogin">取消</button><button class="primary" disabled="{{busy}}" bindtap="saveProfileEdit">保存</button></view>
+      </scroll-view>
+      <view wx:elif="{{loginProfile.stage === 'collect'}}" class="wechat-profile-collect">
+        <text class="muted">请使用微信提供的头像和昵称完成授权。</text>
+        <button class="wechat-avatar" open-type="chooseAvatar" bindchooseavatar="chooseWechatAvatar"><image wx:if="{{loginProfile.avatarUrl}}" src="{{loginProfile.avatarUrl}}" mode="aspectFill"/><text wx:else>选择微信头像</text></button>
+        <input class="wechat-nickname" type="nickname" value="{{loginProfile.nickname}}" placeholder="选择微信昵称" bindinput="bindWechatNickname"/>
+        <button class="primary wechat-login" disabled="{{busy}}" bindtap="reviewWechatProfile">继续</button>
+      </view>
+      <view wx:else class="wechat-profile-confirm">
+        <image src="{{loginProfile.avatarData || loginProfile.avatarUrl}}" mode="aspectFill"/>
+        <text class="state-title">{{loginProfile.nickname}}</text>
+        <text class="muted">确认使用以上微信头像和昵称？</text>
+        <view class="auth-actions"><button bindtap="cancelWechatLogin">取消</button><button class="primary" disabled="{{busy}}" bindtap="confirmWechatProfile">确定</button></view>
+      </view>
+    </view>
+  </view>
 
   <view wx:if="{{modal}}" class="modal-mask" bindtap="closeModal">
     <view class="modal" catchtap="stopBubble">
       <view class="modal-head"><text>{{modal.title}}</text><button wx:if="{{!modal.required}}" bindtap="closeModal">×</button></view>
       <scroll-view class="modal-body" scroll-y>
-        <block wx:if="{{modal.type === 'profile'}}">
-          <label class="field"><text>昵称</text><input value="{{modal.values.nickname}}" maxlength="40" data-field="nickname" bindinput="bindInput"/></label>
-          <text class="field-label">选择头像</text>
-          <view class="avatar-grid"><button class="avatar custom {{modal.values.avatarData ? 'selected' : ''}}" bindtap="chooseCustomAvatar"><image wx:if="{{modal.values.avatarData}}" src="{{modal.values.avatarData}}"/><text wx:else>＋</text></button><button wx:for="{{avatars}}" wx:key="id" class="avatar {{modal.values.avatarId === item.id ? 'selected' : ''}}" data-id="{{item.id}}" bindtap="chooseAvatar"><image src="{{item.src}}"/></button></view>
-        </block>
-        <block wx:elif="{{modal.type === 'trip'}}">
+        <block wx:if="{{modal.type === 'trip'}}">
           <label class="field"><text>旅行名称</text><input value="{{modal.values.name}}" data-field="name" bindinput="bindInput"/></label>
           <label class="field"><text>旅行类型</text><picker range="{{tripTypes}}" bindchange="bindType"><view class="picker-value">{{modal.values.type}} 〉</view></picker></label>
           <view class="field-row"><label class="field"><text>出发日期</text><picker mode="date" value="{{modal.values.startDate}}" data-field="startDate" bindchange="bindDate"><view class="picker-value">{{modal.values.startDate}}</view></picker></label><label class="field"><text>时间</text><picker mode="time" value="{{modal.values.startTime}}" data-field="startTime" bindchange="bindTime"><view class="picker-value">{{modal.values.startTime}}</view></picker></label></view>

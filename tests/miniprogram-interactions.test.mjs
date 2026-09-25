@@ -8,7 +8,7 @@ const source = await readFile("wechat-miniprogram/miniprogram/pages/index/index.
 function pageFor(trip, call) {
   let definition;
   const wx = {
-    showLoading() {}, hideLoading() {}, showToast() {}, setStorageSync() {},
+    showLoading() {}, hideLoading() {}, showToast() {}, setStorageSync() {}, removeStorageSync() {}, getStorageSync() { return ""; },
     cloud: { callFunction() {} },
   };
   runInNewContext(source, { Page: (value) => { definition = value; }, wx, setTimeout });
@@ -26,6 +26,21 @@ function pageFor(trip, call) {
   };
   return page;
 }
+
+test("an incomplete first-time account stays on the empty five-tab shell", async () => {
+  const page = pageFor(null, async (operation) => {
+    assert.equal(operation, "bootstrapAccount");
+    return { account: { id: "new-user", profileComplete: false }, trips: [{ id: "must-not-load", archived: false }] };
+  });
+  page.data.tab = "route";
+  await page.bootstrap();
+  assert.equal(page.data.loading, false);
+  assert.equal(page.data.account.profileComplete, false);
+  assert.equal(page.data.trip, null);
+  assert.equal(page.data.trips.length, 0);
+  assert.equal(page.data.tab, "route");
+  assert.equal(page.data.loginProfile, null);
+});
 
 test("rapid checklist taps on distinct rows are serialized and duplicate taps do not undo a confirmation", async () => {
   const trip = {

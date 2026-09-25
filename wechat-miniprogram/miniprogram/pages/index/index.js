@@ -48,7 +48,8 @@ Page({
       const account = { ...result.account, avatarSrc: avatarSrc(result.account) };
       this.setData({ account, trips: (result.trips || []).map(decorateTripSummary) });
       if (!account.profileComplete) {
-        this.setData({ loading: false, loginProfile: { nickname: "", avatarUrl: "" } });
+        wx.removeStorageSync("xiangye-current-trip");
+        this.setData({ loading: false, trip: null, trips: [], tab: this.data.tab || "today", loginProfile: null });
         return;
       }
       if (this.pendingInvite) { await this.prepareInvite(this.pendingInvite); this.setData({ loading: false }); return; }
@@ -59,22 +60,68 @@ Page({
     } catch (error) { this.setData({ loading: false, error: error.message || "登录失败，请重试" }); }
   },
   retry() { this.bootstrap(); },
+  validWechatProfile(userInfo = {}) {
+    const nickname = String(userInfo.nickName || "").trim();
+    const avatarUrl = String(userInfo.avatarUrl || "").trim();
+    return nickname && nickname !== "微信用户" && avatarUrl ? { nickname, avatarUrl } : null;
+  },
+  async startWechatLogin() {
+    if (this.data.busy) return;
+    this.setData({ busy: true }); wx.showLoading({ title: "正在授权" });
+    try {
+      let nativeProfile = null;
+      if (typeof wx.getUserProfile === "function") {
+        try { nativeProfile = this.validWechatProfile((await wx.getUserProfile({ desc: "用于展示同行身份" }))?.userInfo); }
+        catch (error) { if (/cancel|deny/i.test(error?.errMsg || error?.message || "")) return; }
+      }
+      if (nativeProfile) {
+        const avatarData = await this.readAvatarData(nativeProfile.avatarUrl);
+        this.setData({ loginProfile: { ...nativeProfile, avatarData, stage: "confirm" } });
+      } else {
+        this.setData({ loginProfile: { nickname: "", avatarUrl: "", avatarData: "", stage: "collect" } });
+      }
+    } catch (error) { this.notify(error.message || "微信资料读取失败"); }
+    finally { wx.hideLoading(); this.setData({ busy: false }); }
+  },
+  cancelWechatLogin() { if (!this.data.busy) this.setData({ loginProfile: null }); },
   chooseWechatAvatar(event) {
     const avatarUrl = event.detail?.avatarUrl || "";
-    if (avatarUrl) this.setData({ "loginProfile.avatarUrl": avatarUrl });
+    if (avatarUrl) this.setData({ "loginProfile.avatarUrl": avatarUrl, "loginProfile.avatarId": "", "loginProfile.avatarData": "", "loginProfile.avatarChanged": true });
   },
   bindWechatNickname(event) { this.setData({ "loginProfile.nickname": event.detail.value }); },
-  async loginWithWechat() {
+  selectProfileAvatar(event) {
+    const selected = AVATARS.find((entry) => entry.id === event.currentTarget.dataset.id);
+    if (!selected) return;
+    this.setData({ "loginProfile.avatarId": selected.id, "loginProfile.avatarUrl": selected.src, "loginProfile.avatarData": "", "loginProfile.avatarChanged": true });
+  },
+  async chooseLocalAvatar() {
+    if (this.data.busy) return;
+    try {
+      const result = await wx.chooseMedia({ count: 1, mediaType: ["image"], sourceType: ["album", "camera"], sizeType: ["compressed"] });
+      const avatarUrl = result.tempFiles?.[0]?.tempFilePath || "";
+      if (avatarUrl) this.setData({ "loginProfile.avatarUrl": avatarUrl, "loginProfile.avatarId": "", "loginProfile.avatarData": "", "loginProfile.avatarChanged": true });
+    } catch (error) { if (!/cancel/i.test(error?.errMsg || error?.message || "")) this.notify("选择图片失败，请重试"); }
+  },
+  async reviewWechatProfile() {
     const profile = this.data.loginProfile || {};
     if (!profile.avatarUrl) return this.notify("请选择微信头像");
-    if (!String(profile.nickname || "").trim()) return this.notify("请填写微信昵称");
+    if (!String(profile.nickname || "").trim()) return this.notify("请选择微信昵称");
     if (this.data.busy) return;
-    this.setData({ busy: true }); wx.showLoading({ title: "正在登录" });
+    this.setData({ busy: true }); wx.showLoading({ title: "正在读取" });
     try {
       const avatarData = await this.readAvatarData(profile.avatarUrl);
-      const result = await this.call("updateAccountProfile", { nickname: profile.nickname.trim(), avatarId: "", avatarData });
+      this.setData({ loginProfile: { ...profile, nickname: profile.nickname.trim(), avatarData, stage: "confirm" } });
+    } catch (error) { this.notify(error.message || "微信资料读取失败"); }
+    finally { wx.hideLoading(); this.setData({ busy: false }); }
+  },
+  async confirmWechatProfile() {
+    const profile = this.data.loginProfile || {};
+    if (profile.stage !== "confirm" || !profile.avatarData || !profile.nickname || this.data.busy) return;
+    this.setData({ busy: true }); wx.showLoading({ title: "正在登录" });
+    try {
+      const result = await this.call("updateAccountProfile", { nickname: profile.nickname, avatarId: "", avatarData: profile.avatarData });
       const account = { ...result.account, avatarSrc: avatarSrc(result.account) };
-      this.setData({ account, loginProfile: null });
+      this.setData({ account, loginProfile: null, tab: "today", trip: null });
       if (this.pendingInvite) await this.prepareInvite(this.pendingInvite);
       else {
         await this.reloadTrips();
@@ -82,6 +129,24 @@ Page({
         if (chosen) await this.loadTrip(chosen.id);
       }
     } catch (error) { this.notify(error.message || "微信登录失败"); }
+    finally { wx.hideLoading(); this.setData({ busy: false }); }
+  },
+  async saveProfileEdit() {
+    const profile = this.data.loginProfile || {};
+    const nickname = String(profile.nickname || "").trim();
+    if (!nickname) return this.notify("请输入昵称");
+    if (!profile.avatarId && !profile.avatarData && !profile.avatarUrl) return this.notify("请选择头像");
+    if (this.data.busy) return;
+    this.setData({ busy: true }); wx.showLoading({ title: "正在保存" });
+    try {
+      let avatarData = profile.avatarData || "";
+      if (!profile.avatarId && profile.avatarChanged && profile.avatarUrl) avatarData = await this.readAvatarData(profile.avatarUrl);
+      const result = await this.call("updateAccountProfile", { nickname, avatarId: profile.avatarId || "", avatarData });
+      const account = { ...result.account, avatarSrc: avatarSrc(result.account) };
+      this.setData({ account, loginProfile: null });
+      if (this.data.trip) await this.refreshTrip(false);
+      this.notify("资料已更新");
+    } catch (error) { this.notify(error.message || "资料保存失败"); }
     finally { wx.hideLoading(); this.setData({ busy: false }); }
   },
   async readAvatarData(path) {
@@ -127,7 +192,7 @@ Page({
   },
   periodFor(time = "") { return time < "13:00" ? "上午" : time < "18:00" ? "下午" : "晚上"; },
   async refreshTrip(showLoading = true) { if (!this.data.trip || this.pendingChecklistActions?.size || this.data.busy) return; if (showLoading) wx.showLoading({ title: "正在刷新" }); try { await this.loadTrip(this.data.trip.id); } catch (error) { this.notify(error.message); } finally { if (showLoading) wx.hideLoading(); } },
-  setTab(event) { const tab = event.currentTarget.dataset.tab; this.setData({ tab }); if (tab === "today") this.loadWeather(); if (tab === "people") this.reloadTrips(); if (tab === "expenses") this.loadExpenses(); },
+  setTab(event) { const tab = event.currentTarget.dataset.tab; this.setData({ tab }); if (this.data.trip && tab === "today") this.loadWeather(); if (this.data.account?.profileComplete && tab === "people") this.reloadTrips(); if (this.data.trip && tab === "expenses") this.loadExpenses(); },
   async loadExpenses() { if (!this.data.trip) return; try { const result = await this.call("listExpenses", { tripId: this.data.trip.id }); const members = new Map((result.members || []).map((member) => [member.id, member.name])); const expenses = (result.expenses || []).map((entry) => ({ ...entry, payerName: members.get(entry.payerMemberId) || "未知成员", displayAmount: `${entry.currency === "CNY" ? "¥" : entry.currency + " "}${(Number(entry.amountMinor || 0) / 100).toFixed(2)}` })); const me = result.summary?.me || { netMinor: 0 }; this.setData({ expenses, expenseSummary: { totalYuan: (Number(result.summary?.totalMinor || 0) / 100).toFixed(2), myNetMinor: me.netMinor, myNetLabel: `${me.netMinor >= 0 ? "应收" : "应付"} ¥${(Math.abs(me.netMinor) / 100).toFixed(2)}` } }); } catch (error) { this.notify(error.message); } },
   setScope(event) { this.setData({ scope: event.currentTarget.dataset.scope }, () => this.derive()); },
   selectDate(event) { this.setData({ selectedDate: event.currentTarget.dataset.date }, () => { this.derive(); if (this.data.tab === "today") this.loadWeather(); }); },
@@ -136,9 +201,12 @@ Page({
   openExpenseSplit() { this.setData({ tab: "expenses" }, () => this.loadExpenses()); },
   async reloadTrips() { try { this.setData({ trips: (await this.call("listTrips")).map(decorateTripSummary) }); } catch (error) { this.notify(error.message); } },
   async loadWeather() { if (!this.data.trip) return; this.setData({ weatherLoading: true }); try { this.setData({ weather: await this.call("getWeather", { tripId: this.data.trip.id, date: this.data.selectedDate }) }); } catch (error) { this.setData({ weather: { available: false, reason: error.message } }); } finally { this.setData({ weatherLoading: false }); } },
-  openProfile(required = false) { const account = this.data.account || {}; this.setData({ modal: { type: "profile", title: required ? "设置你的资料" : "编辑我的资料", required, values: { nickname: account.nickname || "旅行者", avatarId: account.avatarId || "avatar-01", avatarData: account.avatarData || "" } } }); },
-  openProfileTap() { this.openProfile(false); },
-  openCreateTrip() { const now = todayKey(); this.setData({ modal: { type: "trip", title: "创建旅行", values: { name: "", type: "自驾游", startDate: now, startTime: "08:00", endDate: addDay(now, 3), endTime: "18:00" } } }); },
+  openProfileTap() {
+    const account = this.data.account;
+    if (!account?.profileComplete) { this.startWechatLogin(); return; }
+    this.setData({ loginProfile: { mode: "edit", stage: "edit", nickname: account.nickname || "", avatarId: account.avatarId || "", avatarData: account.avatarData || "", avatarUrl: account.avatarSrc || "", avatarChanged: false } });
+  },
+  openCreateTrip() { if (!this.data.account?.profileComplete) { this.setData({ tab: "people" }); this.notify("请先完成微信授权登录"); return; } const now = todayKey(); this.setData({ modal: { type: "trip", title: "创建旅行", values: { name: "", type: "自驾游", startDate: now, startTime: "08:00", endDate: addDay(now, 3), endTime: "18:00" } } }); },
   openCloneTrip() { const trip = this.data.trip; if (!trip || this.data.busy) return; this.setData({ modal: { type: "cloneTrip", title: "创建旅行副本", sourceId: trip.id, values: { name: `${trip.name}（副本）` } } }); },
   openEditTrip() { const trip = this.data.trip; this.setData({ modal: { type: "trip", edit: true, title: "编辑旅行", values: { name: trip.name, type: trip.type || "自驾游", startDate: day(trip.start), startTime: trip.start.slice(11, 16), endDate: day(trip.end), endTime: trip.end.slice(11, 16) } } }); },
   openEvent(event) { const id = event.currentTarget.dataset.id; const current = this.data.trip.events.find((entry) => entry.id === id) || {}; this.setData({ modal: { type: "event", edit: !!id, title: id ? "编辑行程安排" : "添加行程安排", id, values: { title: current.title || "", date: current.date || event.currentTarget.dataset.date || this.data.selectedDate, startTime: current.startTime || current.time || "09:00", endTime: current.endTime || "10:00", startPlace: current.startPlace || "", endPlace: current.endPlace || "", address: current.address || "", note: current.note || "" } } }); },
@@ -155,28 +223,11 @@ Page({
   bindTime(event) { this.setData({ [`modal.values.${event.currentTarget.dataset.field}`]: event.detail.value }); },
   bindType(event) { this.setData({ "modal.values.type": TRIP_TYPES[Number(event.detail.value)] }); },
   bindCategory(event) { const index = Number(event.detail.value); this.setData({ "modal.categoryIndex": index, "modal.values.categoryId": this.data.modal.categories[index].id }); },
-  chooseAvatar(event) { this.setData({ "modal.values.avatarId": event.currentTarget.dataset.id, "modal.values.avatarData": "" }); },
-  async chooseCustomAvatar() {
-    if (this.avatarChoosing) return;
-    this.avatarChoosing = true;
-    try {
-      const media = await wx.chooseMedia({ count: 1, mediaType: ["image"], sourceType: ["album", "camera"], sizeType: ["compressed"] });
-      const path = media.tempFiles?.[0]?.tempFilePath;
-      if (!path) return;
-      const data = wx.getFileSystemManager().readFileSync(path, "base64");
-      this.setData({ "modal.values.avatarId": "", "modal.values.avatarData": `data:image/jpeg;base64,${data}` });
-    } catch (error) {
-      if (!/cancel/i.test(error.errMsg || "")) this.notify("头像读取失败");
-    } finally {
-      this.avatarChoosing = false;
-    }
-  },
   async submitModal() {
     const modal = this.data.modal; if (!modal || this.data.busy) return; this.setData({ busy: true }); wx.showLoading({ title: "正在保存" });
     try {
       const values = modal.values;
-      if (modal.type === "profile") { const result = await this.call("updateAccountProfile", values); const account = { ...result.account, avatarSrc: avatarSrc(result.account) }; this.setData({ account, modal: null }); if (this.pendingInvite) await this.prepareInvite(this.pendingInvite); else await this.reloadTrips(); }
-      else if (modal.type === "cloneTrip") { this.localChangeVersion = (this.localChangeVersion || 0) + 1; const result = await this.call("cloneTrip", { tripId: modal.sourceId, name: values.name }); wx.setStorageSync("xiangye-current-trip", result.trip.id); this.setData({ trip: decorateTrip(result.trip), selectedDate: day(result.trip.start), modal: null, tab: "people" }); await this.reloadTrips(); this.derive(); }
+      if (modal.type === "cloneTrip") { this.localChangeVersion = (this.localChangeVersion || 0) + 1; const result = await this.call("cloneTrip", { tripId: modal.sourceId, name: values.name }); wx.setStorageSync("xiangye-current-trip", result.trip.id); this.setData({ trip: decorateTrip(result.trip), selectedDate: day(result.trip.start), modal: null, tab: "people" }); await this.reloadTrips(); this.derive(); }
       else if (modal.type === "trip") { const payload = { ...values, start: `${values.startDate}T${values.startTime}`, end: `${values.endDate}T${values.endTime}` }; const result = modal.edit ? await this.call("mutateTrip", { tripId: this.data.trip.id, revision: this.data.trip.revision, action: "trip", ...payload }) : await this.call("createTrip", payload); this.setData({ trip: decorateTrip(result.trip), modal: null, tab: "today" }); await this.reloadTrips(); this.derive(); this.loadWeather(); }
       else if (modal.type === "join") { const result = await this.call("joinTrip", { invite: modal.invite }); this.pendingInvite = ""; this.setData({ trip: decorateTrip(result.trip), modal: null, tab: "today" }); await this.reloadTrips(); this.derive(); this.loadWeather(); }
       else if (modal.type === "expense") { const result = await this.call("saveExpense", { tripId: this.data.trip.id, revision: this.data.trip.revision, date: values.date, title: values.title, amount: values.amount, currency: "CNY", category: "其他", payerMemberId: this.data.trip.me, splitMode: values.isAA ? "equal" : "personal", participants: this.data.trip.members.map((member) => member.id), note: values.note }); this.setData({ modal: null, "trip.revision": result.revision }); await this.loadExpenses(); }
