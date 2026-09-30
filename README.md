@@ -46,9 +46,13 @@ npm.cmd run cloudbase:secure
 
 原生小程序不再通过 `web-view` 访问网页，因此不需要把静态站点配置为小程序业务域名。若将来新增 `wx.request` 直连第三方接口，再按实际接口配置 request 合法域名；目前天气与地理解析均由云函数代理。
 
+### 腾讯位置服务
+
+首页“全程路线”由 `suixing-api` 在服务端调用腾讯位置服务生成，小程序端不会收到地图 Key。上线真实路线前，在 CloudBase 云函数 `suixing-api` 的环境变量中配置 `TENCENT_LBS_KEY`，并为该 WebService Key 开通地址解析、地点搜索和路线规划能力。未配置 Key 时，游客演示路线仍可浏览；正式旅行会显示配置提示，行程保存及其他功能不受影响。配置完成后重新打开路线卡或点击“重新生成”即可生成真实路线。
+
 ## 数据和权限
 
-- 核心集合：`user_accounts`、`trip_members`、`trips`、`trip_invites`、`web_login_sessions`、`weather_cache`、`delete_challenges`、`recovery_codes`。
+- 核心集合：`user_accounts`、`trip_members`、`trips`、`trip_invites`、`trip_route_overviews`、`web_login_sessions`、`weather_cache`、`delete_challenges`、`recovery_codes`。
 - 数据库集合均为 `ADMINONLY`，客户端不能直接读取。
 - `trip_members` 使用稳定的 `accountId + tripId` 关联成员身份；客户端不能提交或伪造 OpenID。
 - `suixing-api` 允许函数入口调用，以支持网页创建和轮询短时登录会话；除扫码会话创建、轮询和兑换外，其余接口均要求服务端解析出的微信或自定义登录身份。

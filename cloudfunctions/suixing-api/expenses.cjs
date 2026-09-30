@@ -1,5 +1,5 @@
 const id = () => `${Date.now().toString(36)}${Math.random().toString(36).slice(2)}${Math.random().toString(36).slice(2)}`;
-const DEFAULT_EXPENSE_CATEGORIES = ["餐饮", "交通", "住宿", "门票", "购物", "其他"];
+const DEFAULT_EXPENSE_CATEGORIES = ["交通出行", "自驾用车", "住宿", "餐饮", "景点活动", "购物", "保险通讯", "其他"];
 const CURRENCIES = ["CNY", "USD", "EUR", "JPY", "HKD", "KRW", "GBP", "AUD", "CAD", "SGD"];
 const VALID_SPLIT_MODES = ["personal", "equal", "custom"];
 const clean = (value, max = 120) => String(value ?? "").trim().slice(0, max);
@@ -61,7 +61,7 @@ function normalizeExpense(input, trip, members, currentMemberId, existing) {
   return { ...existing, ...data, id: existing?.id || input.id || id(), tripId: trip.id, createdByMemberId: existing?.createdByMemberId || currentMemberId, createdAt, updatedAt: Date.now() };
 }
 
-function buildExpenseSummary(expenses, settlements, members, settings = {}) {
+function buildExpenseSummary(expenses, settlements, members, settings = {}, trip = {}) {
   const memberMap = new Map((members || []).map((member) => [member.id, member]));
   const baseCurrency = settings.baseCurrency || "CNY";
   const balances = new Map((members || []).map((member) => [member.id, { memberId: member.id, name: member.name, avatarId: member.avatarId, paidMinor: 0, owedMinor: 0, netMinor: 0 }]));
@@ -87,12 +87,29 @@ function buildExpenseSummary(expenses, settlements, members, settings = {}) {
   const budgetMinor = settings.budgetMinor == null || settings.budgetMinor === "" ? null : Number(settings.budgetMinor);
   const categoryTotals = {};
   const dateTotals = {};
+  const categoryCounts = {};
+  const dateCounts = {};
+  const dateCategoryTotals = {};
   for (const expense of expenses || []) {
     const amount = Number(expense.baseAmountMinor || expense.amountMinor || 0);
     categoryTotals[expense.category || "其他"] = (categoryTotals[expense.category || "其他"] || 0) + amount;
     dateTotals[dateOnly(expense.date)] = (dateTotals[dateOnly(expense.date)] || 0) + amount;
+    categoryCounts[expense.category || "其他"] = (categoryCounts[expense.category || "其他"] || 0) + 1;
+    dateCounts[dateOnly(expense.date)] = (dateCounts[dateOnly(expense.date)] || 0) + 1;
+    const date = dateOnly(expense.date), category = expense.category || "其他";
+    dateCategoryTotals[date] ||= {};
+    dateCategoryTotals[date][category] = (dateCategoryTotals[date][category] || 0) + amount;
   }
-  return { baseCurrency, totalMinor, settledMinor, unsettledMinor: Math.max(0, totalMinor - settledMinor), budgetMinor, remainingBudgetMinor: budgetMinor == null ? null : budgetMinor - totalMinor, balances: [...balances.values()], categoryTotals, dateTotals, memberCountPending: [...balances.values()].filter((entry) => entry.netMinor !== 0).length };
+  const balanceList = [...balances.values()];
+  const outstandingMinor = balanceList.reduce((sum, entry) => sum + Math.max(0, entry.netMinor), 0);
+  const categoryStats = Object.entries(categoryTotals).map(([category, amountMinor]) => ({ category, amountMinor, count: categoryCounts[category], percent: totalMinor ? Math.round(amountMinor / totalMinor * 1000) / 10 : 0 })).sort((a, b) => b.amountMinor - a.amountMinor);
+  const dailyStats = Object.entries(dateTotals).map(([date, amountMinor]) => ({ date, amountMinor, count: dateCounts[date], categoryTotals: dateCategoryTotals[date] })).sort((a, b) => a.date.localeCompare(b.date));
+  const highestSpendDay = dailyStats.reduce((best, entry) => !best || entry.amountMinor > best.amountMinor ? entry : best, null);
+  const start = dateOnly(trip.start), end = dateOnly(trip.end), today = dateOnly(settings.today || new Date().toISOString());
+  const inclusiveDays = (from, to) => Math.max(1, Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86400000) + 1);
+  const tripDays = validDate(start) && validDate(end) ? inclusiveDays(start, end) : Math.max(1, dailyStats.length);
+  const elapsedDays = validDate(start) && validDate(end) ? (today < start ? 1 : inclusiveDays(start, today > end ? end : today)) : Math.max(1, dailyStats.length);
+  return { baseCurrency, totalMinor, settledMinor, unsettledMinor: outstandingMinor, outstandingMinor, budgetMinor, remainingBudgetMinor: budgetMinor == null ? null : budgetMinor - totalMinor, balances: balanceList, memberStats: balanceList, categoryTotals, dateTotals, categoryStats, dailyStats, highestSpendDay, averagePerDayMinor: Math.round(totalMinor / elapsedDays), tripDays, elapsedDays, expenseCount: (expenses || []).length, memberCountPending: balanceList.filter((entry) => entry.netMinor !== 0).length };
 }
 
 function buildSettlementPlan(summary) {

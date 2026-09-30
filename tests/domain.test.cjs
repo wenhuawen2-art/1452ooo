@@ -27,6 +27,8 @@ test("trip duplicate preserves visible content while remaining independent", () 
   source.events.push({ id: "event-original", date: "2026-10-01", title: "出发", note: "早点走" });
   source.hotels.push({ id: "hotel-original", name: "山景酒店", note: "靠窗" });
   source.tickets.push({ id: "ticket-original", type: "门票", fileId: "cloud://original/image.jpg", mime: "image/jpeg" });
+  source.outfits.push({ id: "outfit-original", ownerMemberId: owner.id, date: "2026-10-01", title: "出发穿搭", scene: "日常出行", photoFileId: "cloud://original/outfit.jpg", sortOrder: 0 });
+  source.outfits.push({ id: "outfit-guest", ownerMemberId: guest.id, date: "2026-10-01", title: "同行者穿搭", scene: "日常出行", sortOrder: 0 });
   const before = structuredClone(source);
   const { trip: copy, member } = duplicateTrip(source, owner, {
     accountId: "account-1", nickname: "创建者", avatarId: "avatar-01",
@@ -41,6 +43,9 @@ test("trip duplicate preserves visible content while remaining independent", () 
   assert.equal(copy.events[0].note, source.events[0].note);
   assert.equal(copy.hotels[0].note, source.hotels[0].note);
   assert.equal(copy.tickets[0].fileId, source.tickets[0].fileId);
+  assert.equal(copy.outfits.length, 1);
+  assert.equal(copy.outfits[0].ownerMemberId, member.id);
+  assert.equal(copy.outfits[0].photoFileId, source.outfits[0].photoFileId);
   assert.notEqual(copy.events[0].id, source.events[0].id);
   assert.notEqual(copy.hotels[0].id, source.hotels[0].id);
   assert.notEqual(copy.tickets[0].id, source.tickets[0].id);
@@ -268,4 +273,43 @@ test("ticket images are attached to a travel day and remain editable", () => {
   const effects = mutateTrip(trip, member, { action: "deleteTicket", revision: trip.revision, id: ticket.id });
   assert.equal(effects.deletedFileId, ticket.fileId);
   assert.equal(trip.tickets.length, 0);
+});
+
+test("outfits are private per member, ordered per day and validate trip dates", () => {
+  const { trip, member: owner } = createTrip({ name: "穿搭测试", nickname: "甲", avatarId: "avatar-01", start: "2026-10-01T08:00", end: "2026-10-03T18:00" });
+  const guest = addMember(trip, "乙", "avatar-02");
+  mutateTrip(trip, owner, { action: "outfit", revision: trip.revision, clientMutationId: "save-1", date: "2026-10-01", title: "出发穿搭", scene: "日常出行", photoFileId: "cloud://example/outfits/a.jpg", items: [{ typeId: "top", typeName: "上装", name: "衬衫", photoFileId: "cloud://example/outfits/top.jpg" }] });
+  mutateTrip(trip, owner, { action: "outfit", revision: trip.revision, date: "2026-10-01", title: "晚餐穿搭", scene: "用餐聚会", items: [{ typeId: "shoes", typeName: "鞋履", name: "短靴" }] });
+  mutateTrip(trip, guest, { action: "outfit", revision: trip.revision, date: "2026-10-02", title: "同行者穿搭", scene: "拍照打卡", items: [{ typeName: "外套", name: "夹克" }] });
+  const ownerView = viewTrip(trip, owner);
+  const guestView = viewTrip(trip, guest);
+  assert.deepEqual(ownerView.outfits.map((entry) => entry.title), ["出发穿搭", "晚餐穿搭"]);
+  assert.deepEqual(guestView.outfits.map((entry) => entry.title), ["同行者穿搭"]);
+  assert.throws(() => mutateTrip(trip, owner, { action: "outfit", revision: trip.revision, id: guestView.outfits[0].id, date: "2026-10-02", title: "越权修改", scene: "其他", items: [{ typeName: "外套", name: "夹克" }] }), /只能编辑自己的穿搭/);
+  const second = ownerView.outfits[1];
+  mutateTrip(trip, owner, { action: "moveOutfit", revision: trip.revision, id: second.id, direction: "up" });
+  assert.equal(trip.outfits.filter((entry) => entry.ownerMemberId === owner.id).sort((a, b) => a.sortOrder - b.sortOrder)[0].id, second.id);
+  assert.throws(() => mutateTrip(trip, owner, { action: "trip", revision: trip.revision, name: trip.name, type: trip.type, start: "2026-10-02T08:00", end: trip.end }), /穿搭/);
+  const first = trip.outfits.find((entry) => entry.title === "出发穿搭");
+  const effects = mutateTrip(trip, owner, { action: "deleteOutfit", revision: trip.revision, id: first.id });
+  assert.deepEqual(effects.deletedFileIds, ["cloud://example/outfits/a.jpg", "cloud://example/outfits/top.jpg"]);
+});
+
+test("outfit migration creates dynamic items and client mutation ids are idempotent", () => {
+  const { trip, member } = createTrip({ name: "旧穿搭", type: "旅行", start: "2026-10-01T08:00", end: "2026-10-03T18:00", nickname: "甲", avatarId: "avatar-01" });
+  trip.outfits = [{ id: "legacy", ownerMemberId: member.id, date: "2026-10-01", title: "旧记录", scene: "其他", top: "针织衫", shoes: "短靴" }];
+  const migrated = viewTrip(trip, member).outfits[0];
+  assert.deepEqual(migrated.items.map((item) => [item.typeName, item.name]), [["上装", "针织衫"], ["鞋履", "短靴"]]);
+  const input = { action: "outfit", revision: trip.revision, clientMutationId: "same-save", date: "2026-10-02", title: "无照片穿搭", scene: "日常出行", items: [{ typeName: "内搭", name: "打底衫" }] };
+  mutateTrip(trip, member, input);
+  mutateTrip(trip, member, { ...input, revision: trip.revision });
+  assert.equal(trip.outfits.filter((entry) => entry.clientMutationId === "same-save").length, 1);
+});
+
+test("legacy trips without an outfits field can save their first outfit", () => {
+  const { trip, member } = createTrip({ name: "无穿搭字段", type: "旅行", start: "2026-10-01T08:00", end: "2026-10-03T18:00", nickname: "甲", avatarId: "avatar-01" });
+  delete trip.outfits;
+  mutateTrip(trip, member, { action: "outfit", revision: trip.revision, clientMutationId: "first-outfit", date: "2026-10-01", title: "第一套", scene: "日常出行", items: [{ typeName: "下装", name: "长裤" }] });
+  assert.equal(trip.outfits.length, 1);
+  assert.equal(trip.outfits[0].items[0].name, "长裤");
 });

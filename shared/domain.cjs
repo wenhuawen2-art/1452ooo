@@ -3,11 +3,13 @@ const { getChecklistTemplate } = require("./templates.cjs");
 const { periodForStart } = require("./schedule.cjs");
 const { avatarInput, normalizeMembers } = require("./avatars.cjs");
 const { isTripType, normalizeTripType } = require("./trip-types.cjs");
+const { normalizeTransportMode, normalizeRouteConfig } = require("./route-overview.cjs");
 
 const id = () => randomBytes(24).toString("hex");
 const day = (value) => String(value || "").slice(0, 10);
 const dateNumber = (value) => Date.parse(`${day(value)}T00:00:00Z`);
 const daysBetween = (a, b) => Math.round((dateNumber(b) - dateNumber(a)) / 86400000);
+const OUTFIT_SCENES = ["日常出行", "户外徒步", "拍照打卡", "用餐聚会", "休息放松", "其他"];
 const fail = (status, message) => {
   throw Object.assign(new Error(message), { status });
 };
@@ -31,9 +33,45 @@ const validateDates = (start, end) => {
     fail(400, "归来时间须晚于出发时间，旅行不超过 365 天");
 };
 
+function defaultItems(owner) {
+  return [
+    ["公共", "携带物品", "车载应急工具", true],
+    ["公共", "携带物品", "饮用水与纸巾", false],
+    ["公共", "准备事项", "检查轮胎、胎压和油量", true],
+    ["公共", "准备事项", "下载离线地图", false],
+    ["公共", "准备事项", "检查门窗与水电", true],
+    ["我的", "携带物品", "身份证", true],
+    ["我的", "携带物品", "驾驶证（驾驶人）", true],
+    ["我的", "携带物品", "常用药品", true],
+    ["我的", "携带物品", "手机、充电线与充电宝", false],
+    ["我的", "携带物品", "换洗衣物与洗漱用品", false],
+  ].map(([scope, category, title, key]) => ({
+    id: id(), owner: scope === "我的" ? owner : null, category, title, key,
+    done: false, reviewed: false, by: null, byMemberId: null,
+    reviewBy: null, reviewByMemberId: null, remind: "", linkedDate: "",
+  }));
+}
+
 function ensureCategories(trip) {
   trip.categories ||= [];
   trip.tickets ||= [];
+  trip.outfits ||= [];
+  for (const outfit of trip.outfits) {
+    if (!Array.isArray(outfit.items)) {
+      const legacy = [
+        ["上装", outfit.top], ["下装", outfit.bottom], ["外套", outfit.outerwear],
+        ["鞋履", outfit.shoes], ["配饰", outfit.accessories],
+      ].filter(([, name]) => String(name || "").trim());
+      outfit.items = legacy.map(([typeName, name], sortOrder) => ({
+        id: id(), typeId: "", typeName, name: String(name).trim(), photoFileId: "", sortOrder,
+      }));
+    }
+    outfit.items = outfit.items.map((item, sortOrder) => ({
+      id: item.id || id(), typeId: String(item.typeId || ""), typeName: String(item.typeName || "其他").trim().slice(0, 30) || "其他",
+      name: String(item.name || "").trim().slice(0, 120), photoFileId: String(item.photoFileId || ""),
+      sortOrder: Number.isFinite(Number(item.sortOrder)) ? Number(item.sortOrder) : sortOrder,
+    })).filter((item) => item.name);
+  }
   trip.type = normalizeTripType(trip.type);
   for (const ticket of trip.tickets) {
     ticket.type ||= ticket.title || "其他票据";
@@ -53,7 +91,8 @@ function ensureCategories(trip) {
     item.categoryId = category.id;
     item.category = category.name;
   }
-  trip.schemaVersion = Math.max(Number(trip.schemaVersion) || 0, 4);
+  trip.events = (trip.events || []).map((event) => ({ ...event, transportMode: normalizeTransportMode(event.transportMode, trip.type) }));
+  trip.schemaVersion = Math.max(Number(trip.schemaVersion) || 0, 7);
   return trip;
 }
 
@@ -65,7 +104,7 @@ function createTrip(input, reuseTrip, reuseMember) {
   const trip = ensureCategories({
     id: id(), name: text(input.name), type: isTripType(input.type) ? input.type : "其他", start: input.start, end: input.end,
     creator: member.id, members: [member], items: [],
-    categories: [], events: [], hotels: [], tickets: [], archived: false, revision: 0,
+    categories: [], events: [], hotels: [], tickets: [], outfits: [], archived: false, revision: 0,
     createdAt: Date.now(), updatedAt: Date.now(),
   });
   if (reuseTrip && reuseMember) {
@@ -118,6 +157,10 @@ function duplicateTrip(source, sourceMember, account, requestedName) {
     events: (source.events || []).map((event) => ({ ...event, id: id() })),
     hotels: (source.hotels || []).map((hotel) => ({ ...hotel, id: id() })),
     tickets: (source.tickets || []).map((ticket) => ({ ...ticket, id: id(), uploadedByMemberId: null })),
+    outfits: (source.outfits || []).filter((outfit) => outfit.ownerMemberId === sourceMember.id)
+      .map((outfit) => ({ ...outfit, id: id(), ownerMemberId: member.id, clientMutationId: "",
+        items: (outfit.items || []).map((item) => ({ ...item, id: id() })),
+      })),
     archived: false, revision: 0, createdAt: now, updatedAt: now,
   });
   return { trip, member };
@@ -136,6 +179,7 @@ function addMember(trip, nickname, avatarId, avatarData, accountId = "") {
 }
 
 function viewTrip(trip, member, invite) {
+  ensureCategories(trip);
   normalizeMembers(trip);
   return {
     ...trip,
@@ -143,6 +187,7 @@ function viewTrip(trip, member, invite) {
     me: member.id,
     items: trip.items.filter((item) => !item.owner || item.owner === member.id),
     categories: trip.categories.filter((category) => !category.owner || category.owner === member.id),
+    outfits: (trip.outfits || []).filter((outfit) => outfit.ownerMemberId === member.id),
     progress: trip.members.map((entry) => {
       const items = trip.items.filter((item) => item.owner === entry.id);
       return { id: entry.id, name: entry.name, avatarId: entry.avatarId, avatarData: entry.avatarData || "", total: items.length,
@@ -154,6 +199,7 @@ function viewTrip(trip, member, invite) {
 }
 
 function mutateTrip(trip, member, input) {
+  ensureCategories(trip);
   normalizeMembers(trip);
   if (input.revision !== trip.revision) fail(409, "同行人刚刚更新了内容，请查看最新状态后重试");
   const owner = () => { if (member.id !== trip.creator) fail(403, "只有创建者可以操作"); };
@@ -177,8 +223,9 @@ function mutateTrip(trip, member, input) {
       validateDates(input.start, input.end);
       if (!isTripType(input.type)) fail(400, "请选择旅行类型");
       if (trip.events.some((event) => event.date < day(input.start) || event.date > day(input.end)) ||
+          (trip.outfits || []).some((outfit) => outfit.date < day(input.start) || outfit.date > day(input.end)) ||
           trip.hotels.some((hotel) => hotel.checkin < day(input.start) || hotel.checkout > day(input.end)))
-        fail(400, "已有行程或住宿超出新日期，请先调整对应安排");
+        fail(400, "已有行程、穿搭或住宿超出新日期，请先调整对应安排");
       trip.name = text(input.name); trip.type = input.type; trip.start = input.start; trip.end = input.end;
       break;
     case "archive": owner(); trip.archived = true; break;
@@ -190,6 +237,9 @@ function mutateTrip(trip, member, input) {
       trip.members = trip.members.filter((entry) => entry.id !== input.member);
       trip.items = trip.items.filter((item) => item.owner !== input.member);
       trip.categories = trip.categories.filter((category) => category.owner !== input.member);
+      effects.deletedFileIds = (trip.outfits || []).filter((outfit) => outfit.ownerMemberId === input.member)
+        .flatMap((outfit) => [outfit.photoFileId, ...(outfit.items || []).map((item) => item.photoFileId)]).filter(Boolean);
+      trip.outfits = (trip.outfits || []).filter((outfit) => outfit.ownerMemberId !== input.member);
       effects.removedMember = input.member;
       break;
     case "recovery":
@@ -281,7 +331,8 @@ function mutateTrip(trip, member, input) {
       const values = { date: input.date, period: periodForStart(input.startTime), time: input.startTime,
         startTime: input.startTime, endTime: input.endTime, title: text(input.title),
         startPlace: String(input.startPlace || "").slice(0, 500), endPlace: String(input.endPlace || "").slice(0, 500),
-        address: String(input.address || "").slice(0, 500), note: String(input.note || "").slice(0, 2000) };
+        address: String(input.address || "").slice(0, 500), transportMode: normalizeTransportMode(input.transportMode, trip.type),
+        note: String(input.note || "").slice(0, 2000) };
       if (input.id) {
         const event = trip.events.find((entry) => entry.id === input.id);
         if (!event) fail(404, "安排不存在");
@@ -325,11 +376,76 @@ function mutateTrip(trip, member, input) {
       ticket.date = day(input.startTime);
       break;
     }
+    case "outfit": {
+      if (!validDate(input.date) || input.date < day(trip.start) || input.date > day(trip.end)) fail(400, "穿搭日期须在旅行内");
+      const mutationId = String(input.clientMutationId || "").trim().slice(0, 80);
+      const existing = input.id
+        ? (trip.outfits || []).find((outfit) => outfit.id === input.id)
+        : mutationId ? (trip.outfits || []).find((outfit) => outfit.ownerMemberId === member.id && outfit.clientMutationId === mutationId) : null;
+      if (input.id && !existing) fail(404, "穿搭不存在");
+      if (existing && existing.ownerMemberId !== member.id) fail(403, "只能编辑自己的穿搭");
+      const scene = OUTFIT_SCENES.includes(input.scene) ? input.scene : "其他";
+      const photoFileId = String(input.photoFileId || "");
+      if (photoFileId && !photoFileId.startsWith("cloud://")) fail(400, "穿搭图片无效");
+      const items = (Array.isArray(input.items) ? input.items : []).map((item, sortOrder) => {
+        const itemPhotoFileId = String(item.photoFileId || "");
+        if (itemPhotoFileId && !itemPhotoFileId.startsWith("cloud://")) fail(400, "衣物图片无效");
+        return {
+          id: String(item.id || id()), typeId: String(item.typeId || "").slice(0, 80),
+          typeName: text(String(item.typeName || ""), 30), name: text(String(item.name || ""), 120),
+          photoFileId: itemPhotoFileId,
+          sortOrder: Number.isFinite(Number(item.sortOrder)) ? Number(item.sortOrder) : sortOrder,
+        };
+      });
+      if (!items.length) fail(400, "请至少添加一件衣物");
+      const values = {
+        date: input.date, title: text(input.title, 80), scene, photoFileId, items,
+        note: String(input.note || "").trim().slice(0, 1000), clientMutationId: mutationId || existing?.clientMutationId || "",
+        updatedAt: Date.now(),
+      };
+      if (existing) {
+        const retained = new Set([photoFileId, ...items.map((item) => item.photoFileId)].filter(Boolean));
+        effects.deletedFileIds = [existing.photoFileId, ...(existing.items || []).map((item) => item.photoFileId)].filter((fileId) => fileId && !retained.has(fileId));
+        Object.assign(existing, values);
+      } else {
+        const sameDay = (trip.outfits || []).filter((outfit) => outfit.ownerMemberId === member.id && outfit.date === input.date);
+        trip.outfits.push({ id: id(), ownerMemberId: member.id, sortOrder: sameDay.reduce((max, outfit) => Math.max(max, Number(outfit.sortOrder) || 0), -1) + 1, createdAt: Date.now(), ...values });
+      }
+      break;
+    }
+    case "moveOutfit": {
+      const outfit = (trip.outfits || []).find((entry) => entry.id === input.id);
+      if (!outfit) fail(404, "穿搭不存在");
+      if (outfit.ownerMemberId !== member.id) fail(403, "只能调整自己的穿搭");
+      const sameDay = trip.outfits.filter((entry) => entry.ownerMemberId === member.id && entry.date === outfit.date)
+        .sort((a, b) => Number(a.sortOrder || 0) - Number(b.sortOrder || 0) || Number(a.createdAt || 0) - Number(b.createdAt || 0));
+      const index = sameDay.findIndex((entry) => entry.id === outfit.id);
+      const targetIndex = input.direction === "up" ? index - 1 : input.direction === "down" ? index + 1 : -1;
+      if (targetIndex >= 0 && targetIndex < sameDay.length) {
+        sameDay.forEach((entry, order) => { entry.sortOrder = order; });
+        const target = sameDay[targetIndex], currentOrder = outfit.sortOrder;
+        outfit.sortOrder = target.sortOrder; target.sortOrder = currentOrder;
+      }
+      break;
+    }
+    case "deleteOutfit": {
+      const outfit = (trip.outfits || []).find((entry) => entry.id === input.id);
+      if (!outfit) fail(404, "穿搭不存在");
+      if (outfit.ownerMemberId !== member.id) fail(403, "只能删除自己的穿搭");
+      trip.outfits = trip.outfits.filter((entry) => entry.id !== outfit.id);
+      effects.deletedFileIds = [outfit.photoFileId, ...(outfit.items || []).map((item) => item.photoFileId)].filter(Boolean);
+      break;
+    }
     case "deleteTicket": {
       const ticket = trip.tickets.find((entry) => entry.id === input.id);
       if (!ticket) fail(404, "票据不存在");
       trip.tickets = trip.tickets.filter((entry) => entry.id !== ticket.id);
       effects.deletedFileId = ticket.fileId;
+      break;
+    }
+    case "routeConfig": {
+      if (trip.archived) fail(409, "旅行已归档，路线仅供查看");
+      trip.routeConfig = input.reset ? null : normalizeRouteConfig(input, trip);
       break;
     }
     case "deleteEvent": trip.events = trip.events.filter((event) => event.id !== input.id); break;

@@ -5,6 +5,7 @@ const { avatarIds, normalizeMembers } = require("./avatars.cjs");
 const { checklistTemplates } = require("./templates.cjs");
 const expensePackage = require("./expenses.cjs");
 const { DEFAULT_EXPENSE_CATEGORIES, normalizeExpense, buildExpenseSummary, buildSettlementPlan } = expensePackage;
+const { TRANSPORT_MODES, extractRoutePlan, routeInputSignature, validCoordinatePair, matchAdministrativePlace, hotelForRouteDate, hotelRouteCandidates } = require("./route-overview.cjs");
 
 const app = cloudbase.init({});
 const db = app.database();
@@ -21,11 +22,13 @@ const collections = {
   expenses: db.collection("trip_expenses"),
   settlements: db.collection("trip_settlements"),
   expenseSettings: db.collection("trip_expense_settings"),
+  routeOverviews: db.collection("trip_route_overviews"),
+  routeGeocodes: db.collection("route_place_geocodes"),
 };
 let collectionSetup;
 async function ensureCollections() {
   if (!collectionSetup) collectionSetup = Promise.all(
-    ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges", "weather_cache", "user_accounts", "web_login_sessions", "trip_expenses", "trip_settlements", "trip_expense_settings"].map(async (name) => {
+    ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges", "weather_cache", "user_accounts", "web_login_sessions", "trip_expenses", "trip_settlements", "trip_expense_settings", "trip_route_overviews", "route_place_geocodes"].map(async (name) => {
       try { await db.createCollection(name); }
       catch (error) {
         if (!/exist|already|重复|存在/i.test(String(error?.message || error))) throw error;
@@ -47,19 +50,239 @@ const weatherCodeText = (code) => {
   return map[Number(code)] || "天气变化";
 };
 const weatherKey = (place, date) => createHash("sha256").update(`${place}|${date}`).digest("hex").slice(0, 32);
-async function geocodePlace(place) {
-  const openUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(place)}&count=1&language=zh&format=json`;
-  const openResponse = await fetch(openUrl);
-  if (openResponse.ok) {
-    const openData = await openResponse.json();
-    if (openData?.results?.[0]) return { ...openData.results[0], geoSource: "Open-Meteo" };
+const tencentLbsKey = () => String(process.env.TENCENT_LBS_KEY || "").trim();
+let tencentLbsLimitedUntil = 0;
+async function tencentLbs(path, params = {}) {
+  const key = tencentLbsKey();
+  if (!key) fail(503, "路线服务待配置，请在云函数中设置 TENCENT_LBS_KEY");
+  const query = new URLSearchParams({ ...params, key });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000);
+  try {
+    const response = await fetch(`https://apis.map.qq.com${path}?${query}`, { signal: controller.signal });
+    if (!response.ok) fail(502, "腾讯位置服务暂时不可用");
+    const payload = await response.json();
+    if (Number(payload.status) !== 0) {
+      if (Number(payload.status) === 121) tencentLbsLimitedUntil = Date.now() + 60 * 60 * 1000;
+      const error = new Error(String(payload.message || "腾讯位置服务请求失败"));
+      error.status = Number(payload.status) === 110 ? 503 : 422;
+      error.code = `TENCENT_LBS_${payload.status}`;
+      throw error;
+    }
+    return payload.result;
+  } finally { clearTimeout(timeout); }
+}
+async function geocodeTencent(place) {
+  const result = await tencentLbs("/ws/geocoder/v1/", { address: place, policy: "1" });
+  if (!result?.location) return null;
+  return {
+    name: result.title || place,
+    latitude: Number(result.location.lat), longitude: Number(result.location.lng),
+    poiId: result.id || "", adcode: String(result.ad_info?.adcode || ""),
+    addressComponents: result.address_components || {}, geoLevel: result.level || "",
+    geoSource: "腾讯位置服务",
+  };
+}
+const routePlaceKey = (value) => String(value || "").trim().toLowerCase().replace(/[\s·,，。;；、_\-]+/g, "");
+const routeSearchCore = (value) => routePlaceKey(value).replace(/(?:全天)?(?:游玩|参观|打卡|游览|景区|风景名胜区|酒店|民宿)$/u, "");
+const fallbackResultMatches = (query, displayName, contextCity = "") => {
+  const display = routePlaceKey(displayName);
+  const core = routeSearchCore(query);
+  const context = routeSearchCore(contextCity);
+  const queryMatches = core.length < 2 || display.includes(core) || display.includes(core.slice(0, Math.min(4, core.length)));
+  const contextMatches = !context || display.includes(context) || routePlaceKey(query).includes(context);
+  return queryMatches && contextMatches;
+};
+async function geocodePlace(place, contextCity = "") {
+  if (tencentLbsKey() && Date.now() >= tencentLbsLimitedUntil) {
+    const tencent = await geocodeTencent(place).catch(() => null);
+    if (tencent) return tencent;
   }
-  const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&accept-language=zh-CN&limit=1&q=${encodeURIComponent(place)}`;
-  const nominatimResponse = await fetch(nominatimUrl, { headers: { "User-Agent": "suixing-roadtrip-weather/1.0" } });
-  if (!nominatimResponse.ok) return null;
-  const result = (await nominatimResponse.json())?.[0];
-  if (!result) return null;
-  return { name: result.display_name?.split(",")[0] || place, latitude: Number(result.lat), longitude: Number(result.lon), geoSource: "OpenStreetMap" };
+  const openUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(place)}&count=1&language=zh&format=json`;
+  try {
+    const openResponse = await fetch(openUrl, { signal: AbortSignal.timeout(8000) });
+    if (openResponse.ok) {
+      const result = (await openResponse.json())?.results?.[0];
+      if (result) {
+        const addressComponents = { province: result.admin1 || "", city: result.admin2 || result.admin1 || "", district: result.admin3 || "" };
+        if (routePlaceKey(result.name) === routePlaceKey(place) || matchAdministrativePlace(place, addressComponents)) return {
+          name: result.name || place, latitude: Number(result.latitude), longitude: Number(result.longitude),
+          addressComponents, geoSource: "Open-Meteo",
+        };
+      }
+    }
+  } catch {}
+  const queries = [contextCity && !routePlaceKey(place).includes(routePlaceKey(contextCity)) ? `${contextCity} ${place}` : "", place].filter((value, index, list) => value && list.indexOf(value) === index);
+  for (const query of queries) {
+    const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&accept-language=zh-CN&countrycodes=cn&limit=3&q=${encodeURIComponent(query)}`;
+    try {
+      const nominatimResponse = await fetch(nominatimUrl, { headers: { "User-Agent": "xiangye-route-overview/1.0" }, signal: AbortSignal.timeout(4000) });
+      if (!nominatimResponse.ok) continue;
+      const results = await nominatimResponse.json();
+      const result = results.find((entry) => fallbackResultMatches(place, entry.display_name || entry.name, contextCity));
+      if (!result) continue;
+      const address = result.address || {};
+      return {
+        name: result.name || result.display_name?.split(",")[0] || place,
+        latitude: Number(result.lat), longitude: Number(result.lon), poiId: `osm:${result.osm_type || ""}:${result.osm_id || ""}`,
+        addressComponents: { province: address.state || address.province || "", city: address.city || address.prefecture || address.state_district || "", district: address.county || address.district || address.city_district || "" },
+        geoSource: "OpenStreetMap",
+      };
+    } catch {}
+  }
+  return null;
+}
+
+async function geocodeRoutePlace(place, contextCity = "") {
+  const query = String(place || "").trim().slice(0, 300);
+  if (!query) return null;
+  const cacheId = hash(`${routePlaceKey(query)}|${routePlaceKey(contextCity)}`).slice(0, 48);
+  const cached = await first(collections.routeGeocodes.doc(cacheId)).catch(() => null);
+  if (cached && validCoordinatePair(cached.latitude, cached.longitude)) return cleanDocument(cached);
+  const location = await geocodePlace(query, contextCity);
+  if (!location || !validCoordinatePair(location.latitude, location.longitude)) return null;
+  const record = { ...location, query, updatedAt: Date.now() };
+  await collections.routeGeocodes.doc(cacheId).set(record).catch(() => {});
+  return record;
+}
+
+const routeMode = (id) => TRANSPORT_MODES.find((entry) => entry.id === id) || TRANSPORT_MODES.at(-1);
+async function resolveHotelRoutePoint(trip, point) {
+  const hotel = hotelForRouteDate(trip, point.date);
+  if (!hotel) return null;
+  for (const candidate of hotelRouteCandidates(hotel)) {
+    try {
+      const location = await geocodeRoutePlace(candidate, hotel.city || "");
+      if (location) return {
+        ...point, ...location,
+        label: String(hotel.name || hotel.city || candidate), address: candidate,
+        originalLabel: point.originalLabel || point.label, originalAddress: point.originalAddress || point.address,
+        resolutionLevel: "poi", resolutionSource: "lodging", resolutionSourceLabel: "住宿定位",
+        lodgingId: hotel.id || "",
+      };
+    } catch {}
+  }
+  return null;
+}
+async function resolveRoutePoint(trip, point, configured) {
+  const original = {
+    originalLabel: point.originalLabel || point.label,
+    originalAddress: point.originalAddress || point.address,
+  };
+  if (validCoordinatePair(point.latitude, point.longitude)) return {
+    ...point, ...original, resolutionLevel: "poi", resolutionSource: "manual", resolutionSourceLabel: "手动修正",
+  };
+  let location = null;
+  const contextCity = hotelForRouteDate(trip, point.date)?.city || "";
+  try { location = await geocodeRoutePlace(point.address || point.label, contextCity); } catch {}
+  const admin = location ? matchAdministrativePlace(point.address || point.label, location.addressComponents) : null;
+  if (!location || admin) {
+    const lodgingPoint = await resolveHotelRoutePoint(trip, point);
+    if (lodgingPoint) return lodgingPoint;
+  }
+  if (!location) return { ...point, ...original, unresolved: true, resolutionLevel: "unresolved", resolutionSource: "unresolved", resolutionSourceLabel: "待修正" };
+  if (admin) return {
+    ...point, ...location, ...original,
+    label: admin.name, address: admin.name,
+    resolutionLevel: admin.level, resolutionSource: "administrative", resolutionSourceLabel: "行政区定位",
+  };
+  return { ...point, ...location, ...original, resolutionLevel: "poi", resolutionSource: "precise", resolutionSourceLabel: "具体地点" };
+}
+function dedupeResolvedRoutePoints(points) {
+  return points.filter((point, index, list) => {
+    if (!index) return true;
+    const previous = list[index - 1];
+    if (point.adcode && previous.adcode && point.adcode === previous.adcode && point.resolutionSource === "administrative" && previous.resolutionSource === "administrative") return false;
+    const sameText = routePlaceKey(point.address || point.label) && routePlaceKey(point.address || point.label) === routePlaceKey(previous.address || previous.label);
+    const sameCoordinate = Number.isFinite(point.latitude) && Number.isFinite(previous.latitude) && Math.abs(point.latitude - previous.latitude) < 0.0001 && Math.abs(point.longitude - previous.longitude) < 0.0001;
+    return !sameText && !sameCoordinate;
+  });
+}
+const decodePolyline = (value) => {
+  const polyline = Array.isArray(value) ? [...value].map(Number) : [];
+  for (let index = 2; index < polyline.length; index += 1) polyline[index] = polyline[index - 2] + polyline[index] / 1000000;
+  const points = [];
+  for (let index = 0; index + 1 < polyline.length; index += 2) {
+    if (Number.isFinite(polyline[index]) && Number.isFinite(polyline[index + 1])) points.push({ latitude: polyline[index], longitude: polyline[index + 1] });
+  }
+  if (points.length <= 240) return points;
+  const step = Math.ceil(points.length / 240);
+  return points.filter((_, index) => index === 0 || index === points.length - 1 || index % step === 0);
+};
+async function resolveRouteSegment(from, to, mode) {
+  const direct = [{ latitude: from.latitude, longitude: from.longitude }, { latitude: to.latitude, longitude: to.longitude }];
+  const meta = routeMode(mode);
+  if (meta.route === "direct" || Date.now() < tencentLbsLimitedUntil) return { points: direct, distance: 0, duration: 0, dottedLine: true };
+  try {
+    const result = await tencentLbs(`/ws/direction/v1/${meta.route}/`, {
+      from: `${from.latitude},${from.longitude}`, to: `${to.latitude},${to.longitude}`,
+      ...(meta.route === "driving" ? { policy: "LEAST_TIME" } : {}),
+    });
+    const route = result?.routes?.[0];
+    const points = decodePolyline(route?.polyline);
+    return { points: points.length > 1 ? points : direct, distance: Number(route?.distance || 0), duration: Number(route?.duration || 0), dottedLine: false };
+  } catch (error) {
+    return { points: direct, distance: 0, duration: 0, dottedLine: true, warning: error.message || "该段路线暂不可用" };
+  }
+}
+async function buildRouteOverview(trip) {
+  const plan = extractRoutePlan(trip);
+  const configured = !!tencentLbsKey();
+  const candidates = [];
+  for (const point of plan.visiblePoints) {
+    candidates.push(await resolveRoutePoint(trip, point, configured));
+  }
+  const resolved = dedupeResolvedRoutePoints(candidates);
+  const firstKey = resolved[0] ? routePlaceKey(resolved[0].adcode || resolved[0].address || resolved[0].label) : "";
+  const lastKey = resolved.length > 1 ? routePlaceKey(resolved.at(-1).adcode || resolved.at(-1).address || resolved.at(-1).label) : "";
+  resolved.forEach((point, index) => {
+    point.role = index === 0 ? "start" : index === resolved.length - 1 ? (firstKey && firstKey === lastKey ? "return" : "end") : "stop";
+    point.number = index + 1;
+  });
+  const segments = [];
+  const configuredSegments = new Map(plan.segments.map((segment) => [segment.id, segment]));
+  for (let index = 1; index < resolved.length; index += 1) {
+    const from = resolved[index - 1], to = resolved[index];
+    const id = `${from.id}__${to.id}`;
+    const transportMode = configuredSegments.get(id)?.transportMode || to.transportMode || "other";
+    const segment = { id, fromId: from.id, toId: to.id, transportMode };
+    const meta = routeMode(segment.transportMode);
+    if (!from || !to || from.unresolved || to.unresolved) continue;
+    const route = await resolveRouteSegment(from, to, segment.transportMode);
+    segments.push({ ...segment, ...route, label: meta.label, icon: meta.icon, color: meta.color, width: 6, arrowLine: !route.dottedLine, borderWidth: 2, borderColor: "#ffffff" });
+  }
+  const includePoints = resolved.filter((point) => !point.unresolved).map(({ latitude, longitude }) => ({ latitude, longitude }));
+  return {
+    tripId: trip.id, configured, available: includePoints.length >= 2, inputHash: hash(routeInputSignature(trip)),
+    points: resolved, allPoints: plan.points, segments, includePoints,
+    unresolved: resolved.filter((point) => point.unresolved).map((point) => ({ id: point.id, label: point.label, address: point.address })),
+    distanceMeters: segments.reduce((sum, segment) => sum + Number(segment.distance || 0), 0),
+    durationMinutes: segments.reduce((sum, segment) => sum + Number(segment.duration || 0), 0),
+    generatedAt: Date.now(), transportModes: TRANSPORT_MODES,
+  };
+}
+async function getRouteOverview(accountId, input) {
+  await membership(db, accountId, input.tripId);
+  const trip = await loadTrip(db, input.tripId);
+  const inputHash = hash(routeInputSignature(trip));
+  const hasLbsKey = Boolean(tencentLbsKey());
+  if (!input.force) {
+    const cached = await first(collections.routeOverviews.doc(trip.id)).catch(() => null);
+    if (cached?.inputHash === inputHash && (cached.configured || !hasLbsKey)) return cached;
+  }
+  const overview = await buildRouteOverview(trip);
+  await collections.routeOverviews.doc(trip.id).set(overview).catch(() => {});
+  return overview;
+}
+async function searchRoutePlaces(accountId, input) {
+  await membership(db, accountId, input.tripId);
+  const keyword = String(input.keyword || "").trim().slice(0, 80);
+  if (!keyword) fail(400, "请输入地点名称");
+  const result = await tencentLbs("/ws/place/v1/suggestion", { keyword, region: String(input.region || "全国").slice(0, 30), region_fix: "0", page_size: "10" });
+  return (result?.data || result || []).slice(0, 10).map((entry) => ({
+    id: entry.id || "", title: entry.title || keyword, address: entry.address || entry.title || keyword,
+    category: entry.category || "", latitude: Number(entry.location?.lat), longitude: Number(entry.location?.lng),
+  })).filter((entry) => Number.isFinite(entry.latitude) && Number.isFinite(entry.longitude));
 }
 async function getWeather(uid, input) {
   if (!input.tripId || !/^\d{4}-\d{2}-\d{2}$/.test(String(input.date || ""))) fail(400, "缺少天气日期");
@@ -99,6 +322,18 @@ async function getWeather(uid, input) {
 }
 const first = async (reference) => cleanDocument((await reference.get()).data[0]);
 const defaultProfile = { nickname: "旅行者", avatarId: "avatar-01", avatarData: "" };
+const DEFAULT_OUTFIT_TYPES = ["上装", "下装", "外套", "内搭", "内衣", "袜子", "鞋履", "配饰"];
+const defaultOutfitTypes = () => DEFAULT_OUTFIT_TYPES.map((name, sortOrder) => ({
+  id: `default-${sortOrder + 1}`, name, sortOrder, active: true, createdAt: 0, updatedAt: 0,
+}));
+const normalizeOutfitTypes = (value) => {
+  const source = Array.isArray(value) && value.length ? value : defaultOutfitTypes();
+  return source.map((entry, sortOrder) => ({
+    id: String(entry.id || id()), name: String(entry.name || "").trim().slice(0, 30),
+    sortOrder: Number.isFinite(Number(entry.sortOrder)) ? Number(entry.sortOrder) : sortOrder,
+    active: entry.active !== false, createdAt: Number(entry.createdAt || 0), updatedAt: Number(entry.updatedAt || 0),
+  })).filter((entry) => entry.name).sort((a, b) => a.sortOrder - b.sortOrder);
+};
 const profileInput = (input = {}) => {
   const nickname = String(input.nickname || input.name || "").trim();
   const avatarId = avatarIds.includes(input.avatarId) ? input.avatarId : "";
@@ -118,13 +353,51 @@ async function ensureAccount(principal) {
       provider: principal.provider,
       appId: principal.appId || "",
       openIdHash: principal.openId ? hash(principal.openId) : "",
+      outfitTypes: defaultOutfitTypes(),
       profileComplete: false,
       createdAt: now,
       updatedAt: now,
     };
     await collections.users.doc(principal.accountId).set(account);
+  } else if (!Array.isArray(account.outfitTypes) || !account.outfitTypes.length) {
+    account = { ...account, outfitTypes: defaultOutfitTypes(), updatedAt: Date.now() };
+    await collections.users.doc(principal.accountId).set(account);
   }
+  account.outfitTypes = normalizeOutfitTypes(account.outfitTypes);
   return account;
+}
+
+async function mutateOutfitType(principal, input) {
+  const account = await ensureAccount(principal);
+  const types = normalizeOutfitTypes(account.outfitTypes);
+  const action = String(input.action || "");
+  const now = Date.now();
+  if (action === "create") {
+    const name = String(input.name || "").trim().slice(0, 30);
+    if (!name) fail(400, "请填写衣物类型名称");
+    if (types.some((entry) => entry.active && entry.name === name)) fail(409, "该衣物类型已存在");
+    types.push({ id: id(), name, active: true, sortOrder: types.length, createdAt: now, updatedAt: now });
+  } else {
+    const current = types.find((entry) => entry.id === input.id);
+    if (!current) fail(404, "衣物类型不存在");
+    if (action === "rename") {
+      const name = String(input.name || "").trim().slice(0, 30);
+      if (!name) fail(400, "请填写衣物类型名称");
+      if (types.some((entry) => entry.id !== current.id && entry.active && entry.name === name)) fail(409, "该衣物类型已存在");
+      current.name = name; current.updatedAt = now;
+    } else if (action === "delete") {
+      current.active = false; current.updatedAt = now;
+    } else if (action === "move") {
+      const active = types.filter((entry) => entry.active).sort((a, b) => a.sortOrder - b.sortOrder);
+      const index = active.findIndex((entry) => entry.id === current.id);
+      const targetIndex = input.direction === "up" ? index - 1 : input.direction === "down" ? index + 1 : -1;
+      if (targetIndex >= 0 && targetIndex < active.length) [active[index].sortOrder, active[targetIndex].sortOrder] = [active[targetIndex].sortOrder, active[index].sortOrder];
+    } else fail(400, "未知衣物类型操作");
+  }
+  types.sort((a, b) => a.sortOrder - b.sortOrder).forEach((entry, index) => { entry.sortOrder = index; });
+  const updated = { ...account, outfitTypes: types, updatedAt: now };
+  await collections.users.doc(principal.accountId).set(updated);
+  return { outfitTypes: types.filter((entry) => entry.active) };
 }
 async function hydrateTripProfiles(source, trip) {
   const links = (await source.collection("trip_members").where({ tripId: trip.id }).limit(100).get()).data || [];
@@ -162,7 +435,10 @@ const resolvePrincipal = async (context, event, { optional = false } = {}) => {
   }
   if (auth?.uid && loginType !== "ANONYMOUS") return { accountId: auth.uid, provider: "custom" };
   if (optional) return null;
-  fail(401, "请使用微信账号登录");
+  throw Object.assign(new Error("未取得微信身份，请检查小程序 AppID 与云开发环境关联"), {
+    status: 401,
+    code: "WECHAT_IDENTITY_UNAVAILABLE",
+  });
 };
 const requireUid = async (context) => {
   const auth = await app.auth().getAuthContext(context);
@@ -186,7 +462,11 @@ const asView = async (source, trip, member) => {
   return ticketView(viewTrip(trip, trip.members.find((entry) => entry.id === member.memberId), invite));
 };
 async function ticketView(view) {
-  const fileIds = [...new Set((view.tickets || []).map((ticket) => ticket.fileId).filter(Boolean))];
+  const fileIds = [...new Set([
+    ...(view.tickets || []).map((ticket) => ticket.fileId),
+    ...(view.outfits || []).map((outfit) => outfit.photoFileId),
+    ...(view.outfits || []).flatMap((outfit) => (outfit.items || []).map((item) => item.photoFileId)),
+  ].filter(Boolean))];
   if (!fileIds.length) return view;
   const now = Date.now();
   const urls = new Map();
@@ -197,14 +477,22 @@ async function ticketView(view) {
     else missing.push(fileId);
   }
   for (let index = 0; index < missing.length; index += 50) {
-    const result = await app.getTempFileURL({ fileList: missing.slice(index, index + 50).map((fileID) => ({ fileID, maxAge: 3600 })) });
-    for (const entry of result.fileList || []) {
-      const url = entry.tempFileURL || entry.download_url || "";
-      urls.set(entry.fileID, url);
-      if (url) ticketUrlCache.set(entry.fileID, { url, expires: now + 3000000 });
-    }
+    try {
+      const result = await app.getTempFileURL({ fileList: missing.slice(index, index + 50).map((fileID) => ({ fileID, maxAge: 3600 })) });
+      for (const entry of result.fileList || []) {
+        const url = entry.tempFileURL || entry.download_url || "";
+        urls.set(entry.fileID, url);
+        if (url) ticketUrlCache.set(entry.fileID, { url, expires: now + 3000000 });
+      }
+    } catch (error) { console.error("[media-url] temporary URL lookup failed", { count: missing.slice(index, index + 50).length, message: error.message }); }
   }
-  return { ...view, tickets: view.tickets.map((ticket) => ({ ...ticket, imageUrl: urls.get(ticket.fileId) || "" })) };
+  return {
+    ...view,
+    tickets: (view.tickets || []).map((ticket) => ({ ...ticket, imageUrl: urls.get(ticket.fileId) || "" })),
+    outfits: (view.outfits || []).map((outfit) => ({ ...outfit, photoUrl: urls.get(outfit.photoFileId) || "",
+      items: (outfit.items || []).map((item) => ({ ...item, photoUrl: urls.get(item.photoFileId) || "" })),
+    })),
+  };
 }
 
 async function listTrips(accountId) {
@@ -215,6 +503,20 @@ async function listTrips(accountId) {
 
 async function bootstrapAccount(principal) {
   const account = await ensureAccount(principal);
+  return { account, trips: await listTrips(principal.accountId) };
+}
+
+async function activateAccount(principal) {
+  const current = await ensureAccount(principal);
+  const account = current.profileComplete ? current : {
+    ...current,
+    nickname: current.nickname || defaultProfile.nickname,
+    avatarId: current.avatarId || defaultProfile.avatarId,
+    avatarData: current.avatarData || "",
+    profileComplete: true,
+    updatedAt: Date.now(),
+  };
+  if (!current.profileComplete) await collections.users.doc(principal.accountId).set(account);
   return { account, trips: await listTrips(principal.accountId) };
 }
 
@@ -361,6 +663,19 @@ async function clone(accountId, input) {
       copiedFiles.push(uploaded.fileID);
       ticket.fileId = uploaded.fileID;
     }
+    for (const outfit of created.trip.outfits || []) {
+      const copyPhoto = async (fileID, name) => {
+        if (!fileID) return "";
+        const downloaded = await app.downloadFile({ fileID });
+        if (!Buffer.isBuffer(downloaded.fileContent)) fail(502, "穿搭图片复制失败，请稍后重试");
+        const uploaded = await app.uploadFile({ cloudPath: `outfits/${created.trip.id}/${name}.jpg`, fileContent: downloaded.fileContent });
+        if (!uploaded.fileID) fail(502, "穿搭图片复制失败，请稍后重试");
+        copiedFiles.push(uploaded.fileID);
+        return uploaded.fileID;
+      };
+      outfit.photoFileId = await copyPhoto(outfit.photoFileId, `${outfit.id}-cover`);
+      for (const item of outfit.items || []) item.photoFileId = await copyPhoto(item.photoFileId, `${outfit.id}-${item.id}`);
+    }
     const invite = id();
     await db.runTransaction(async (transaction) => {
       await membership(transaction, accountId, input.tripId);
@@ -445,7 +760,7 @@ async function getExpenseSummaryData(source, trip, memberId) {
   const settings = await expenseSettings(trip.id, source);
   const expenses = await expenseDocs(trip.id, source);
   const settlements = await settlementDocs(trip.id, source);
-  const summary = buildExpenseSummary(expenses, settlements, trip.members || [], settings);
+  const summary = buildExpenseSummary(expenses, settlements, trip.members || [], settings, trip);
   summary.me = summary.balances.find((entry) => entry.memberId === memberId) || null;
   summary.plan = buildSettlementPlan(summary);
   return summary;
@@ -454,7 +769,7 @@ async function listExpenses(accountId, input) {
   const link = await membership(db, accountId, input.tripId);
   const trip = await loadTrip(db, input.tripId);
   const [expenses, settlements, settings] = await Promise.all([expenseDocs(trip.id), settlementDocs(trip.id), expenseSettings(trip.id)]);
-  const summary = buildExpenseSummary(expenses, settlements, trip.members || [], settings);
+  const summary = buildExpenseSummary(expenses, settlements, trip.members || [], settings, trip);
   summary.me = summary.balances.find((entry) => entry.memberId === link.memberId) || null;
   summary.plan = buildSettlementPlan(summary);
   return { expenses, settlements, settings, summary, members: trip.members };
@@ -473,8 +788,9 @@ async function saveExpense(accountId, input) {
     await transaction.collection("trip_expenses").doc(expense.id).set(expense);
     trip.revision = Number(trip.revision || 0) + 1; trip.updatedAt = Date.now();
     await transaction.collection("trips").doc(trip.id).set(trip);
-    return { trip, memberId: member.id, expense };
+    return { trip, memberId: member.id, expense, oldReceiptFileId: existing?.receiptFileId || "" };
   });
+  if (result.oldReceiptFileId && result.oldReceiptFileId !== result.expense.receiptFileId) await app.deleteFile({ fileList: [result.oldReceiptFileId] }).catch(() => {});
   return { expense: result.expense, summary: await getExpenseSummaryData(db, result.trip, result.memberId), revision: result.trip.revision };
 }
 async function deleteExpense(accountId, input) {
@@ -613,11 +929,16 @@ async function mutate(accountId, input) {
       const pending = await first(transaction.collection("delete_challenges").where({ tripId: trip.id, memberId: member.id }).limit(1));
       if (!pending || pending.expires <= Date.now() || pending.challenge !== input.challenge)
         fail(400, "删除确认已失效，请重新操作");
-      const ticketFiles = (trip.tickets || []).map((ticket) => ticket.fileId).filter(Boolean);
+      const ticketFiles = [
+        ...(trip.tickets || []).map((ticket) => ticket.fileId),
+        ...(trip.outfits || []).map((outfit) => outfit.photoFileId),
+        ...(trip.outfits || []).flatMap((outfit) => (outfit.items || []).map((item) => item.photoFileId)),
+      ].filter(Boolean);
       await transaction.collection("trip_members").where({ tripId: trip.id }).remove();
       await transaction.collection("trip_invites").where({ tripId: trip.id }).remove();
       await transaction.collection("recovery_codes").where({ tripId: trip.id }).remove();
       await transaction.collection("delete_challenges").where({ tripId: trip.id }).remove();
+      await transaction.collection("trip_route_overviews").where({ tripId: trip.id }).remove();
       await transaction.collection("trips").doc(trip.id).delete();
       return { direct: { deleted: trip.id }, filesToDelete: ticketFiles };
     }
@@ -652,7 +973,7 @@ async function mutate(accountId, input) {
       memberId: member.id,
       invite,
       extra,
-      filesToDelete: effects.deletedFileId ? [effects.deletedFileId] : [],
+      filesToDelete: [...(effects.deletedFileIds || []), ...(effects.deletedFileId ? [effects.deletedFileId] : [])],
     };
   });
   if (result.filesToDelete?.length) await app.deleteFile({ fileList: result.filesToDelete }).catch(() => {});
@@ -661,7 +982,14 @@ async function mutate(accountId, input) {
   return { trip: await ticketView(viewTrip(result.trip, member, result.invite)), ...result.extra };
 }
 
+async function saveRouteOverviewConfig(accountId, input) {
+  const result = await mutate(accountId, { ...input, action: "routeConfig" });
+  const overview = await getRouteOverview(accountId, { tripId: input.tripId, force: true });
+  return { trip: result.trip, overview };
+}
+
 exports.main = async (event, context) => {
+  const requestId = context?.requestId || context?.request_id || "unknown";
   try {
     await ensureCollections();
     const operation = event?.operation;
@@ -672,7 +1000,9 @@ exports.main = async (event, context) => {
     const principal = await resolvePrincipal(context, event);
     const accountId = principal.accountId;
     const result = operation === "bootstrapAccount" ? await bootstrapAccount(principal)
+      : operation === "activateAccount" ? await activateAccount(principal)
       : operation === "updateAccountProfile" ? await updateAccountProfile(principal, data)
+      : operation === "mutateOutfitType" ? await mutateOutfitType(principal, data)
       : operation === "confirmWebLogin" ? await confirmWebLogin(principal, data)
       : operation === "listChecklistTemplates" ? checklistTemplates
       : operation === "listTrips" ? await listTrips(accountId)
@@ -691,12 +1021,21 @@ exports.main = async (event, context) => {
       : operation === "getExpenseSummary" ? await (async () => { const link = await membership(db, accountId, data.tripId); const trip = await loadTrip(db, data.tripId); return getExpenseSummaryData(db, trip, link.memberId); })()
       : operation === "getWeather" ? await getWeather(accountId, data)
       : operation === "resolveLocation" ? await resolveLocation(accountId, data)
+      : operation === "getRouteOverview" ? await getRouteOverview(accountId, data)
+      : operation === "saveRouteOverviewConfig" ? await saveRouteOverviewConfig(accountId, data)
+      : operation === "searchRoutePlaces" ? await searchRoutePlaces(accountId, data)
       : operation === "getTrip" ? await get(accountId, data)
       : operation === "mutateTrip" ? await mutate(accountId, data)
       : fail(404, "接口不存在");
     return { ok: true, data: result };
   } catch (error) {
-    if (!error.status) console.error(error);
-    return { ok: false, status: error.status || 500, error: error.status ? error.message : "保存失败，请稍后重试" };
+    if (error.code === "WECHAT_IDENTITY_UNAVAILABLE") {
+      console.error("[wechat-auth] identity unavailable", { requestId, hasAppId: !!event?.userInfo?.appId, hasOpenId: !!event?.userInfo?.openId });
+    } else if (!error.status) console.error(error);
+    const outfitMutation = event?.operation === "mutateTrip" && event?.data?.action === "outfit";
+    const safeError = outfitMutation && !error.status
+      ? `穿搭保存失败：${String(error?.message || error).slice(0, 160)}`
+      : error.status ? error.message : "保存失败，请稍后重试";
+    return { ok: false, status: error.status || 500, code: error.code || "INTERNAL_ERROR", requestId, error: safeError };
   }
 };

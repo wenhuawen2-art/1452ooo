@@ -35,3 +35,30 @@ test("custom amounts must equal total", () => {
 test("expense date is restricted to trip range", () => {
   assert.throws(() => expenses.normalizeExpense({ date: "2026-09-17", title: "晚餐", amount: "10", payerMemberId: "a", splitMode: "personal" }, trip, members, "a"), /日期/);
 });
+
+test("summary reports real outstanding debt instead of total spend minus settlements", () => {
+  const entry = expenses.normalizeExpense({ date: "2026-09-19", title: "民宿", amount: "300", payerMemberId: "a", splitMode: "equal", participants: ["a", "b", "c"] }, trip, members, "a");
+  const summary = expenses.buildExpenseSummary([entry], [], members, { today: "2026-09-19" }, trip);
+  assert.equal(summary.totalMinor, 30000);
+  assert.equal(summary.outstandingMinor, 20000);
+  assert.equal(summary.unsettledMinor, 20000);
+  assert.equal(summary.averagePerDayMinor, 15000);
+  assert.deepEqual(summary.highestSpendDay, { date: "2026-09-19", amountMinor: 30000, count: 1, categoryTotals: { 其他: 30000 } });
+});
+
+test("summary exposes category, date and member statistics while keeping legacy totals", () => {
+  const entries = [
+    expenses.normalizeExpense({ date: "2026-09-18", title: "午餐", amount: "90", category: "餐饮", payerMemberId: "a", splitMode: "equal", participants: ["a", "b", "c"] }, trip, members, "a"),
+    expenses.normalizeExpense({ date: "2026-09-19", title: "停车", amount: "30", category: "自驾用车", payerMemberId: "b", splitMode: "personal" }, trip, members, "b"),
+  ];
+  const summary = expenses.buildExpenseSummary(entries, [], members, { budgetMinor: 20000, today: "2026-09-19" }, trip);
+  assert.equal(summary.categoryTotals["餐饮"], 9000);
+  assert.equal(summary.dateTotals["2026-09-19"], 3000);
+  assert.deepEqual(summary.categoryStats.map(({ category, count, percent }) => ({ category, count, percent })), [
+    { category: "餐饮", count: 1, percent: 75 },
+    { category: "自驾用车", count: 1, percent: 25 },
+  ]);
+  assert.equal(summary.dailyStats.length, 2);
+  assert.equal(summary.memberStats.length, 3);
+  assert.equal(summary.remainingBudgetMinor, 8000);
+});

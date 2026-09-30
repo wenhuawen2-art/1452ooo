@@ -8,10 +8,10 @@ const source = await readFile("wechat-miniprogram/miniprogram/pages/index/index.
 function pageFor(trip, call) {
   let definition;
   const wx = {
-    showLoading() {}, hideLoading() {}, showToast() {}, setStorageSync() {}, removeStorageSync() {}, getStorageSync() { return ""; },
+    showLoading() {}, hideLoading() {}, showToast() {}, setStorageSync() {},
     cloud: { callFunction() {} },
   };
-  runInNewContext(source, { Page: (value) => { definition = value; }, wx, setTimeout });
+  runInNewContext(source, { Page: (value) => { definition = value; }, wx, setTimeout, require: () => ({ createDemoExperience: () => ({}) }) });
   const page = {
     ...definition,
     data: { ...definition.data, trip, me: { name: "测试成员" }, selectedDate: "2026-09-20" },
@@ -27,19 +27,46 @@ function pageFor(trip, call) {
   return page;
 }
 
-test("an incomplete first-time account stays on the empty five-tab shell", async () => {
-  const page = pageFor(null, async (operation) => {
-    assert.equal(operation, "bootstrapAccount");
-    return { account: { id: "new-user", profileComplete: false }, trips: [{ id: "must-not-load", archived: false }] };
+test("archived trips reject write entry points before opening an editor", () => {
+  const trip = { id: "trip-archived", archived: true, events: [], hotels: [], outfits: [], items: [], categories: [], members: [] };
+  const page = pageFor(trip, async () => { throw new Error("cloud call should not run"); });
+  page.data.guestMode = false;
+  page.openEvent({ currentTarget: { dataset: { date: "2026-09-20" } } });
+  assert.equal(page.data.modal, null);
+  page.openExpense({ currentTarget: { dataset: {} } });
+  assert.equal(page.data.modal, null);
+});
+
+test("guest write action opens a dismissible login prompt without changing demo data", () => {
+  const trip = { id: "demo-trip", revision: 1, me: "demo-owner", creator: "demo-owner", start: "2026-09-20T08:00", end: "2026-09-23T18:00", events: [], hotels: [], items: [], categories: [], members: [] };
+  const page = pageFor(trip, async () => { throw new Error("guest must not call cloud writes"); });
+  page.data.guestMode = true;
+  page.data.authState = "guest";
+  page.openEvent({ currentTarget: { dataset: { date: "2026-09-20" } } });
+  assert.equal(page.data.authState, "login");
+  assert.equal(page.data.loginPrompt, true);
+  assert.equal(page.data.modal, null);
+  assert.equal(page.data.trip.id, "demo-trip");
+  page.dismissLogin();
+  assert.equal(page.data.authState, "guest");
+  assert.equal(page.data.loginPrompt, false);
+});
+
+test("one-tap WeChat activation does not require avatar, nickname or phone number", async () => {
+  const trip = { id: "demo-trip", revision: 1, me: "demo-owner", creator: "demo-owner", start: "2026-09-20T08:00", end: "2026-09-23T18:00", events: [], hotels: [], items: [], categories: [], members: [] };
+  const calls = [];
+  const page = pageFor(trip, async (operation) => {
+    calls.push(operation);
+    return { account: { id: "wx-user", nickname: "旅行者", avatarId: "avatar-01", profileComplete: true }, trips: [] };
   });
-  page.data.tab = "route";
-  await page.bootstrap();
-  assert.equal(page.data.loading, false);
-  assert.equal(page.data.account.profileComplete, false);
-  assert.equal(page.data.trip, null);
-  assert.equal(page.data.trips.length, 0);
-  assert.equal(page.data.tab, "route");
-  assert.equal(page.data.loginProfile, null);
+  page.data.guestMode = true;
+  page.data.authState = "guest";
+  page.derive = () => {};
+  await page.startLogin({ currentTarget: { dataset: { intent: "login" } } });
+  assert.deepEqual(calls, ["activateAccount"]);
+  assert.equal(page.data.guestMode, false);
+  assert.equal(page.data.account.nickname, "旅行者");
+  assert.equal(page.data.authState, "authenticated");
 });
 
 test("rapid checklist taps on distinct rows are serialized and duplicate taps do not undo a confirmation", async () => {
