@@ -1,0 +1,278 @@
+<view data-node-id="166:8879" data-name="记账-分账" style="width: 393px; height: 1184px; background: linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 13%, rgba(54,158,255,0.65) 35%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #E6EDF5 0%, #E6EDF5 100%); overflow: hidden; position: relative; display:flex; flex-direction:column; padding:16px; box-sizing:border-box">
+  <view data-node-id="166:9019" data-name="圆形 2" style="position: absolute; left: -346px; top: 226px; z-index: 1">
+    <image src="./asset/icons/svg_a7d2aa9f.svg"/>
+  </view>
+  <view data-node-id="166:9046" data-name="容器 50342" style="position: absolute; left: 16px; top: 297px; z-index: 6">
+    <image src="./asset/icons/svg_ccddb370.svg"/>
+  </view>
+  <text data-node-id="166:9030" data-name="/1920" style="color: rgba(0,17,38,0.5); font-size: 20px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 500; line-height: 28px; position: absolute; left: 218px; top: 243.5px; z-index: 7">
+    /1920
+  </text>
+  <view data-node-id="166:8990" data-name="容器 50338" style="width: 160px; height: 52px; display: flex; justify-content: center; align-items: center; flex-direction: column; padding-top: 14px; padding-bottom: 14px; padding-right: 16px; padding-left: 16px; background: linear-gradient(298deg, #E7FFF0 0%, rgba(255,255,255,0) 100%), linear-gradient(104deg, #E4F3FF 0%, rgba(255,255,255,0) 100%), linear-gradient(180deg, rgba(255,255,255,0) 0%, #E6F1FF 100%), linear-gradient(0deg, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.46) 100%); border-style: solid; border-image: radial-gradient(71.54% 72.27% at 50% 50%, #3DFF7E 0,rgba(242,255,0,0) 100%) 2 2 2 2, radial-gradient(50.17% 35.83% at 50% 50%, #FFFFFF 0,rgba(255,255,255,0) 100%) 2 2 2 2, radial-gradient(72.24% 73.01% at 50% 50%, #8BC3FF 0,rgba(153,0,255,0) 100%) 2 2 2 2; border-width: 2px; border-radius: 16px; backdrop-filter: 0px 12px 20px 0px rgba(39,51,64,0.16), blur(10px); position: absolute; left: calc(100% - 393px + 116px); bottom: 104px; z-index: 12; overflow: hidden">
+    <view data-node-id="166:9006" data-name="容器 50379" style="display: flex; justify-content: flex-start; align-items: center; gap: 8px">
+      <image src="./asset/icons/svg_dc089b5f.svg" data-node-id="166:9007" data-name="容器" style="width: 20px; height: 20px"/>
+      <text data-node-id="166:9012" data-name="记一笔" style="color: rgba(0,17,38,0.9); font-size: 16px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 500; line-height: 24px">
+        记一笔
+      </text>
+    </view>
+  </view>
+  <view data-node-id="166:8900" data-name="容器 50314" style="width: 361px; height: 68px; display: flex; justify-content: space-between; align-items: center; padding: 8px; background: rgba(255,255,255,0.7); border-radius: 220px; box-shadow: 0px 16px 26px 0px rgba(12,30,56,0.06); position: absolute; left: 16px; bottom: 16px; z-index: 13; overflow: hidden">
+    <view data-node-id="166:8916" data-name="容器 50308" style="width: 52px; height: 52px; flex: none; border-radius: 114px; overflow: hidden; position: relative">
+      <view data-node-id="166:8919" data-name="容器 50305" style="position: absolute; left: calc(100% - 52px + 10px); top: calc(100% - 52px + 10px); z-index: 0">
+        <image src="./asset/icons/svg_4a42aca6.svg"/>
+      </view>
+    </view>
+    <view data-node-id="166:8987" data-name="容器 50339" style="width: 52px; height: 52px; flex: none; border-radius: 114px; overflow: hidden; position: relative">
+      <view data-node-id="166:8988" data-name="容器" style="position: absolute; left: calc(100% - 52px + 10.25px); top: calc(100% - 52px + 10px); z-index: 0">
+        <image src="./asset/icons/svg_7bb647bd.svg"/>
+      </view>
+    </view>
+    <view data-node-id="166:8952" data-name="容器 50338" style="width: 52px; height: 52px; flex: none; background: linear-gradient(180deg, rgba(0,109,197,0) 0%, #68B1FF 100%), linear-gradient(12deg, #0559BF 0%, #000C23 100%); border-style: solid; border-image: radial-gradient(50.17% 35.83% at 50% 50%, #FFFFFF 0,rgba(255,255,255,0) 100%) 1 1 1 1, radial-gradient(55.63% 56.42% at 50% 50%, #C8E2FF 0,rgba(0,11,27,0) 100%) 1 1 1 1; border-width: 1px; border-radius: 20px; box-shadow: inset 0px -6px 6px 0px rgba(235,248,255,0.2), 0px 4px 10px 0px rgba(0,100,193,0.3); overflow: hidden; position: relative">
+      <view data-node-id="166:8960" data-name="组 51041" style="position: absolute; left: -23.55px; top: -85.99px; z-index: 0">
+        <image src="./asset/icons/svg_fe6f84d9.svg"/>
+      </view>
+      <view data-node-id="166:8982" data-name="容器" style="position: absolute; left: calc(100% - 52px + 12px); top: calc(100% - 52px + 12px); z-index: 1">
+        <image src="./asset/icons/svg_40d08b44.svg"/>
+      </view>
+    </view>
+    <view data-node-id="166:8905" data-name="容器 50310" style="width: 52px; height: 52px; flex: none; border-radius: 114px; overflow: hidden; position: relative">
+      <view data-node-id="166:8908" data-name="容器 50318" style="position: absolute; left: calc(100% - 52px + 9.5px); top: calc(100% - 52px + 10px); z-index: 0">
+        <image src="./asset/icons/svg_988bdf11.svg"/>
+      </view>
+    </view>
+    <view data-node-id="166:8945" data-name="容器 50309" style="width: 52px; height: 52px; flex: none; background: rgba(255,255,255,0.65); border-radius: 114px; overflow: hidden; position: relative">
+      <view data-node-id="166:8948" data-name="容器" style="position: absolute; left: calc(100% - 52px + 10.6px); top: calc(100% - 52px + 10px); z-index: 0">
+        <image src="./asset/icons/svg_1d8be48b.svg"/>
+      </view>
+    </view>
+  </view>
+<view data-node-id="166:9290" data-name="容器 50313" style="width: 361px; height: 40px; display: flex; justify-content: flex-start; align-items: center; gap: 16px; position: relative;   z-index: 0; flex:none; margin-top:0px">
+    <view data-node-id="166:9305" data-name="容器 50306" style="display: flex; flex: 1; justify-content: flex-start; align-items: center; gap: 12px">
+      <text data-node-id="166:9306" data-name="早上好，Zero" style="flex-shrink: 0; color: #FFFFFF; font-size: 20px; font-family: Alibaba PuHuiTi 2.0; font-weight: 600; line-height: 28px">
+        早上好，Zero
+      </text>
+    </view>
+    <view data-node-id="166:9291" data-name="容器 50315" style="display: flex; justify-content: center; align-items: center; gap: 12px; padding: 4px; background: rgba(63,90,135,0.24); border-radius: 230px; backdrop-filter: blur(10px); overflow: hidden">
+      <view data-node-id="166:9302" data-name="容器 50316" style="width: 30px; height: 30px; flex: none; background: rgba(255,255,255,0.2); border-radius: 447px; overflow: hidden; position: relative">
+        <view data-node-id="166:9303" data-name="容器" style="position: absolute; left: calc(100% - 30px + 7px); top: calc(100% - 30px + 7px); z-index: 0">
+          <image src="./asset/icons/svg_e17cb400.svg"/>
+        </view>
+      </view>
+      <view data-node-id="166:9294" data-name="容器 50317" style="width: 30px; height: 30px; flex: none; border-radius: 447px; overflow: hidden; position: relative">
+        <view data-node-id="166:9297" data-name="容器" style="position: absolute; left: calc(100% - 30px + 23px); top: calc(100% - 30px + 7px); z-index: 0">
+          <image src="./asset/icons/svg_0b2c12a8.svg"/>
+        </view>
+      </view>
+    </view>
+    <view data-node-id="166:9333" data-name="容器 50312" style="width: 40px; height: 40px; flex: none; background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 100%), linear-gradient(0deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.16) 100%); border-radius: 220px; box-shadow: inset 0px 0px 8px 0px rgba(117,193,255,0.6), 0px 8px 20px 0px rgba(0,0,0,0.2); overflow: hidden; position: relative">
+      <view data-node-id="166:9341" data-name="容器" style="position: absolute; left: 10px; top: 10px; z-index: 0">
+        <image src="./asset/icons/svg_503a9624.svg"/>
+      </view>
+    </view>
+  </view>
+  <view data-node-id="166:9123" data-name="容器 50327" style="width: 361px; height: 36px; display: flex; justify-content: flex-start; align-items: center; gap: 16px; position: relative;   z-index: 3; flex:none; margin-top:40.0px">
+    <text data-node-id="166:9124" data-name="旅行账本" style="color: #FFFFFF; font-size: 24px; font-family: Alibaba PuHuiTi 2.0; font-weight: 500; line-height: 34px">
+      旅行账本
+    </text>
+    <view data-node-id="166:9128" data-name="容器 50316" style="width: 36px; height: 36px; display: flex; flex: none; justify-content: center; align-items: center; gap: 12px; padding: 4px; background: rgba(255,255,255,0.2); border-radius: 447px; overflow: hidden">
+      <image src="./asset/icons/svg_aa12c6ee.svg" data-node-id="166:9129" data-name="容器" style="width: 24px; height: 24px"/>
+    </view>
+  </view>
+  <view data-node-id="166:9109" data-name="容器 50323" style="width: 93px; height: 20px; display: flex; justify-content: flex-start; align-items: center; gap: 8px; position: relative;   z-index: 5; flex:none; margin-top:52.0px">
+    <image src="./asset/icons/svg_bf1045d6.svg" data-node-id="166:9117" data-name="容器 50322" style="width: 16px; height: 16px"/>
+    <text data-node-id="166:9110" data-name="全行程支出" style="color: rgba(0,17,38,0.75); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px">
+      全行程支出
+    </text>
+  </view>
+  <view data-node-id="166:8884" data-name="组 51045" style="width: 199px; height: 64px; position: relative;   z-index: 2; flex:none; margin-top:13.0px">
+    <view data-node-id="166:8885" data-name="组 51039" style="width: 199px; height: 64px; position: absolute; left: 0px; top: 0px; z-index: 0">
+      <text data-node-id="166:8886" data-name="688.5" style="color: #001126; font-size: 64px; font-family: Konkhmer Sleokchher; line-height: 64px; position: absolute; left: 0px; top: 0px; z-index: 0">
+        688.5
+      </text>
+      <text data-node-id="166:8893" data-name="￥" style="color: rgba(0,17,38,0.5); font-size: 24px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 500; line-height: 34px; position: absolute; left: 175px; top: 22.5px; z-index: 1">
+        ￥
+      </text>
+    </view>
+  </view>
+  <view data-node-id="166:9345" data-name="容器 50416" style="width: 361px; height: 52px; display: flex; justify-content: flex-start; align-items: flex-start; flex-direction: column; padding: 6px; background: rgba(0,34,88,0.2); border-radius: 224px; backdrop-filter: blur(10px); position: relative;   z-index: 8; overflow: hidden; flex:none; margin-top:60.0px">
+    <view data-node-id="166:9348" data-name="容器 50419" style="display: flex; align-self: stretch; justify-content: flex-start; align-items: flex-start; gap: 12px">
+      <view data-node-id="166:9349" data-name="容器 50418" style="height: 40px; flex: 1; border-radius: 196px; overflow: hidden; position: relative">
+        <text data-node-id="166:9350" data-name="明细" style="color: #FFFFFF; font-size: 16px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 500; line-height: 22px; position: absolute; left: calc(100% - 108.33px + 38.17px); top: calc(100% - 40px + 9px); z-index: 0">
+          明细
+        </text>
+      </view>
+      <view data-node-id="166:9360" data-name="容器 50417" style="height: 40px; flex: 1; background: rgba(255,255,255,0.85); border-style: solid; border-color: rgba(255,255,255,0.3); border-width: 1px; border-radius: 224px; backdrop-filter: blur(10px); overflow: hidden; position: relative">
+        <text data-node-id="166:9361" data-name="分账" style="color: #001126; font-size: 16px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 500; line-height: 22px; position: absolute; left: calc(100% - 108.33px + 37.5px); top: calc(100% - 40px + 9px); z-index: 0">
+          分账
+        </text>
+      </view>
+      <view data-node-id="166:9355" data-name="容器 50419" style="height: 40px; flex: 1; border-radius: 196px; overflow: hidden; position: relative">
+        <text data-node-id="166:9356" data-name="统计" style="color: #FFFFFF; font-size: 16px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 500; line-height: 22px; position: absolute; left: calc(100% - 108.33px + 37.83px); top: calc(100% - 40px + 9px); z-index: 0">
+          统计
+        </text>
+      </view>
+    </view>
+  </view>
+  <view data-node-id="166:9050" data-name="容器 50339" style="width: 361px; height: 88px; display: flex; justify-content: flex-start; align-items: flex-start; flex-direction: column; gap: 12px; position: relative;   z-index: 9; flex:none; margin-top:36.0px">
+    <view data-node-id="166:9064" data-name="容器 50340" style="display: flex; align-self: stretch; justify-content: flex-start; align-items: flex-start; gap: 12px">
+      <view data-node-id="166:9085" data-name="容器 50329" style="display: flex; flex: 1; flex-shrink: 0; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255,255,255,0.7); border-radius: 12px; backdrop-filter: blur(10px)">
+        <view data-node-id="166:9095" data-name="容器 50334" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 8px">
+          <image src="./asset/icons/svg_4ffd286c.svg" data-node-id="166:9096" data-name="容器" style="width: 20px; height: 20px"/>
+          <text data-node-id="166:9105" data-name="我的实际付款" style="color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px">
+            我的实际付款
+          </text>
+        </view>
+        <view data-node-id="166:9086" data-name="容器 50486" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 2px">
+          <text data-node-id="166:9087" data-name="￥" style="color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px">
+            ￥
+          </text>
+          <text data-node-id="166:9091" data-name="468.12" style="color: #001126; font-size: 20px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 36px">
+            468.12
+          </text>
+        </view>
+      </view>
+      <view data-node-id="166:9065" data-name="容器 50330" style="display: flex; flex: 1; flex-shrink: 0; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255,255,255,0.7); border-radius: 12px; backdrop-filter: blur(10px)">
+        <view data-node-id="166:9066" data-name="容器 50334" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 8px">
+          <image src="./asset/icons/svg_d9286587.svg" data-node-id="166:9071" data-name="容器" style="width: 20px; height: 20px"/>
+          <text data-node-id="166:9067" data-name="我的应承担" style="color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px">
+            我的应承担
+          </text>
+        </view>
+        <view data-node-id="166:9075" data-name="容器 50486" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 2px">
+          <text data-node-id="166:9081" data-name="￥" style="color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px">
+            ￥
+          </text>
+          <text data-node-id="166:9076" data-name="444.23" style="color: #001126; font-size: 20px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 36px">
+            444.23
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <text data-node-id="166:9026" data-name="成员结余" style="color: #001126; font-size: 18px; font-family: Alibaba PuHuiTi 2.0; font-weight: 600; line-height: 25px; position: relative;   z-index: 10; flex:none; margin-top:40.0px">
+    成员结余
+  </text>
+  <view data-node-id="166:9134" data-name="容器 50488" style="width: 361px; height: 390px; display: flex; justify-content: flex-start; align-items: flex-start; flex-direction: column; gap: 12px; position: relative;   z-index: 11; flex:none; margin-top:14.0px">
+    <view data-node-id="166:9220" data-name="容器 50382" style="width: 361px; display: flex; flex: none; justify-content: flex-start; align-items: flex-start; flex-direction: column; gap: 16px; padding: 12px; background: rgba(255,255,255,0.6); border-style: solid; border-color: rgba(255,255,255,0.8); border-width: 1px; border-radius: 16px; backdrop-filter: blur(10px); overflow: hidden">
+      <view data-node-id="166:9221" data-name="容器 50458" style="display: flex; align-self: stretch; justify-content: center; align-items: flex-start; flex-direction: column; gap: 12px; padding: 12px; background: rgba(63,90,135,0.06); border-radius: 12px; overflow: hidden">
+        <view data-node-id="166:9226" data-name="容器 50485" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: flex-start; flex-direction: column; gap: 20px">
+          <view data-node-id="166:9227" data-name="容器 50484" style="width: 313px; display: flex; flex: none; justify-content: flex-start; align-items: center; gap: 8px">
+            <view data-node-id="166:9228" data-name="容器 50483" style="display: flex; justify-content: flex-start; align-items: center; gap: 8px">
+              <view data-node-id="166:9233" data-name="容器 50456" style="width: 40px; height: 40px; flex: none; background: #FFFFFF; border-style: solid; border-color: #FFFFFF; border-width: 1.33px; border-radius: 365.33px; overflow: hidden; position: relative">
+                <image data-node-id="166:9235" data-name="image" style="position: absolute; left: -9.33px; top: -2.67px; z-index: 0; width: 53.33px; height: 52px; object-fit: cover" src="./asset/images/image-166-9235.png" title="image"/>
+                <image data-node-id="166:9234" data-name="image" style="position: absolute; left: -6.67px; top: -5.33px; z-index: 1; width: 53.33px; height: 57.33px; object-fit: cover" src="./asset/images/image-166-9234.png" title="image"/>
+              </view>
+              <text data-node-id="166:9229" data-name="用户昵称" style="color: #001126; font-size: 16px; font-family: Alibaba PuHuiTi 2.0; font-weight: 500; line-height: 22px">
+                用户昵称
+              </text>
+            </view>
+            <p data-node-id="166:9244" data-name="-￥12.00" style="flex: 1; font-family: Alibaba PuHuiTi 2.0; text-align: right; font-weight: 700; line-height: 25px">
+              -￥12.00
+            </p>
+            <text data-node-id="166:9236" data-name="应收" style="color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px">
+              应收
+            </text>
+            <text data-node-id="166:9248" data-name="￥24.00" style="color: #00A53A; font-size: 18px; font-family: Alibaba PuHuiTi 2.0; text-align: right; font-weight: 700; line-height: 25px">
+              ￥24.00
+            </text>
+          </view>
+          <view data-node-id="166:9252" data-name="容器 50487" style="display: flex; align-self: stretch; justify-content: flex-start; align-items: center; gap: 6px">
+            <view data-node-id="166:9270" data-name="容器 50329" style="display: flex; flex: 1; flex-shrink: 0; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255,255,255,0.7); border-radius: 12px; backdrop-filter: blur(10px)">
+              <view data-node-id="166:9271" data-name="容器 50334" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 8px">
+                <image src="./asset/icons/svg_4ffd286c.svg" data-node-id="166:9272" data-name="容器" style="width: 20px; height: 20px"/>
+                <text data-node-id="166:9277" data-name="已付" style="color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px">
+                  已付
+                </text>
+              </view>
+              <view data-node-id="166:9281" data-name="容器 50486" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 2px">
+                <text data-node-id="166:9286" data-name="￥" style="color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px">
+                  ￥
+                </text>
+                <text data-node-id="166:9282" data-name="468.12" style="color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px">
+                  468.12
+                </text>
+              </view>
+            </view>
+            <view data-node-id="166:9253" data-name="容器 50330" style="display: flex; flex: 1; flex-shrink: 0; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255,255,255,0.7); border-radius: 12px; backdrop-filter: blur(10px)">
+              <view data-node-id="166:9254" data-name="容器 50334" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 8px">
+                <image src="./asset/icons/svg_d9286587.svg" data-node-id="166:9259" data-name="容器" style="width: 20px; height: 20px"/>
+                <text data-node-id="166:9255" data-name="承担" style="color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px">
+                  承担
+                </text>
+              </view>
+              <view data-node-id="166:9261" data-name="容器 50486" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 2px">
+                <text data-node-id="166:9266" data-name="￥" style="color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px">
+                  ￥
+                </text>
+                <text data-node-id="166:9262" data-name="444.23" style="color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px">
+                  444.23
+                </text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view data-node-id="166:9135" data-name="容器 50418" style="width: 361px; display: flex; flex: none; justify-content: flex-start; align-items: flex-start; flex-direction: column; gap: 16px; padding: 12px; background: rgba(255,255,255,0.6); border-style: solid; border-color: rgba(255,255,255,0.8); border-width: 1px; border-radius: 16px; backdrop-filter: blur(10px); overflow: hidden">
+      <view data-node-id="166:9136" data-name="容器 50458" style="display: flex; align-self: stretch; justify-content: center; align-items: flex-start; flex-direction: column; gap: 12px; padding: 12px; background: rgba(63,90,135,0.06); border-radius: 12px; overflow: hidden">
+        <view data-node-id="166:9139" data-name="容器 50485" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: flex-start; flex-direction: column; gap: 20px">
+          <view data-node-id="166:9178" data-name="容器 50484" style="width: 313px; display: flex; flex: none; justify-content: flex-start; align-items: center; gap: 8px">
+            <view data-node-id="166:9179" data-name="容器 50483" style="display: flex; justify-content: flex-start; align-items: center; gap: 8px">
+              <view data-node-id="166:9184" data-name="容器 50456" style="width: 40px; height: 40px; flex: none; background: #FFFFFF; border-style: solid; border-color: #FFFFFF; border-width: 1.33px; border-radius: 365.33px; overflow: hidden; position: relative">
+                <image data-node-id="166:9191" data-name="image" style="position: absolute; left: -9.33px; top: -2.67px; z-index: 0; width: 53.33px; height: 52px; object-fit: cover" src="./asset/images/image-166-9191.png" title="image"/>
+                <image data-node-id="166:9188" data-name="image" style="position: absolute; left: -6.67px; top: -5.33px; z-index: 1; width: 53.33px; height: 57.33px; object-fit: cover" src="./asset/images/image-166-9188.png" title="image"/>
+                <image data-node-id="166:9185" data-name="image" style="position: absolute; left: -24px; top: -28px; z-index: 2; width: 89px; height: 103px; object-fit: cover" src="./asset/images/image-166-9185.png" title="image"/>
+              </view>
+              <text data-node-id="166:9180" data-name="用户昵称" style="color: #001126; font-size: 16px; font-family: Alibaba PuHuiTi 2.0; font-weight: 500; line-height: 22px">
+                用户昵称
+              </text>
+            </view>
+            <p data-node-id="166:9201" data-name="-￥12.00" style="flex: 1; font-family: Alibaba PuHuiTi 2.0; text-align: right; font-weight: 700; line-height: 25px">
+              -￥12.00
+            </p>
+            <text data-node-id="166:9207" data-name="应收" style="color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px">
+              应收
+            </text>
+            <text data-node-id="166:9194" data-name="￥24.00" style="color: #00A53A; font-size: 18px; font-family: Alibaba PuHuiTi 2.0; text-align: right; font-weight: 700; line-height: 25px">
+              ￥24.00
+            </text>
+          </view>
+          <view data-node-id="166:9140" data-name="容器 50487" style="display: flex; align-self: stretch; justify-content: flex-start; align-items: center; gap: 6px">
+            <view data-node-id="166:9158" data-name="容器 50329" style="display: flex; flex: 1; flex-shrink: 0; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255,255,255,0.7); border-radius: 12px; backdrop-filter: blur(10px)">
+              <view data-node-id="166:9168" data-name="容器 50334" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 8px">
+                <image src="./asset/icons/svg_4ffd286c.svg" data-node-id="166:9169" data-name="容器" style="width: 20px; height: 20px"/>
+                <text data-node-id="166:9174" data-name="已付" style="color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px">
+                  已付
+                </text>
+              </view>
+              <view data-node-id="166:9159" data-name="容器 50486" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 2px">
+                <text data-node-id="166:9160" data-name="￥" style="color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px">
+                  ￥
+                </text>
+                <text data-node-id="166:9164" data-name="468.12" style="color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px">
+                  468.12
+                </text>
+              </view>
+            </view>
+            <view data-node-id="166:9141" data-name="容器 50330" style="display: flex; flex: 1; flex-shrink: 0; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255,255,255,0.7); border-radius: 12px; backdrop-filter: blur(10px)">
+              <view data-node-id="166:9142" data-name="容器 50334" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 8px">
+                <image src="./asset/icons/svg_d9286587.svg" data-node-id="166:9143" data-name="容器" style="width: 20px; height: 20px"/>
+                <text data-node-id="166:9145" data-name="承担" style="color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px">
+                  承担
+                </text>
+              </view>
+              <view data-node-id="166:9149" data-name="容器 50486" style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 2px">
+                <text data-node-id="166:9154" data-name="￥" style="color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px">
+                  ￥
+                </text>
+                <text data-node-id="166:9150" data-name="444.23" style="color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px">
+                  444.23
+                </text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  </view>

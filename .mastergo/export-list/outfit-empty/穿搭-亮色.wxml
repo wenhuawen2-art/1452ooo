@@ -1,0 +1,553 @@
+<view
+  data-node-id="5:2918"
+  data-name="穿搭-亮色"
+  style="width: 393px; height: 1573px; background: linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 20%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #E6EDF5 0%, #E6EDF5 100%); overflow: hidden; position: relative">
+  <view
+    data-node-id="5:2920"
+    data-name="矩形 3615"
+    style="width: 472px; height: 342px; background: linear-gradient(180deg, #007BFF 0%, rgba(0,123,255,0) 100%); position: absolute; left: -12px; top: 0px; z-index: 0"></view>
+  <view
+    data-node-id="5:2921"
+    data-name="圆形 2"
+    style="position: absolute; left: -346px; top: 291px; z-index: 1">
+    <image src="./asset/icons/svg_a7d2aa9f.svg" />
+  </view>
+  <view
+    data-node-id="5:3141"
+    data-name="容器 50441"
+    style="width: 361px; height: 80px; display: flex; justify-content: flex-start; align-items: center; gap: 12px; position: absolute; left: 16px; top: 81px; z-index: 2">
+    <view
+      data-node-id="5:3142"
+      data-name="容器 50439"
+      style="flex: 1; align-self: stretch; background: rgba(255,255,255,0.16); border-radius: 12px; overflow: hidden; position: relative">
+      <view
+        data-node-id="5:3147"
+        data-name="容器 50443"
+        style="width: 91px; height: 24px; display: flex; justify-content: flex-start; align-items: center; gap: 4px; position: absolute; left: calc(100% - 174.5px + 41px); top: calc(100% - 80px + 28px); z-index: 0">
+        <image
+          src="./asset/icons/svg_39e60cfa.svg"
+          data-node-id="5:3148"
+          data-name="容器"
+          style="width: 24px; height: 24px" />
+        <text
+          data-node-id="5:3152"
+          data-name="物品清单"
+          style="color: #FFFFFF; font-size: 16px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 800; line-height: 24px">
+          物品清单
+        </text>
+      </view>
+      <view
+        data-node-id="5:3143"
+        data-name="容器"
+        style="position: absolute; left: 114px; top: calc(100% - 80px + 12px); z-index: 1">
+        <image src="./asset/icons/svg_3b9feec0.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="5:3156"
+      data-name="容器 50440"
+      style="flex: 1; align-self: stretch; background: linear-gradient(137deg, #DAFBFF 0%, rgba(0,191,255,0) 100%), radial-gradient(52.86% 92.9% at 50% 50%, #72FF70 0,rgba(147,206,255,0) 100%), radial-gradient(58.39% 75.67% at 50% 50%, #B7FFEF 0,rgba(152,245,255,0) 100%), radial-gradient(57.26% 124.61% at 50% 50%, #B7FFEF 0,rgba(152,245,255,0) 100%), radial-gradient(53.72% 69.19% at 50% 50%, #F5FF6A 0,rgba(147,206,255,0) 100%), linear-gradient(180deg, rgba(126,219,255,0) 0%, rgba(216,255,233,0.3) 100%), linear-gradient(0deg, rgba(157,208,255,0.2) 0%, rgba(157,208,255,0.2) 100%); border-style: solid; border-color: rgba(255,255,255,0.4); border-width: 1px; border-radius: 12px; overflow: hidden; position: relative">
+      <view
+        data-node-id="5:3157"
+        data-name="容器"
+        style="position: absolute; left: 112.5px; top: 9px; z-index: 0">
+        <image src="./asset/icons/svg_f34b0e05.svg" />
+      </view>
+      <view
+        data-node-id="5:3161"
+        data-name="容器 50444"
+        style="width: 91px; height: 24px; display: flex; justify-content: flex-start; align-items: center; gap: 4px; position: absolute; left: calc(100% - 174.5px + 41.5px); top: calc(100% - 80px + 28px); z-index: 1">
+        <image
+          src="./asset/icons/svg_dbc5d115.svg"
+          data-node-id="5:3162"
+          data-name="容器"
+          style="width: 24px; height: 24px" />
+        <text
+          data-node-id="5:3166"
+          data-name="每日穿搭"
+          style="color: rgba(255,255,255,0.9); font-size: 16px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 24px">
+          每日穿搭
+        </text>
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="5:3106"
+    data-name="容器 50313"
+    style="width: 361px; height: 40px; display: flex; justify-content: flex-start; align-items: center; gap: 16px; position: absolute; left: 16px; top: 16px; z-index: 3">
+    <view
+      data-node-id="5:3117"
+      data-name="容器 50306"
+      style="display: flex; flex: 1; justify-content: flex-start; align-items: center; gap: 12px">
+      <text
+        data-node-id="5:3132"
+        data-name="早上好，Zero"
+        style="flex-shrink: 0; color: #FFFFFF; font-size: 20px; font-family: Alibaba PuHuiTi 2.0; font-weight: 600; line-height: 28px">
+        早上好，Zero
+      </text>
+    </view>
+    <view
+      data-node-id="5:3107"
+      data-name="容器 50315"
+      style="display: flex; justify-content: center; align-items: center; gap: 12px; padding: 4px; background: rgba(63,90,135,0.24); border-radius: 230px; backdrop-filter: blur(10px); overflow: hidden">
+      <view
+        data-node-id="5:3108"
+        data-name="容器 50316"
+        style="width: 30px; height: 30px; flex: none; background: rgba(255,255,255,0.2); border-radius: 447px; overflow: hidden; position: relative">
+        <view
+          data-node-id="5:3109"
+          data-name="容器"
+          style="position: absolute; left: calc(100% - 30px + 7px); top: calc(100% - 30px + 7px); z-index: 0">
+          <image src="./asset/icons/svg_a4153cd7.svg" />
+        </view>
+      </view>
+      <view
+        data-node-id="5:3111"
+        data-name="容器 50317"
+        style="width: 30px; height: 30px; flex: none; border-radius: 447px; overflow: hidden; position: relative">
+        <view
+          data-node-id="5:3112"
+          data-name="容器"
+          style="position: absolute; left: calc(100% - 30px + 23px); top: calc(100% - 30px + 7px); z-index: 0">
+          <image src="./asset/icons/svg_e184da89.svg" />
+        </view>
+      </view>
+    </view>
+    <view
+      data-node-id="5:3136"
+      data-name="容器 50312"
+      style="width: 40px; height: 40px; flex: none; background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 100%), linear-gradient(0deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.16) 100%); border-radius: 220px; box-shadow: inset 0px 0px 8px 0px rgba(117,193,255,0.6), 0px 8px 20px 0px rgba(0,0,0,0.2); overflow: hidden; position: relative">
+      <view
+        data-node-id="5:3137"
+        data-name="容器"
+        style="position: absolute; left: 10px; top: 10px; z-index: 0">
+        <image src="./asset/icons/svg_d5ac35e9.svg" />
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="5:3098"
+    data-name="容器 50338"
+    style="width: 160px; height: 52px; display: flex; justify-content: center; align-items: center; flex-direction: column; padding-top: 14px; padding-bottom: 14px; padding-right: 16px; padding-left: 16px; background: linear-gradient(298deg, #E7FFF0 0%, rgba(255,255,255,0) 100%), linear-gradient(104deg, #E4F3FF 0%, rgba(255,255,255,0) 100%), linear-gradient(180deg, rgba(255,255,255,0) 0%, #E6F1FF 100%), linear-gradient(0deg, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.46) 100%); border-style: solid; border-image: radial-gradient(71.54% 72.27% at 50% 50%, #3DFF7E 0,rgba(242,255,0,0) 100%) 2 2 2 2, radial-gradient(50.17% 35.83% at 50% 50%, #FFFFFF 0,rgba(255,255,255,0) 100%) 2 2 2 2, radial-gradient(72.24% 73.01% at 50% 50%, #8BC3FF 0,rgba(153,0,255,0) 100%) 2 2 2 2; border-width: 2px; border-radius: 16px; backdrop-filter: 0px 12px 20px 0px rgba(39,51,64,0.16), blur(10px); position: absolute; left: calc(100% - 393px + 117px); bottom: 112px; z-index: 4; overflow: hidden">
+    <view
+      data-node-id="5:3099"
+      data-name="容器 50379"
+      style="display: flex; justify-content: flex-start; align-items: center; gap: 8px">
+      <image
+        src="./asset/icons/svg_1e09e1de.svg"
+        data-node-id="5:3100"
+        data-name="容器"
+        style="width: 20px; height: 20px" />
+      <text
+        data-node-id="5:3102"
+        data-name="添加穿搭"
+        style="color: rgba(0,17,38,0.9); font-size: 16px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 500; line-height: 24px">
+        添加穿搭
+      </text>
+    </view>
+  </view>
+  <view
+    data-node-id="5:2973"
+    data-name="容器 50375"
+    style="width: 416px; height: 102px; display: flex; justify-content: flex-start; align-items: flex-start; gap: 16px; position: absolute; left: 16px; top: 189px; z-index: 5">
+    <view
+      data-node-id="5:3028"
+      data-name="容器 50365"
+      style="display: flex; justify-content: flex-start; align-items: center; flex-direction: column; gap: 4px; padding-top: 8px; padding-bottom: 4px; padding-right: 14px; padding-left: 14px; background: rgba(0,0,0,0.08); border-radius: 18px; overflow: hidden">
+      <view
+        data-node-id="5:3033"
+        data-name="容器 50370"
+        style="display: flex; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px">
+        <text
+          data-node-id="5:3034"
+          data-name="周日"
+          style="color: #FFFFFF; font-size: 13px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 18px">
+          周日
+        </text>
+        <text
+          data-node-id="5:3038"
+          data-name="10"
+          style="color: #FFFFFF; font-size: 24px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 24px">
+          10
+        </text>
+        <text
+          data-node-id="5:3042"
+          data-name="10月"
+          style="color: #FFFFFF; font-size: 13px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 18px">
+          10月
+        </text>
+      </view>
+      <image
+        src="./asset/icons/svg_4d8e5e68.svg"
+        data-node-id="5:3029"
+        data-name="容器 50372"
+        style="width: 10px; height: 10px" />
+    </view>
+    <view
+      data-node-id="5:3064"
+      data-name="容器 50364"
+      style="display: flex; justify-content: flex-start; align-items: center; flex-direction: column; gap: 4px; padding-top: 8px; padding-bottom: 4px; padding-right: 14px; padding-left: 14px; background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 100%), linear-gradient(0deg, rgba(0,149,255,0.2) 0%, rgba(0,149,255,0.2) 100%), linear-gradient(0deg, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.24) 100%); border-style: solid; border-image: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 100%) 1 1 1 1, linear-gradient(0deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.1) 100%); border-width: 1px; border-radius: 18px; box-shadow: inset 0px -2px 12px 0px rgba(199,230,255,0.6); overflow: hidden">
+      <view
+        data-node-id="5:3069"
+        data-name="容器 50370"
+        style="display: flex; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px">
+        <text
+          data-node-id="5:3078"
+          data-name="周日"
+          style="color: #FFFFFF; font-size: 13px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 18px">
+          周日
+        </text>
+        <text
+          data-node-id="5:3070"
+          data-name="11"
+          style="color: #FFFFFF; font-size: 24px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 24px">
+          11
+        </text>
+        <text
+          data-node-id="5:3074"
+          data-name="10月"
+          style="color: #FFFFFF; font-size: 13px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 18px">
+          10月
+        </text>
+      </view>
+      <image
+        src="./asset/icons/svg_17ea911a.svg"
+        data-node-id="5:3065"
+        data-name="容器 50373"
+        style="width: 10px; height: 10px" />
+    </view>
+    <view
+      data-node-id="5:3046"
+      data-name="容器 50366"
+      style="display: flex; justify-content: flex-start; align-items: center; flex-direction: column; gap: 4px; padding-top: 8px; padding-bottom: 4px; padding-right: 14px; padding-left: 14px; background: rgba(0,0,0,0.08); border-radius: 18px; overflow: hidden">
+      <view
+        data-node-id="5:3051"
+        data-name="容器 50370"
+        style="display: flex; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px">
+        <text
+          data-node-id="5:3056"
+          data-name="周日"
+          style="color: #FFFFFF; font-size: 13px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 18px">
+          周日
+        </text>
+        <text
+          data-node-id="5:3060"
+          data-name="12"
+          style="color: #FFFFFF; font-size: 24px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 24px">
+          12
+        </text>
+        <text
+          data-node-id="5:3052"
+          data-name="10月"
+          style="color: #FFFFFF; font-size: 13px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 18px">
+          10月
+        </text>
+      </view>
+      <image
+        src="./asset/icons/svg_3927f0ba.svg"
+        data-node-id="5:3047"
+        data-name="容器 50374"
+        style="width: 10px; height: 10px" />
+    </view>
+    <view
+      data-node-id="5:3010"
+      data-name="容器 50367"
+      style="display: flex; justify-content: flex-start; align-items: center; flex-direction: column; gap: 4px; padding-top: 8px; padding-bottom: 4px; padding-right: 14px; padding-left: 14px; background: rgba(0,0,0,0.08); border-radius: 18px; overflow: hidden">
+      <view
+        data-node-id="5:3011"
+        data-name="容器 50370"
+        style="display: flex; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px">
+        <text
+          data-node-id="5:3012"
+          data-name="周日"
+          style="color: #FFFFFF; font-size: 13px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 18px">
+          周日
+        </text>
+        <text
+          data-node-id="5:3020"
+          data-name="13"
+          style="color: #FFFFFF; font-size: 24px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 24px">
+          13
+        </text>
+        <text
+          data-node-id="5:3016"
+          data-name="10月"
+          style="color: #FFFFFF; font-size: 13px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 18px">
+          10月
+        </text>
+      </view>
+      <image
+        src="./asset/icons/svg_3927f0ba.svg"
+        data-node-id="5:3024"
+        data-name="容器 50374"
+        style="width: 10px; height: 10px" />
+    </view>
+    <view
+      data-node-id="5:2974"
+      data-name="容器 50368"
+      style="display: flex; justify-content: flex-start; align-items: center; flex-direction: column; gap: 4px; padding-top: 8px; padding-bottom: 4px; padding-right: 14px; padding-left: 14px; background: rgba(0,0,0,0.08); border-radius: 18px; overflow: hidden">
+      <view
+        data-node-id="5:2979"
+        data-name="容器 50370"
+        style="display: flex; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px">
+        <text
+          data-node-id="5:2980"
+          data-name="周日"
+          style="color: #FFFFFF; font-size: 13px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 18px">
+          周日
+        </text>
+        <text
+          data-node-id="5:2988"
+          data-name="14"
+          style="color: #FFFFFF; font-size: 24px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 24px">
+          14
+        </text>
+        <text
+          data-node-id="5:2984"
+          data-name="10月"
+          style="color: #FFFFFF; font-size: 13px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 18px">
+          10月
+        </text>
+      </view>
+      <image
+        src="./asset/icons/svg_3927f0ba.svg"
+        data-node-id="5:2975"
+        data-name="容器 50374"
+        style="width: 10px; height: 10px" />
+    </view>
+    <view
+      data-node-id="5:2992"
+      data-name="容器 50369"
+      style="display: flex; justify-content: flex-start; align-items: center; flex-direction: column; gap: 4px; padding-top: 8px; padding-bottom: 4px; padding-right: 14px; padding-left: 14px; background: rgba(0,0,0,0.08); border-radius: 18px; overflow: hidden">
+      <view
+        data-node-id="5:2997"
+        data-name="容器 50370"
+        style="display: flex; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px">
+        <text
+          data-node-id="5:2998"
+          data-name="周日"
+          style="color: #FFFFFF; font-size: 13px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 18px">
+          周日
+        </text>
+        <text
+          data-node-id="5:3006"
+          data-name="15"
+          style="color: #FFFFFF; font-size: 24px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 24px">
+          15
+        </text>
+        <text
+          data-node-id="5:3002"
+          data-name="10月"
+          style="color: #FFFFFF; font-size: 13px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 18px">
+          10月
+        </text>
+      </view>
+      <image
+        src="./asset/icons/svg_129a3eb6.svg"
+        data-node-id="5:2993"
+        data-name="容器 50374"
+        style="width: 10px; height: 10px" />
+    </view>
+  </view>
+  <view
+    data-node-id="5:3097"
+    data-name="路径 52897"
+    style="position: absolute; left: 193px; top: 316px; z-index: 6">
+    <image src="./asset/icons/svg_c997ff78.svg" />
+  </view>
+  <view
+    data-node-id="5:3082"
+    data-name="容器 50377"
+    style="width: 247px; height: 24px; display: flex; justify-content: flex-start; align-items: center; gap: 12px; position: absolute; left: 16px; top: 323px; z-index: 7">
+    <text
+      data-node-id="5:3083"
+      data-name="10月11日"
+      style="color: #001126; font-size: 20px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 600; line-height: 24px">
+      10月11日
+    </text>
+    <image
+      src="./asset/icons/svg_f1ac8389.svg"
+      data-node-id="5:3096"
+      data-name="圆形 8"
+      style="width: 6px; height: 6px" />
+    <text
+      data-node-id="5:3092"
+      data-name="周日"
+      style="color: #001126; font-size: 20px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 600; line-height: 24px">
+      周日
+    </text>
+    <image
+      src="./asset/icons/svg_f1ac8389.svg"
+      data-node-id="5:3087"
+      data-name="圆形 7"
+      style="width: 6px; height: 6px" />
+    <text
+      data-node-id="5:3088"
+      data-name="第二天"
+      style="color: #001126; font-size: 20px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 600; line-height: 24px">
+      第二天
+    </text>
+  </view>
+  <view
+    data-node-id="5:3170"
+    data-name="容器 50344"
+    style="width: 361px; height: 64px; display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 8px; background: rgba(255,255,255,0.3); border-style: solid; border-color: rgba(255,255,255,0.2); border-width: 1px; border-radius: 16px; backdrop-filter: blur(10px); position: absolute; left: 16px; top: 371px; z-index: 8; overflow: hidden">
+    <view
+      data-node-id="5:3172"
+      data-name="容器 50471"
+      style="display: flex; align-self: stretch; justify-content: flex-start; align-items: flex-start; gap: 8px">
+      <view
+        data-node-id="5:3173"
+        data-name="容器 50465"
+        style="display: flex; flex-shrink: 0; justify-content: center; align-items: center; flex-direction: column; padding-top: 6px; padding-bottom: 6px; padding-right: 12px; padding-left: 6px; background: radial-gradient(58.57% 54.57% at 50% 50%, #FFFDCE 0,rgba(255,243,210,0) 100%), linear-gradient(180deg, #008BF4 0%, rgba(5,147,255,0.98) 29%, rgba(5,147,255,0.2) 100%); border-radius: 12px; overflow: hidden">
+        <view
+          data-node-id="5:3174"
+          data-name="容器 50470"
+          style="display: flex; justify-content: flex-start; align-items: center; gap: 8px">
+          <image
+            src="./asset/icons/svg_c625bf17.svg"
+            data-node-id="5:3175"
+            data-name="容器 50339"
+            style="width: 36px; height: 36px" />
+          <text
+            data-node-id="5:3185"
+            data-name="四姑娘山"
+            style="color: #FFFFFF; font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 800; line-height: 20px">
+            四姑娘山
+          </text>
+        </view>
+      </view>
+      <view
+        data-node-id="5:3189"
+        data-name="容器 50354"
+        style="display: flex; flex: 1; align-self: stretch; justify-content: center; align-items: center; flex-direction: column; gap: 8px; padding: 8px; background: rgba(255,255,255,0.2); border-style: solid; border-color: rgba(255,255,255,0.2); border-width: 1px; border-radius: 12px; backdrop-filter: blur(10px)">
+        <view
+          data-node-id="5:3190"
+          data-name="容器 50350"
+          style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 4px">
+          <image
+            src="./asset/icons/svg_9f1c985d.svg"
+            data-node-id="5:3195"
+            data-name="容器"
+            style="width: 20px; height: 20px" />
+          <text
+            data-node-id="5:3191"
+            data-name="最高"
+            style="color: #001126; font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px">
+            最高
+          </text>
+          <text
+            data-node-id="5:3199"
+            data-name="32°"
+            style="color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px">
+            32°
+          </text>
+        </view>
+      </view>
+      <view
+        data-node-id="5:3203"
+        data-name="容器 50353"
+        style="display: flex; flex: 1; align-self: stretch; justify-content: center; align-items: center; flex-direction: column; gap: 8px; padding: 8px; background: rgba(255,255,255,0.2); border-style: solid; border-color: rgba(255,255,255,0.2); border-width: 1px; border-radius: 12px; backdrop-filter: blur(10px)">
+        <view
+          data-node-id="5:3204"
+          data-name="容器 50351"
+          style="display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 4px">
+          <image
+            src="./asset/icons/svg_d9aa3809.svg"
+            data-node-id="5:3209"
+            data-name="容器"
+            style="width: 20px; height: 20px" />
+          <text
+            data-node-id="5:3205"
+            data-name="最低"
+            style="color: #001126; font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px">
+            最低
+          </text>
+          <text
+            data-node-id="5:3213"
+            data-name="24°"
+            style="color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px">
+            24°
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="5:2922"
+    data-name="容器 50381"
+    style="width: 361px; height: 280px; background: rgba(255,255,255,0.3); border-style: solid; border-color: rgba(255,255,255,0.2); border-width: 1px; border-radius: 16px; backdrop-filter: blur(10px); position: absolute; left: 16px; top: 459px; z-index: 9; overflow: hidden">
+    <text
+      data-node-id="5:2923"
+      data-name="空状态"
+      style="color: rgba(0,17,38,0.9); font-size: 16px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 500; line-height: 24px; position: absolute; left: calc(100% - 361px + 156.5px); top: calc(100% - 280px + 128px); z-index: 0">
+      空状态
+    </text>
+  </view>
+  <view
+    data-node-id="5:2927"
+    data-name="容器 50314"
+    style="width: 361px; height: 68px; display: flex; justify-content: space-between; align-items: center; padding: 8px; background: rgba(255,255,255,0.7); border-radius: 220px; box-shadow: 0px 16px 26px 0px rgba(12,30,56,0.06); position: absolute; left: 16px; bottom: 16px; z-index: 10; overflow: hidden">
+    <view
+      data-node-id="5:2958"
+      data-name="容器 50308"
+      style="width: 52px; height: 52px; flex: none; border-radius: 114px; overflow: hidden; position: relative">
+      <view
+        data-node-id="5:2959"
+        data-name="容器 50305"
+        style="position: absolute; left: calc(100% - 52px + 10px); top: calc(100% - 52px + 10px); z-index: 0">
+        <image src="./asset/icons/svg_bfe74286.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="5:2970"
+      data-name="容器 50309"
+      style="width: 52px; height: 52px; flex: none; border-radius: 114px; overflow: hidden; position: relative">
+      <view
+        data-node-id="5:2971"
+        data-name="容器"
+        style="position: absolute; left: calc(100% - 52px + 10.25px); top: calc(100% - 52px + 10px); z-index: 0">
+        <image src="./asset/icons/svg_8d42f63b.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="5:2935"
+      data-name="容器 50339"
+      style="width: 52px; height: 52px; flex: none; background: linear-gradient(180deg, rgba(0,109,197,0) 0%, #EEF6FF 100%), linear-gradient(0deg, #0559BF 0%, #003192 100%); border-image: radial-gradient(54.59% 59.5% at 50% 50%, #FFFFFF 0,rgba(255,255,255,0) 100%) 1 1 1 1; border-radius: 22px; box-shadow: inset 0px -6px 6px 0px rgba(235,248,255,0.2), 0px 8px 16px 0px rgba(0,100,193,0.1), inset 0px 2px 12px 0px rgba(37,135,255,0.83), inset -3px -3px 7px 0px rgba(255,255,255,0.7); overflow: hidden; position: relative">
+      <view
+        data-node-id="5:2948"
+        data-name="组 51041"
+        style="position: absolute; left: -23.55px; top: -85.99px; z-index: 0">
+        <image src="./asset/icons/svg_c2ac5ca0.svg" />
+      </view>
+      <view
+        data-node-id="5:2936"
+        data-name="容器"
+        style="position: absolute; left: calc(100% - 52px + 12px); top: calc(100% - 52px + 12px); z-index: 1">
+        <image src="./asset/icons/svg_c3897b4e.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="5:2928"
+      data-name="容器 50310"
+      style="width: 52px; height: 52px; flex: none; background: rgba(255,255,255,0.65); border-radius: 114px; overflow: hidden; position: relative">
+      <view
+        data-node-id="5:2929"
+        data-name="容器 50318"
+        style="position: absolute; left: calc(100% - 52px + 9.5px); top: calc(100% - 52px + 10px); z-index: 0">
+        <image src="./asset/icons/svg_b5625062.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="5:2967"
+      data-name="容器 50312"
+      style="width: 52px; height: 52px; flex: none; border-radius: 114px; overflow: hidden; position: relative">
+      <view
+        data-node-id="5:2968"
+        data-name="容器"
+        style="position: absolute; left: calc(100% - 52px + 10px); top: calc(100% - 52px + 10px); z-index: 0">
+        <image src="./asset/icons/svg_0634b27b.svg" />
+      </view>
+    </view>
+  </view>
+</view>

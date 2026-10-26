@@ -1,0 +1,24 @@
+/* Fixed visual frames must not inherit the legacy 44px button minimum or shrink in flex rows. */
+.mg-profile,.rg-avatar,.header-avatar{position:relative;flex:0 0 40px;width:40px;height:40px;min-width:40px;min-height:40px;max-width:40px;max-height:40px;box-sizing:border-box}
+.mg-profile,.header-avatar{overflow:visible}
+.mg-profile image,.header-avatar image{border-radius:50%}
+.mg-profile:before,.rg-avatar:before,.header-avatar:before{content:'';position:absolute;inset:-2px;border-radius:50%}
+.mg-profile:before{inset:-3px}
+.modal-head>button{position:relative;flex:0 0 40px;width:40px;height:40px;min-width:40px;min-height:40px;max-width:40px;max-height:40px;box-sizing:border-box}
+.modal-head>button:before{content:'';position:absolute;inset:-2px;border-radius:50%}
+.mg-theme,.rg-theme,.mg-theme>view,.rg-theme>view{flex-shrink:0}
+.mg-brand{min-width:0}.mg-brand>image{flex:none}.mg-brand>text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.custom-header .custom-tagline{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.mg-members>image,.mg-members>button{flex:none}
+.mg-trip-head>button,.pp-name>button{position:relative}
+.mg-trip-head>button:before,.pp-name>button:before{content:'';position:absolute;inset:-4px;border-radius:50%}
+.rg-date-dot{flex:0 0 6px;width:6px;height:6px;min-width:6px;min-height:6px;margin-top:0}
+.rg-date.selected{padding:7px 7px 3px}
+.rg-timeline>text,.xy-outfit-group-more,.ee-settings,.ee-more,.pp-portrait,.pp-name button,.pp-type,.pp-section button{flex-shrink:0}
+.page .master-nav .nav-item{flex:0 0 52px;width:52px;height:52px;min-width:52px;min-height:52px;max-width:52px;max-height:52px}
+button image{flex-shrink:0;display:block}
+.page .profile-entry.has-avatar{padding:0;border:1px solid #ffffffb3;background:#ffffff29;overflow:visible}
+.page .profile-entry.has-avatar image{width:100%;height:100%;border-radius:50%}
+.page .profile-entry.is-guest{padding:9px;border:1px solid #ffffff66;background:linear-gradient(180deg,#fff0,#ffffff4d),#ffffff29}
+.page .profile-entry.is-guest image{width:20px;height:20px;border-radius:0}
+.page .profile-entry:before{inset:-3px}

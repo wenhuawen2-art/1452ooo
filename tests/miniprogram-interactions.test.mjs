@@ -27,6 +27,22 @@ function pageFor(trip, call) {
   return page;
 }
 
+test("logged-in users without a trip can navigate and adding content opens trip creation", () => {
+  const page = pageFor(null, async () => { throw new Error("cloud writes must not run"); });
+  page.data.guestMode = false;
+  for (const tab of ["today", "route", "list", "outfit", "expenses", "people"]) {
+    page.setTab({ currentTarget: { dataset: { tab } } });
+    assert.equal(page.data.tab, tab);
+    assert.equal(page.data.modal, null);
+  }
+  for (const method of ["openEvent", "openCategory", "openOutfit", "openExpense"]) {
+    page[method]({ currentTarget: { dataset: {} } });
+    assert.equal(page.data.modal.type, "trip");
+    page.closeModal();
+    assert.equal(page.data.trip, null);
+  }
+});
+
 test("archived trips reject write entry points before opening an editor", () => {
   const trip = { id: "trip-archived", archived: true, events: [], hotels: [], outfits: [], items: [], categories: [], members: [] };
   const page = pageFor(trip, async () => { throw new Error("cloud call should not run"); });
@@ -69,6 +85,26 @@ test("one-tap WeChat activation does not require avatar, nickname or phone numbe
   assert.equal(page.data.authState, "authenticated");
 });
 
+test("an unactivated WeChat account lands on the login design and waits for confirmation", async () => {
+  const calls = [];
+  const page = pageFor(null, async operation => {
+    calls.push(operation);
+    return { account: { nickname: "旅行者", avatarId: "avatar-01", profileComplete: false }, trips: [] };
+  });
+  await page.bootstrap();
+  assert.deepEqual(calls, ["bootstrapAccount"]);
+  assert.equal(page.data.guestMode, true);
+  assert.equal(page.data.trip, null);
+  assert.equal(page.data.loginPrompt, false);
+  page.confirmWechatLogin();
+  assert.equal(page.data.loginPrompt, true);
+  assert.equal(page.pendingAuthIntent, "login");
+  assert.deepEqual(calls, ["bootstrapAccount"]);
+  page.dismissLogin();
+  assert.equal(page.data.loginPrompt, false);
+  assert.equal(page.data.authState, "guest");
+});
+
 test("rapid checklist taps on distinct rows are serialized and duplicate taps do not undo a confirmation", async () => {
   const trip = {
     id: "trip-1", revision: 0, me: "member-1", start: "2026-09-20T08:00", end: "2026-09-22T18:00",
@@ -90,6 +126,45 @@ test("rapid checklist taps on distinct rows are serialized and duplicate taps do
   assert.deepEqual(revisions, [0, 1]);
   assert.equal(page.data.trip.items.find((item) => item.id === "a").done, true);
   assert.equal(page.data.trip.items.find((item) => item.id === "b").done, true);
+});
+
+test("checklist star toggles only key status and retains item content and confirmation", async () => {
+  const item={id:'a',title:'药品',categoryId:'c',owner:null,key:false,done:true,by:'同行人',byMemberId:'m',remind:'08:00',linkedDate:'2026-09-20'};
+  const trip={id:'t',revision:1,me:'m',items:[item],members:[]};
+  const requests=[];
+  const page=pageFor(trip,async(_operation,input)=>{requests.push(input);return {trip:{...trip,revision:input.revision+1,items:[{...item,key:input.key,reviewed:false}]}};});
+  const tap={currentTarget:{dataset:{action:'key',id:'a'}}};
+  page.mutateAction(tap);page.mutateAction(tap);await page.checklistQueue;
+  assert.equal(requests.length,1);assert.equal(page.data.trip.items[0].key,true);
+  assert.equal(page.data.modal,null);
+  assert.equal(requests[0].action,'item');assert.equal(requests[0].title,item.title);
+  assert.equal(requests[0].categoryId,'c');assert.equal(requests[0].remind,item.remind);
+  assert.equal(requests[0].linkedDate,item.linkedDate);assert.equal(page.data.trip.items[0].done,true);
+  assert.equal(page.data.trip.items[0].by,'同行人');
+  await new Promise(resolve=>setTimeout(resolve,2));
+  page.mutateAction(tap);await page.checklistQueue;assert.equal(page.data.trip.items[0].key,false);
+});
+
+test("key toggle retries with current item fields after a revision conflict",async()=>{
+  const item={id:'a',title:'旧名称',categoryId:'c1',key:false};
+  const trip={id:'t',revision:1,me:'m',items:[item],members:[]};
+  const latest={...trip,revision:2,items:[{...item,title:'同行人更新的名称',categoryId:'c2',remind:'09:00'}]};
+  let calls=0,retry;
+  const page=pageFor(trip,async(operation,input)=>{
+    if(operation==='getTrip')return {trip:latest};
+    if(++calls===1)throw Object.assign(new Error('conflict'),{status:409});
+    retry=input;return {trip:{...latest,revision:3,items:[{...latest.items[0],key:input.key}]}};
+  });
+  await page.performChecklistAction('key','a');
+  assert.equal(retry.revision,2);assert.equal(retry.title,latest.items[0].title);
+  assert.equal(retry.categoryId,'c2');assert.equal(retry.remind,'09:00');assert.equal(retry.key,true);
+});
+
+test("failed key toggle restores the original star state",async()=>{
+  const trip={id:'t',revision:1,me:'m',items:[{id:'a',title:'物品',categoryId:'c',key:false,done:true}],members:[]};
+  const page=pageFor(trip,async()=>{throw new Error('network');});
+  await assert.rejects(page.performChecklistAction('key','a'),/network/);
+  assert.equal(page.data.trip.items[0].key,false);assert.equal(page.data.trip.items[0].done,true);
 });
 
 test("editing an existing itinerary sends its id and returns to the edited day", async () => {
@@ -131,6 +206,6 @@ test("creating a trip duplicate selects the new trip and leaves the source untou
   await page.submitModal();
   assert.equal(request.tripId, sourceTrip.id);
   assert.equal(page.data.trip.id, copy.id);
-  assert.equal(page.data.tab, "people");
+  assert.equal(page.data.tab, "today");
   assert.equal(sourceTrip.name, "原旅行");
 });

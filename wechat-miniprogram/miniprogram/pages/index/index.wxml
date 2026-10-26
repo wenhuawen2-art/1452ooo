@@ -1,175 +1,60 @@
-<view class="page">
-  <view wx:if="{{loading}}" class="state-screen"><view class="spinner"></view><text>正在连接向野…</text></view>
+<view class="page motion-nav-{{motionNav}} motion-section-{{motionSection}} {{!trip && !loading && !error ? 'is-no-trip' : ''}} theme-{{tab}} {{tab === 'route' ? 'route-' + routeSection : ''}} {{trip && tab === 'today' ? 'mastergo-home' : ''}} {{pageHidden ? 'motion-paused' : ''}} {{reducedMotion ? 'reduced-motion' : ''}}" style="--design-height:{{tab === 'today' ? 1559 : tab === 'route' ? (routeSection === 'planning' ? 1785 : 1220) : tab === 'expenses' ? (expenseSegment === 'stats' ? 2633 : expenseSegment === 'split' ? 1184 : 1785) : 1573}}px;--content-top:{{systemContentTop}}px;--safe-bottom:{{safeBottomInset}}px;padding-top:{{trip && (tab === 'today' || tab === 'route' || tab === 'list' || tab === 'expenses') ? 0 : systemHeaderHeight}}px">
+  <view wx:if="{{trip && tab !== 'today' && tab !== 'route' && tab !== 'list' && tab !== 'expenses'}}" class="custom-header" style="height:{{systemHeaderHeight}}px;padding-top:{{systemContentTop}}px"><text class="custom-brand">向野</text><text class="custom-tagline">让下一程，从容发生。</text><include src="views/account-entry.wxml" /></view>
+  <include src="views/module-header.wxml" />
+  <view wx:if="{{loading}}" class="journey-loading" role="status" aria-label="正在加载旅行"><block wx:if="{{loadingVersion === 'v1'}}"><include src="./views/loading-v1.wxml" /></block><block wx:elif="{{loadingVersion === 'v2'}}"><include src="./views/loading-v2.wxml" /></block><block wx:else><include src="./views/loading.wxml" /></block></view>
   <view wx:elif="{{error}}" class="state-screen"><text class="state-title">暂时无法登录</text><text class="muted">{{error}}</text><button class="primary small" bindtap="retry">重新尝试</button></view>
   <block wx:else>
-    <view wx:if="{{!trip || tab === 'today'}}" class="brandbar">
-      <image class="brand-logo" src="/assets/brand/logo-144.png" mode="aspectFill" />
-      <view><text class="brand-name">向野</text><text class="brand-en">INTO THE WILD</text></view>
-    </view>
 
-    <view wx:if="{{!trip}}" class="welcome">
-      <text class="eyebrow">把准备留下，把风景带走</text>
-      <text class="welcome-title">下一程，\n从容出发。</text>
-      <text class="welcome-copy">路线、住宿、随身物品。\n出门需要记住的事，都放在这里。</text>
-      <view class="hero-card"><text class="pill">你的自驾随身助手</text><view class="route-line"></view><text class="hero-foot">准备好，就出发。</text></view>
-      <button class="primary" bindtap="openCreateTrip">＋ 创建我的旅行</button>
-      <view class="welcome-point"><text class="point-icon">⌖</text><view><text class="point-title">每天的路线与住宿</text><text class="muted">打开手机，就知道下一站。</text></view></view>
-      <view class="welcome-point"><text class="point-icon">✓</text><view><text class="point-title">一起准备，各自确认</text><text class="muted">公共物品共享，个人清单独立。</text></view></view>
-    </view>
 
+    <block wx:if="{{!trip}}">
+    <include src="views/onboarding.wxml" />
+    </block>
     <block wx:else>
-      <scroll-view wx:if="{{tab === 'route' || tab === 'outfit' || tab === 'expenses'}}" class="date-strip {{tab === 'expenses' ? 'expense-date-strip' : ''}}" scroll-x enable-flex show-scrollbar="false">
-        <button wx:for="{{dates}}" wx:key="value" class="date-chip {{item.active ? 'active' : ''}}" data-date="{{item.value}}" bindtap="selectDate">
-          <text>{{item.weekday}}</text><text class="strong">{{item.day}}</text><text class="small">{{item.month}}月</text>
-        </button>
-      </scroll-view>
+      <view class="module-hero" wx:if="{{tab !== 'today' && tab !== 'route' && tab !== 'list' && tab !== 'expenses'}}">
+        <text class="hero-kicker">{{tab === 'route' ? '把沿途，安排从容' : tab === 'list' ? '准备好，就出发' : '一起出发，清楚记账'}}</text>
+        <text class="hero-heading">{{tab === 'route' ? '沿途计划' : tab === 'list' ? '行囊准备' : '旅行账本'}}</text>
+        <view wx:if="{{tab === 'list'}}" class="hero-metric"><text class="hero-number">{{visualProgress}}</text><text class="hero-unit">%</text></view>
+        <text wx:elif="{{tab === 'expenses'}}" class="hero-money">{{expenseSummary.totalDisplay || '¥0.00'}}</text>
+        <text wx:elif="{{tab === 'route'}}" class="hero-description">{{dateLabel}}</text>
+        <text wx:if="{{tab === 'list'}}" class="hero-description">{{scope === '公共' ? publicProgress.done : mineProgress.done}} / {{scope === '公共' ? publicProgress.total : mineProgress.total}} 项已准备</text>
+        <text wx:if="{{tab === 'expenses'}}" class="hero-description">全程支出 · {{trip.name}}</text>
+      </view>
 
-      <view class="content">
+
+      <view class="content {{tab === 'list' ? 'list-content' : tab === 'expenses' ? 'expense-content' : ''}}">
         <view wx:if="{{guestMode}}" class="guest-banner"><view><text class="guest-badge">游客体验</text><text>当前为演示旅行，浏览不会产生或保存真实数据</text></view><button data-intent="login" bindtap="startLogin">登录</button></view>
         <view wx:if="{{trip.archived}}" class="notice">这趟旅行已归档，内容仅供查看。</view>
 
         <block wx:if="{{tab === 'today'}}">
-          <text class="page-title">旅途将近，准备出发。</text>
-          <view class="trip-hero card">
-            <view class="row"><text class="card-title">{{trip.name}}</text><text class="tag">{{trip.type}}</text></view>
-            <view class="countdown"><text>距离出发</text><text class="strong">{{daysUntil}}</text><text>天</text></view>
-            <view class="trip-dates"><view><text>出发日期</text><text class="strong">{{trip.startDisplay}}</text></view><text class="arrow">→</text><view><text>归来日期</text><text class="strong">{{trip.endDisplay}}</text></view></view>
-          </view>
-          <view class="section-title"><text>出行准备</text></view>
-          <view class="stats">
-            <button class="stat-card" data-scope="公共" bindtap="openChecklist"><text>公共准备</text><view><text class="strong">{{publicProgress.done}}</text><text class="small"> / {{publicProgress.total}} 项</text></view><view class="progress"><view class="progress-fill" style="width:{{publicProgress.percent}}%"></view></view></button>
-            <button class="stat-card" data-scope="我的" bindtap="openChecklist"><text>我的准备</text><view><text class="strong">{{mineProgress.done}}</text><text class="small"> / {{mineProgress.total}} 项</text></view><view class="progress"><view class="progress-fill" style="width:{{mineProgress.percent}}%"></view></view></button>
-          </view>
-          <view class="weather today-weather card">
-            <view wx:if="{{weatherLoading}}"><text class="muted">正在获取天气…</text></view>
-            <view wx:elif="{{weather && weather.available}}" class="weather-row"><text class="weather-icon">{{weather.code < 3 ? '☀️' : weather.code < 60 ? '☁️' : '🌧️'}}</text><view class="grow"><text class="strong">{{weather.location}}</text><text>{{weather.condition}}</text><text class="small">天气 Open-Meteo · 地点 {{weather.geoSource}}</text></view><text class="strong temp">{{weather.high}}°</text><text class="muted">{{weather.low}}°</text></view>
-            <view wx:else><text class="strong">当地天气</text><text class="muted">请先填写住宿城市或行程地址</text></view>
-          </view>
-          <view class="section-head route-overview-heading"><text class="section-title plain">全程路线</text><button wx:if="{{routeOverview && (routeOverview.available || routeOverview.unresolved.length)}}" class="text-btn" bindtap="openRouteMap">查看全程 ›</button></view>
-          <view wx:if="{{routeLoading}}" class="route-overview card route-skeleton"><view></view><view></view><text>正在整理全程路线…</text></view>
-          <view wx:elif="{{routeOverview && routeOverview.available}}" class="route-overview card" bindtap="openRouteMap">
-            <map class="route-overview-map" longitude="{{routeOverview.centerLongitude}}" latitude="{{routeOverview.centerLatitude}}" scale="{{routeOverview.mapScale}}" markers="{{routeOverview.markers}}" polyline="{{routeOverview.polylines}}" include-points="{{routeOverview.includePoints}}" enable-scroll="{{false}}" enable-zoom="{{false}}" enable-rotate="{{false}}" enable-overlooking="{{false}}" />
-            <view class="route-overview-copy"><view class="grow"><text class="strong">{{routeOverview.startLabel}} → {{routeOverview.endLabel}}</text><text class="small">{{routeOverview.pointCount}} 个地点{{routeOverview.distanceLabel ? ' · ' + routeOverview.distanceLabel : ''}}</text><text wx:if="{{routeOverview.modeSummary}}" class="route-mode-summary">{{routeOverview.modeSummary}}</text></view><text class="route-open-arrow">›</text></view>
-            <view wx:if="{{routeOverview.unresolved.length}}" class="route-warning">有 {{routeOverview.unresolved.length}} 个地点待修正，已先展示可用路线</view>
-          </view>
-          <view wx:elif="{{routeOverview && routeOverview.configured === false}}" class="route-empty card"><text class="strong">路线服务待配置</text><text class="muted">配置腾讯位置服务 Key 后，将自动生成真实路线。</text></view>
-          <view wx:else class="route-empty card"><text class="strong">补充至少两个行程地点后生成路线</text><text class="muted">填写起始地、目的地或具体地址，首页会自动整理全程。</text></view>
+          <include src="views/today.wxml" />
         </block>
 
         <block wx:elif="{{tab === 'route'}}">
-          <view class="section-head"><text class="section-title plain">{{dateLabel}}</text><button wx:if="{{!trip.archived}}" class="outline" data-date="{{selectedDate}}" bindtap="openEvent">＋ 添加安排</button></view>
-          <view wx:for="{{periods}}" wx:for-index="periodIndex" wx:key="name" class="schedule card period-{{periodIndex}}">
-            <view class="schedule-head"><view class="period-bar"></view><text class="strong">{{item.name}}行程</text><text class="tag">{{item.events.length}} 项</text></view>
-            <view wx:for="{{item.events}}" wx:for-item="event" wx:key="id" class="event-row">
-              <view class="event-timeline"><view class="timeline-dot"></view><view class="timeline-line"></view></view>
-              <view class="event-body">
-                <view class="event-main"><view class="event-copy"><text class="event-time">{{event.startTime}}—{{event.endTime}}</text><view class="event-activity"><text class="strong">{{event.title}}</text><text wx:if="{{event.locationText}}" class="address">⌖ {{event.locationText}}</text></view></view><view class="icon-actions"><button wx:if="{{!trip.archived}}" data-id="{{event.id}}" bindtap="openEvent" aria-label="编辑行程"><image src="/assets/icons/edit.svg" mode="aspectFit" /></button><button data-place="{{event.locationText}}" bindtap="openMap" aria-label="查看位置"><image src="/assets/icons/map-pin.svg" mode="aspectFit" /></button><button wx:if="{{!trip.archived}}" class="danger-text" data-action="deleteEvent" data-id="{{event.id}}" bindtap="confirmDelete" aria-label="删除行程"><image src="/assets/icons/trash.svg" mode="aspectFit" /></button></view></view>
-                <view wx:if="{{event.startPlace || event.endPlace}}" class="route-box"><text class="start">起点</text><text class="strong">{{event.startPlace}}</text><text class="route-arrow">→</text><text class="strong route-destination">{{event.endPlace}}</text><text class="end">终点</text></view>
-                <text wx:if="{{event.startPlace || event.endPlace || event.address}}" class="event-transport">{{event.transportIcon}} {{event.transportLabel}}</text>
-                <view wx:if="{{event.note}}" class="event-note"><text class="event-note-label">备注</text><text class="event-note-content">{{event.note}}</text></view>
-              </view>
-            </view>
-          </view>
-          <view wx:if="{{!periods.length}}" class="empty card"><text>这一天还没有行程</text></view>
-          <view class="section-head"><text class="section-title plain">住宿</text><button wx:if="{{!trip.archived}}" class="outline" data-date="{{selectedDate}}" bindtap="openHotel">＋ 添加住宿</button></view>
-          <view wx:if="{{hotel}}" class="hotel card"><view class="grow"><text class="strong">{{hotel.name}}</text><text>{{hotel.city}} · {{hotel.checkin}} 至 {{hotel.checkout}}</text><text class="address">⌖ {{hotel.address}}</text></view><view class="icon-actions"><button wx:if="{{!trip.archived}}" data-id="{{hotel.id}}" bindtap="openHotel" aria-label="编辑住宿"><image src="/assets/icons/edit.svg" mode="aspectFit" /></button><button data-place="{{hotel.address}}" bindtap="openMap" aria-label="查看住宿位置"><image src="/assets/icons/map-pin.svg" mode="aspectFit" /></button><button wx:if="{{!trip.archived}}" class="danger-text" data-action="deleteHotel" data-id="{{hotel.id}}" bindtap="confirmDelete" aria-label="删除住宿"><image src="/assets/icons/trash.svg" mode="aspectFit" /></button></view></view>
-          <view wx:else class="empty card"><text>当晚尚未填写住宿</text></view>
-          <view class="section-head"><text class="section-title plain">票据</text><button wx:if="{{!trip.archived}}" class="outline" bindtap="addTicket">＋ 添加票据</button></view>
-          <view wx:if="{{selectedTickets.length}}" class="ticket-grid"><view wx:for="{{selectedTickets}}" wx:key="id" class="ticket"><button class="ticket-preview" data-id="{{item.id}}" bindtap="previewTicket"><image src="{{item.previewSrc}}" mode="aspectFill"/><text class="strong">{{item.type}}</text><text>{{item.startTime}}</text></button><view wx:if="{{!trip.archived}}" class="ticket-actions"><button data-id="{{item.id}}" bindtap="editTicket" aria-label="编辑票据">编辑</button><button class="danger-text" data-action="deleteTicket" data-id="{{item.id}}" bindtap="confirmDelete" aria-label="删除票据">删除</button></view></view></view>
-          <view wx:else class="empty card"><text>当天尚未添加票据</text></view>
+          <include src="views/route.wxml" />
         </block>
 
         <block wx:elif="{{tab === 'list'}}">
-          <view class="segment"><button class="{{scope === '公共' ? 'active' : ''}}" data-scope="公共" bindtap="setScope">一起准备</button><button class="{{scope === '我的' ? 'active' : ''}}" data-scope="我的" bindtap="setScope">我的物品</button></view>
-          <view class="progress-card card"><view class="progress-copy"><text class="progress-label">准备进度</text><view class="progress-value"><text class="strong">{{scope === '公共' ? publicProgress.done : mineProgress.done}}</text><text class="small">/ {{scope === '公共' ? publicProgress.total : mineProgress.total}} 项</text></view></view><view wx:if="{{!trip.archived}}" class="top-actions"><button class="outline" bindtap="openTemplates">▦ 导入模板</button><button class="outline" bindtap="openCategory">＋ 新建分类</button></view></view>
-          <view wx:for="{{checklistGroups}}" wx:key="id" class="check-group">
-            <view class="section-head category-head"><text class="section-title plain">{{item.name}} <text class="small">{{item.items.length}} 项</text></text><view wx:if="{{!trip.archived}}" class="category-actions"><button class="outline" data-category="{{item.id}}" bindtap="openItem">新增条目 ＋</button><button class="category-menu-trigger" data-id="{{item.id}}" bindtap="toggleCategoryMenu" aria-label="{{item.name}}分类更多操作">···</button></view><view wx:if="{{!trip.archived && categoryMenuId === item.id}}" class="category-menu-panel" catchtap="stopBubble"><button data-id="{{item.id}}" bindtap="openCategory">编辑</button><button class="danger-text" data-action="deleteCategory" data-id="{{item.id}}" bindtap="confirmDelete">删除</button></view></view>
-            <view class="card list-card">
-              <view wx:for="{{item.items}}" wx:for-item="entry" wx:key="id" class="check-row">
-                <view class="check-toggle-zone {{trip.archived ? 'readonly' : ''}}" data-action="toggle" data-id="{{entry.id}}" bindtap="mutateAction"><view class="check {{entry.done ? 'done' : ''}}">{{entry.done ? '✓' : ''}}</view><view class="grow"><text class="item-title {{entry.done ? 'done' : ''}}">{{entry.title}}</text><text wx:if="{{entry.key}}" class="key-tag">关键项</text><view wx:if="{{entry.done && entry.confirmerName}}" class="confirmation"><image wx:if="{{entry.confirmerAvatarSrc}}" src="{{entry.confirmerAvatarSrc}}" mode="aspectFill"/><text class="confirmation-name">{{entry.confirmerName}}</text><text class="confirmation-status">已确认</text></view></view></view>
-                <button wx:if="{{!trip.archived && entry.done && entry.key}}" class="review {{entry.reviewed ? 'active' : ''}}" data-action="review" data-id="{{entry.id}}" catchtap="mutateAction">复核</button>
-                <button wx:if="{{!trip.archived}}" class="mini-btn" data-id="{{entry.id}}" catchtap="openItem"><image src="/assets/icons/edit.svg" mode="aspectFit" /></button>
-                <button wx:if="{{!trip.archived}}" class="mini-btn danger-text" data-action="deleteItem" data-id="{{entry.id}}" catchtap="confirmDelete"><image src="/assets/icons/trash.svg" mode="aspectFit" /></button>
-              </view>
-            </view>
-          </view>
-        </block>
-
-        <block wx:elif="{{tab === 'outfit'}}">
-          <view class="section-head outfit-title"><view><text class="section-title plain">今天穿什么</text><text class="small">{{dateLabel}} · 仅自己可见</text></view><button wx:if="{{!trip.archived}}" class="outline" bindtap="openOutfit">＋ 添加穿搭</button></view>
-          <view class="weather outfit-weather card">
-            <view wx:if="{{weatherLoading}}"><text class="muted">正在获取天气…</text></view>
-            <view wx:elif="{{weather && weather.available}}" class="weather-row"><text class="weather-icon">{{weather.code < 3 ? '☀️' : weather.code < 60 ? '☁️' : '🌧️'}}</text><view class="grow"><text class="strong">{{weather.location}} · {{weather.condition}}</text><text class="small">最高 {{weather.high}}° · 最低 {{weather.low}}°，按温差准备外套</text></view></view>
-            <view wx:else><text class="strong">穿搭天气参考</text><text class="muted">填写当天住宿或行程地点后显示天气</text></view>
-          </view>
-          <view wx:if="{{selectedOutfits.length}}" class="outfit-list">
-            <view wx:for="{{selectedOutfits}}" wx:for-item="outfit" wx:key="id" class="outfit-card card">
-              <button wx:if="{{outfit.photoSrc}}" class="outfit-photo" data-id="{{outfit.id}}" bindtap="previewOutfit"><image src="{{outfit.photoSrc}}" mode="aspectFill"/></button>
-              <view class="outfit-body"><view class="row outfit-head"><view class="grow"><text class="strong">{{outfit.title}}</text><text class="tag">{{outfit.scene}}</text></view><view wx:if="{{!trip.archived}}" class="outfit-head-actions"><button class="mini-btn outfit-item-create" aria-label="为这套穿搭新增衣物" data-outfit="{{outfit.id}}" bindtap="openNewOutfitItem">＋</button><button class="mini-btn" aria-label="编辑整套穿搭" data-id="{{outfit.id}}" bindtap="openOutfit"><image src="/assets/icons/edit.svg" mode="aspectFit"/></button><button class="mini-btn danger-text" aria-label="删除整套穿搭" data-action="deleteOutfit" data-id="{{outfit.id}}" bindtap="confirmDelete"><image src="/assets/icons/trash.svg" mode="aspectFit"/></button></view></view>
-                <view class="outfit-pieces">
-                  <view wx:for="{{outfit.items}}" wx:for-item="piece" wx:key="id" class="outfit-piece">
-                    <button wx:if="{{piece.photoSrc}}" class="outfit-piece-media" data-outfit="{{outfit.id}}" data-item="{{piece.id}}" bindtap="previewOutfitItem"><image src="{{piece.photoSrc}}" mode="aspectFill"/></button>
-                    <view wx:else class="outfit-piece-media outfit-piece-placeholder"><image src="/assets/icons/nav-outfit.svg" mode="aspectFit"/><text>暂未添加照片</text></view>
-                    <view class="outfit-piece-copy"><view class="outfit-piece-text"><text class="outfit-piece-type">{{piece.typeName}}</text><text class="outfit-piece-name">{{piece.name}}</text></view><view wx:if="{{!trip.archived}}" class="outfit-piece-actions"><button aria-label="编辑衣物" data-outfit="{{outfit.id}}" data-item="{{piece.id}}" bindtap="openOutfitItem"><image src="/assets/icons/edit.svg" mode="aspectFit"/></button><button class="danger-text" aria-label="删除衣物" data-outfit="{{outfit.id}}" data-item="{{piece.id}}" bindtap="deleteOutfitItem"><image src="/assets/icons/trash.svg" mode="aspectFit"/></button></view></view>
-                  </view>
-                </view>
-                <text wx:if="{{outfit.note}}" class="outfit-note">{{outfit.note}}</text>
-              </view>
-            </view>
-          </view>
-          <view wx:else class="empty card outfit-empty"><text class="strong">这一天还没有穿搭计划</text><text class="muted">按天气和场景提前准备，旅行当天更从容。</text><button wx:if="{{!trip.archived}}" class="outline" bindtap="openOutfit">＋ 添加第一套穿搭</button></view>
+          <include src="views/list.wxml" />
         </block>
 
         <block wx:elif="{{tab === 'expenses'}}">
-          <view class="expense-hero card"><view class="expense-hero-head"><view class="expense-hero-main"><text>全行程支出</text><text class="expense-hero-number">{{expenseSummary.totalDisplay}}</text><text class="small">{{expenseSummary.expenseCount}} 笔 · 日均 {{expenseSummary.averageDisplay}}</text></view><view class="expense-title-actions"><button wx:if="{{isOwner && !guestMode && !trip.archived}}" class="expense-settings" bindtap="openExpenseSettings">设置</button><button wx:if="{{!trip.archived}}" class="outline" bindtap="openExpense">＋ 记一笔</button></view></view><view class="expense-today-grid"><view><text>我付款</text><text class="strong">{{expenseSummary.myPaidDisplay}}</text></view><view><text>我承担</text><text class="strong">{{expenseSummary.myOwedDisplay}}</text></view></view><view wx:if="{{expenseSummary.budgetMinor !== null}}" class="expense-budget"><view class="row"><text>预算 {{expenseSummary.budgetDisplay}}</text><text>剩余 {{expenseSummary.remainingDisplay}}</text></view><view class="progress"><view class="progress-fill" style="width:{{expenseSummary.budgetProgress}}%"></view></view></view></view>
-          <view class="segment expense-tabs"><button class="{{expenseSegment === 'details' ? 'active' : ''}}" data-segment="details" bindtap="setExpenseSegment">明细</button><button class="{{expenseSegment === 'split' ? 'active' : ''}}" data-segment="split" bindtap="setExpenseSegment">分账</button><button class="{{expenseSegment === 'stats' ? 'active' : ''}}" data-segment="stats" bindtap="setExpenseSegment">统计</button></view>
-
-          <block wx:if="{{expenseSegment === 'details'}}">
-            <view wx:for="{{expenseGroups}}" wx:key="date" class="expense-day"><view class="expense-day-head"><view><text class="strong">{{item.dateLabel}}</text><text class="small">{{item.dayLabel}} · {{item.count}} 笔</text></view><text class="expense-day-total">{{item.totalDisplay}}</text></view><view wx:if="{{!item.categoryGroups.length}}" class="empty card"><text>这一天还没有支出</text></view><view wx:for="{{item.categoryGroups}}" wx:for-item="categoryGroup" wx:key="category" class="card expense-category-card"><view class="expense-category-head"><view class="expense-category-mark">{{categoryGroup.categoryInitial}}</view><view class="grow"><text class="strong">{{categoryGroup.category}}</text><text class="small">{{categoryGroup.count}} 笔</text></view><text class="expense-category-total">{{categoryGroup.amountDisplay}}</text></view><view class="expense-list"><view wx:for="{{categoryGroup.entries}}" wx:for-item="entry" wx:key="id" class="expense-entry"><view class="grow"><view class="row expense-entry-title"><text class="strong">{{entry.title}}</text><text class="expense-amount">{{entry.displayAmount}}</text></view><text class="expense-meta">{{entry.payerName}}付款 · {{entry.participantCount}}人{{entry.splitLabel}}</text><text wx:if="{{entry.baseDisplay}}" class="expense-base">{{entry.baseDisplay}}</text><text wx:if="{{entry.note}}" class="expense-note">{{entry.note}}</text></view><view wx:if="{{!guestMode && !trip.archived}}" class="expense-entry-actions"><button data-id="{{entry.id}}" bindtap="openExpense">编辑</button><button class="danger-text" data-id="{{entry.id}}" bindtap="deleteExpense">删除</button></view></view></view></view></view>
-            <view wx:if="{{!expenseGroups.length}}" class="empty card"><text>没有符合筛选条件的费用</text><button class="text-btn" bindtap="resetExpenseFilters">清除筛选</button></view>
-          </block>
-
-          <block wx:elif="{{expenseSegment === 'split'}}">
-            <view class="split-overview card"><view><text>我的实际付款</text><text class="strong">{{expenseSummary.myPaidDisplay}}</text></view><view><text>我的应承担</text><text class="strong">{{expenseSummary.myOwedDisplay}}</text></view><view class="split-net"><text>我的结余</text><text class="strong {{expenseSummary.myNetMinor >= 0 ? 'positive' : 'negative'}}">{{expenseSummary.myNetLabel}}</text></view><view class="split-net"><text>全团待结算</text><text class="strong">{{expenseSummary.outstandingDisplay}}</text></view></view>
-            <view class="expense-subhead"><text class="section-title plain">成员结余</text><text class="small">应收应付之和始终平衡</text></view><view class="card member-balance-list"><view wx:for="{{expenseSummary.memberStats}}" wx:key="memberId" class="member-balance"><image src="{{item.avatarSrc}}" mode="aspectFill"/><view class="grow"><text class="strong">{{item.name}}</text><text class="small">已付 {{item.paidDisplay}} · 承担 {{item.owedDisplay}}</text></view><text class="balance-result {{item.netMinor >= 0 ? 'positive' : 'negative'}}">{{item.netDisplay}}</text></view></view>
-            <view class="expense-subhead"><text class="section-title plain">建议结算</text><text class="small">已自动减少转账次数</text></view><view class="card settlement-list"><view wx:if="{{!expenseSummary.plan.length}}" class="expense-zero">成员账目已经结清</view><view wx:for="{{expenseSummary.plan}}" wx:key="key" class="settlement-row"><view class="grow"><text class="strong">{{item.fromName}} → {{item.toName}}</text><text class="small">建议支付 {{item.amountDisplay}}</text></view><button wx:if="{{!trip.archived}}" data-from="{{item.fromMemberId}}" data-to="{{item.toMemberId}}" data-amount="{{item.amountMinor}}" bindtap="saveSettlement">标记结清</button></view></view>
-            <view wx:if="{{settlements.length}}" class="expense-subhead"><text class="section-title plain">结算记录</text><text class="small">已结算 {{expenseSummary.settledDisplay}}</text></view><view wx:if="{{settlements.length}}" class="card settlement-list"><view wx:for="{{settlements}}" wx:key="id" class="settlement-row"><view class="grow"><text class="strong">{{item.fromName}} → {{item.toName}}</text><text class="small">{{item.date}} · {{item.amountDisplay}}</text></view><button wx:if="{{!trip.archived}}" class="danger-text" data-id="{{item.id}}" bindtap="deleteSettlement">撤销</button></view></view>
-          </block>
-
-          <block wx:else>
-            <view class="stats-highlight"><view class="card"><text>全行程</text><text class="strong">{{expenseSummary.totalDisplay}}</text></view><view class="card"><text>日均支出</text><text class="strong">{{expenseSummary.averageDisplay}}</text></view><view class="card wide"><text>消费最高的一天</text><text class="strong">{{expenseSummary.highestDayLabel}}</text></view></view>
-            <view class="expense-subhead"><text class="section-title plain">按类目</text><text class="small">点击查看明细</text></view><view class="card expense-chart"><button wx:for="{{expenseSummary.categoryStats}}" wx:key="category" data-field="category" data-value="{{item.category}}" bindtap="drillExpense"><view class="chart-label"><text>{{item.category}}</text><text>{{item.amountDisplay}} · {{item.percent}}%</text></view><view class="chart-track"><view class="chart-fill" style="width:{{item.percent}}%"></view></view></button><view wx:if="{{!expenseSummary.categoryStats.length}}" class="expense-zero">暂无类目统计</view></view>
-            <view class="expense-subhead"><text class="section-title plain">按天</text><text class="small">包含零支出日期</text></view><view class="card expense-chart"><button wx:for="{{expenseSummary.dailyStats}}" wx:key="date" data-field="date" data-value="{{item.date}}" bindtap="drillExpense"><view class="chart-label"><text>{{item.dateLabel}} · {{item.dayLabel}}</text><text>{{item.amountDisplay}}</text></view><view class="chart-track"><view class="chart-fill daily" style="width:{{item.percent}}%"></view></view></button></view>
-            <view class="expense-subhead"><text class="section-title plain">成员统计</text></view><view class="card member-balance-list"><view wx:for="{{expenseSummary.memberStats}}" wx:key="memberId" class="member-balance"><image src="{{item.avatarSrc}}" mode="aspectFill"/><view class="grow"><text class="strong">{{item.name}}</text><text class="small">付款 {{item.paidDisplay}} · 承担 {{item.owedDisplay}}</text></view></view></view>
-          </block>
-        </block>
-        <block wx:else>
-          <block wx:if="{{guestMode}}"><view class="guest-profile card"><image src="/assets/brand/logo-144.png" mode="aspectFill"/><text class="section-title plain">登录后保存你的旅行</text><text class="muted">创建旅行、邀请同行人，并在不同设备继续查看行程、清单与账本。</text><button class="primary" data-intent="login" bindtap="startLogin">登录并开始使用</button></view><view class="guest-feature card"><text class="strong">当前正在体验</text><text>✓ 旅行日程与住宿规划</text><text>✓ 公共清单和个人物品</text><text>✓ 同行记账与费用分摊</text></view></block>
-          <block wx:else><view class="section-head"><text class="section-title plain">我的资料</text></view>
-            <view class="profile card"><image src="{{account.avatarSrc}}" mode="aspectFill"/><view class="grow"><text class="strong">{{account.nickname}}</text><text>微信账号已绑定</text></view><button class="profile-edit" aria-label="编辑资料" bindtap="openProfileTap">✎</button></view>
-            <view class="section-head"><text class="section-title plain">旅行与同行人管理</text><button class="outline" bindtap="openCreateTrip">＋ 新建旅行</button></view>
-            <view wx:for="{{trips}}" wx:key="id" class="trip-card card {{item.id === trip.id ? 'current' : ''}}">
-              <view class="trip-summary" data-id="{{item.id}}" bindtap="switchTrip"><view class="row"><text class="strong">{{item.name}}</text><view class="trip-card-actions"><text wx:if="{{item.id === trip.id}}" class="tag tag-current">{{trip.type || '其他'}}</text><text class="tag {{item.archived ? 'tag-archived' : item.id === trip.id ? 'tag-current' : 'tag-active'}}">{{item.archived ? '已归档' : item.id === trip.id ? '当前旅程' : '进行中'}}</text></view></view><text class="trip-summary-dates">{{item.startDisplay}} → {{item.endDisplay}}</text></view>
-              <view wx:if="{{item.id === trip.id}}" class="trip-expanded"><view class="member-panel"><view class="member-heading"><text class="strong">同行成员</text><text>{{trip.members.length}} 人</text></view><view wx:for="{{trip.members}}" wx:key="id" class="member"><image src="{{item.avatarSrc}}" mode="aspectFill"/><view class="grow"><text class="strong">{{item.name}}</text><text>{{item.id === trip.creator ? '创建者' : '同行成员'}}</text></view><button wx:if="{{isOwner && !trip.archived && item.id !== trip.creator}}" class="danger-text" data-action="removeMember" data-id="{{item.id}}" bindtap="confirmDelete">移除</button></view><button wx:if="{{isOwner && !trip.archived}}" class="primary" open-type="share">邀请同行人</button></view><button class="clone-trip" data-id="{{trip.id}}" bindtap="openCloneTrip">创建副本</button><view class="manage-grid"><button wx:if="{{!trip.archived}}" bindtap="openEditTrip">编辑旅行</button><button bindtap="exportCalendar">导出日历</button><button wx:if="{{isOwner}}" bindtap="exportTrip">导出备份</button><button wx:if="{{isOwner}}" class="danger-text" bindtap="deleteTrip">删除旅行</button></view></view>
-              <button wx:if="{{item.id !== trip.id && item.canDelete}}" class="trip-delete" data-id="{{item.id}}" bindtap="deleteTrip" aria-label="删除旅行"><image src="/assets/icons/trash.svg" mode="aspectFit"/></button>
-            </view>
-          </block>
+          <include src="views/expenses.wxml" />
         </block>
       </view>
 
-      <view class="bottom-nav">
-        <view class="nav-item {{tab === 'today' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="今天" data-tab="today" bindtap="setTab"><image src="/assets/icons/nav-today.svg" mode="aspectFit" /><text class="small">今天</text></view>
-        <view class="nav-item {{tab === 'route' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="行程" data-tab="route" bindtap="setTab"><image src="/assets/icons/nav-route.svg" mode="aspectFit" /><text class="small">行程</text></view>
-        <view class="nav-item {{tab === 'list' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="清单" data-tab="list" bindtap="setTab"><image src="/assets/icons/nav-list.svg" mode="aspectFit" /><text class="small">清单</text></view>
-        <view class="nav-item {{tab === 'outfit' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="穿搭" data-tab="outfit" bindtap="setTab"><image src="/assets/icons/nav-outfit.svg" mode="aspectFit" /><text class="small">穿搭</text></view>
-        <view class="nav-item {{tab === 'expenses' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="记账" data-tab="expenses" bindtap="setTab"><image src="/assets/icons/nav-wallet.svg" mode="aspectFit" /><text class="small">记账</text></view>
-        <view class="nav-item {{tab === 'people' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="我的" data-tab="people" bindtap="setTab"><image src="/assets/icons/nav-people.svg" mode="aspectFit" /><text class="small">我的</text></view>
-      </view>
     </block>
+      <include src="views/bottom-chrome.wxml" />
+      <view class="bottom-nav master-nav">
+        <view class="nav-item {{tab === 'today' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="首页" data-tab="today" bindtap="setTab"><image src="{{tab === 'today' ? '/assets/mastergo-route/nav-today-active.svg' : '/assets/mastergo-route/planning/svg_bfe74286.svg'}}" mode="aspectFit" /><text class="small">首页</text></view>
+        <view class="nav-item {{tab === 'route' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="行程" data-tab="route" bindtap="setTab"><image src="{{tab === 'route' ? '/assets/mastergo-route/nav-route-active.svg' : '/assets/mastergo/svg_7bb647bd.svg'}}" mode="aspectFit" /><text class="small">行程</text></view>
+        <view class="nav-item nav-create" hover-class="nav-pressed" role="button" aria-label="新建旅行" bindtap="openCreateTrip"><image class="nav-create-background" src="/assets/mastergo-route/create-background.png" mode="scaleToFill"/><image class="nav-create-plus" src="/assets/mastergo-route/create-icon.svg" mode="aspectFit" /><text class="small">新建</text></view>
+        <view class="nav-item {{tab === 'list' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="清单" data-tab="list" bindtap="setTab"><image src="{{tab === 'list' ? '/assets/mastergo-route/nav-list-active.svg' : '/assets/mastergo/svg_988bdf11.svg'}}" mode="aspectFit" /><text class="small">清单</text></view>
+        <view class="nav-item {{tab === 'expenses' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="记账" data-tab="expenses" bindtap="setTab"><image src="{{tab === 'expenses' ? '/assets/mastergo-route/nav-expenses-active.svg' : '/assets/mastergo-route/planning/svg_0634b27b.svg'}}" mode="aspectFit" /><text class="small">记账</text></view>
+      </view>
   </block>
 
   <view wx:if="{{routeMapOpen}}" class="route-map-page">
-    <view class="route-map-head"><button wx:if="{{routeEditing}}" bindtap="cancelRouteEdit">‹</button><button wx:else bindtap="closeRouteMap">‹</button><view class="grow"><text class="strong">{{routeEditing ? '调整全程路线' : '全程路线'}}</text><text class="small">{{trip.name}}</text></view><button wx:if="{{!routeEditing && !trip.archived}}" class="route-edit-link" bindtap="startRouteEdit">调整</button></view>
+    <view class="route-map-head" style="padding-top:{{systemContentTop}}px"><button wx:if="{{routeEditing}}" bindtap="cancelRouteEdit">‹</button><button wx:else bindtap="closeRouteMap">‹</button><view class="grow"><text class="strong">{{routeEditing ? '调整全程路线' : '全程路线'}}</text><text class="small">{{trip.name}}</text></view><button wx:if="{{!routeEditing && !trip.archived}}" class="route-edit-link" bindtap="startRouteEdit">调整</button></view>
     <block wx:if="{{!routeEditing}}">
       <map class="route-full-map" longitude="{{routeOverview.centerLongitude}}" latitude="{{routeOverview.centerLatitude}}" scale="{{routeOverview.mapScale}}" markers="{{routeOverview.markers}}" polyline="{{routeOverview.polylines}}" include-points="{{routeOverview.includePoints}}" enable-scroll="{{true}}" enable-zoom="{{true}}" enable-rotate="{{false}}" enable-overlooking="{{false}}" />
       <scroll-view class="route-map-details" scroll-y>
@@ -196,92 +81,10 @@
     </block>
   </view>
 
-  <view wx:if="{{modal}}" class="modal-mask" bindtap="closeModal">
-    <view class="modal" catchtap="stopBubble">
-      <view class="modal-head"><text>{{modal.title}}</text><button wx:if="{{!modal.required}}" bindtap="closeModal">×</button></view>
-      <scroll-view class="modal-body" scroll-y>
-        <block wx:if="{{modal.type === 'profile'}}">
-          <label class="field"><text>昵称</text><input type="nickname" value="{{modal.values.nickname}}" maxlength="40" data-field="nickname" bindinput="bindInput"/></label>
-          <text class="field-label">选择头像</text>
-          <view class="avatar-grid"><button class="avatar custom {{modal.values.avatarData ? 'selected' : ''}}" open-type="chooseAvatar" bindchooseavatar="chooseProfileWechatAvatar"><image wx:if="{{modal.values.avatarData}}" src="{{modal.values.avatarData}}"/><text wx:else>＋</text></button><button wx:for="{{avatars}}" wx:key="id" class="avatar {{modal.values.avatarId === item.id ? 'selected' : ''}}" data-id="{{item.id}}" bindtap="chooseAvatar"><image src="{{item.src}}"/></button></view>
-        </block>
-        <block wx:elif="{{modal.type === 'trip'}}">
-          <label class="field"><text>旅行名称</text><input value="{{modal.values.name}}" data-field="name" bindinput="bindInput"/></label>
-          <label class="field"><text>旅行类型</text><picker range="{{tripTypes}}" bindchange="bindType"><view class="picker-value">{{modal.values.type}} 〉</view></picker></label>
-          <view class="field-row"><label class="field"><text>出发日期</text><picker mode="date" value="{{modal.values.startDate}}" data-field="startDate" bindchange="bindDate"><view class="picker-value">{{modal.values.startDate}}</view></picker></label><label class="field"><text>时间</text><picker mode="time" value="{{modal.values.startTime}}" data-field="startTime" bindchange="bindTime"><view class="picker-value">{{modal.values.startTime}}</view></picker></label></view>
-          <view class="field-row"><label class="field"><text>归来日期</text><picker mode="date" value="{{modal.values.endDate}}" data-field="endDate" bindchange="bindDate"><view class="picker-value">{{modal.values.endDate}}</view></picker></label><label class="field"><text>时间</text><picker mode="time" value="{{modal.values.endTime}}" data-field="endTime" bindchange="bindTime"><view class="picker-value">{{modal.values.endTime}}</view></picker></label></view>
-        </block>
-        <block wx:elif="{{modal.type === 'cloneTrip'}}">
-          <view class="notice">将复制“{{trip.name}}”的日期、行程、住宿、清单和票据。原旅行不会改变；同行人需在新副本中重新邀请。</view>
-          <label class="field"><text>副本名称</text><input value="{{modal.values.name}}" maxlength="200" data-field="name" bindinput="bindInput"/></label>
-        </block>
-        <block wx:elif="{{modal.type === 'event'}}">
-          <label class="field"><text>做什么</text><input value="{{modal.values.title}}" data-field="title" bindinput="bindInput"/></label>
-          <label class="field"><text>日期</text><picker mode="date" value="{{modal.values.date}}" data-field="date" bindchange="bindDate"><view class="picker-value">{{modal.values.date}}</view></picker></label>
-          <view class="field-row"><label class="field"><text>开始时间</text><picker mode="time" value="{{modal.values.startTime}}" data-field="startTime" bindchange="bindTime"><view class="picker-value">{{modal.values.startTime}}</view></picker></label><label class="field"><text>结束时间</text><picker mode="time" value="{{modal.values.endTime}}" data-field="endTime" bindchange="bindTime"><view class="picker-value">{{modal.values.endTime}}</view></picker></label></view>
-          <label class="field"><text>起始地</text><input value="{{modal.values.startPlace}}" data-field="startPlace" bindinput="bindInput"/></label><label class="field"><text>目的地</text><input value="{{modal.values.endPlace}}" data-field="endPlace" bindinput="bindInput"/></label><label class="field"><text>具体地址</text><input value="{{modal.values.address}}" data-field="address" bindinput="bindInput"/></label><label class="field"><text>交通方式</text><picker range="{{modal.transportModes}}" range-key="label" value="{{modal.transportIndex}}" bindchange="bindEventTransport"><view class="picker-value">{{modal.transportModes[modal.transportIndex].icon}} {{modal.transportModes[modal.transportIndex].label}} 〉</view></picker></label><label class="field"><text>备注</text><textarea value="{{modal.values.note}}" data-field="note" bindinput="bindInput"/></label>
-        </block>
-        <block wx:elif="{{modal.type === 'hotel'}}">
-          <label class="field"><text>住宿名称</text><input value="{{modal.values.name}}" data-field="name" bindinput="bindInput"/></label><label class="field"><text>城市</text><input value="{{modal.values.city}}" data-field="city" bindinput="bindInput"/></label><label class="field"><text>具体地址</text><input value="{{modal.values.address}}" data-field="address" bindinput="bindInput"/></label>
-          <view class="field-row"><label class="field"><text>入住</text><picker mode="date" value="{{modal.values.checkin}}" data-field="checkin" bindchange="bindDate"><view class="picker-value">{{modal.values.checkin}}</view></picker></label><label class="field"><text>退房</text><picker mode="date" value="{{modal.values.checkout}}" data-field="checkout" bindchange="bindDate"><view class="picker-value">{{modal.values.checkout}}</view></picker></label></view><label class="field"><text>电话（选填）</text><input value="{{modal.values.phone}}" data-field="phone" bindinput="bindInput"/></label><label class="field"><text>备注</text><textarea value="{{modal.values.note}}" data-field="note" bindinput="bindInput"/></label>
-        </block>
-        <block wx:elif="{{modal.type === 'item'}}">
-          <view wx:if="{{!modal.edit}}" class="item-context">{{modal.categoryName}}</view><label class="field"><text>条目名称</text><input value="{{modal.values.title}}" data-field="title" bindinput="bindInput"/></label><label wx:if="{{modal.edit}}" class="field"><text>分类</text><picker range="{{modal.categories}}" range-key="name" value="{{modal.categoryIndex}}" bindchange="bindCategory"><view class="picker-value">{{modal.categories[modal.categoryIndex].name}} 〉</view></picker></label><label class="switch-row"><text>设为关键项</text><switch checked="{{modal.values.key}}" data-field="key" bindchange="bindSwitch" color="#4f8ee8"/></label>
-        </block>
-        <block wx:elif="{{modal.type === 'category'}}"><label class="field"><text>分类名称</text><input value="{{modal.values.name}}" data-field="name" bindinput="bindInput"/></label></block>
-        <block wx:elif="{{modal.type === 'templates'}}"><button wx:for="{{templates}}" wx:key="id" class="template-card" data-id="{{item.id}}" bindtap="openTemplateDetail"><view class="template-icon-slot"><image class="template-symbol" src="{{item.iconSrc}}" mode="aspectFit"/></view><view class="grow"><text class="strong">{{item.name}}</text><text class="small">{{item.items.length}} 项</text></view><text class="template-arrow">›</text></button></block>
-        <block wx:elif="{{modal.type === 'templateDetail'}}"><view class="template-detail-head"><image class="template-symbol large" src="{{modal.template.iconSrc}}" mode="aspectFit"/><view class="grow"><text class="template-badge">建议放入{{modal.template.recommendedScope === '公共' ? '一起准备' : '我的物品'}}</text><text class="template-description">{{modal.template.description}}</text></view></view><view class="template-items"><view wx:for="{{modal.template.items}}" wx:key="title" class="template-item"><text>{{item.title}}</text><text wx:if="{{item.key}}" class="key-tag">关键项</text></view></view><button class="primary template-import" data-id="{{modal.template.id}}" bindtap="importTemplate">导入到{{scope === '公共' ? '一起准备' : '我的物品'}}</button><button class="template-back" bindtap="openTemplates">返回模板列表</button></block>
-        <block wx:elif="{{modal.type === 'join'}}"><view class="notice">你将以微信账号“{{account.nickname}}”加入这趟旅行，头像和昵称会保持全账号一致。</view></block>
-        <block wx:elif="{{modal.type === 'guestInvite'}}"><view class="notice">你收到了一趟旅行邀请。可以先继续浏览演示功能，登录后再确认加入。</view><button class="primary guest-invite-login" data-intent="join" bindtap="startLogin">登录并加入旅行</button></block>
-        <block wx:elif="{{modal.type === 'ticket'}}"><label class="field"><text>票据类型</text><input value="{{modal.values.type}}" data-field="type" bindinput="bindInput"/></label><view class="field-row"><label class="field"><text>使用日期</text><picker mode="date" value="{{modal.values.useDate}}" start="{{tripStartDate}}" end="{{tripEndDate}}" data-field="useDate" bindchange="bindDate"><view class="picker-value">{{modal.values.useDate}}</view></picker></label><label class="field"><text>使用时间</text><picker mode="time" value="{{modal.values.useClock}}" data-field="useClock" bindchange="bindTime"><view class="picker-value">{{modal.values.useClock}}</view></picker></label></view></block>
-        <block wx:elif="{{modal.type === 'ticketMeta'}}"><label class="field"><text>票据类型</text><input value="{{modal.values.type}}" data-field="type" bindinput="bindInput"/></label><view class="field-row"><label class="field"><text>使用日期</text><picker mode="date" value="{{modal.values.useDate}}" start="{{tripStartDate}}" end="{{tripEndDate}}" data-field="useDate" bindchange="bindDate"><view class="picker-value">{{modal.values.useDate}}</view></picker></label><label class="field"><text>使用时间</text><picker mode="time" value="{{modal.values.useClock}}" data-field="useClock" bindchange="bindTime"><view class="picker-value">{{modal.values.useClock}}</view></picker></label></view></block>
-        <block wx:elif="{{modal.type === 'outfitItem'}}">
-          <view class="outfit-item-editor outfit-item-editor-single">
-            <label class="field"><text>衣物类型</text><picker range="{{outfitTypes}}" range-key="name" value="{{modal.values.items[0].typeIndex}}" data-index="0" bindchange="bindOutfitItemType"><view class="picker-value">{{modal.values.items[0].typeName}} 〉</view></picker></label>
-            <label class="field"><text>衣物名称</text><input class="outfit-item-name" value="{{modal.values.items[0].name}}" placeholder="例如：白色打底衫" data-index="0" bindinput="bindOutfitItemName"/></label>
-            <view class="outfit-photo-picker"><button data-index="0" bindtap="chooseOutfitItemPhoto">{{modal.values.items[0].photoLocalPath || (!modal.values.items[0].removePhoto && modal.values.items[0].photoFileId) ? '替换衣物照片' : '＋ 添加衣物照片（选填）'}}</button><button wx:if="{{modal.values.items[0].photoLocalPath || (!modal.values.items[0].removePhoto && modal.values.items[0].photoFileId)}}" class="danger-text" data-index="0" bindtap="removeOutfitItemPhoto">移除照片</button></view>
-            <image wx:if="{{modal.values.items[0].photoLocalPath || (!modal.values.items[0].removePhoto && modal.values.items[0].photoSrc)}}" class="outfit-photo-preview" src="{{modal.values.items[0].photoLocalPath || modal.values.items[0].photoSrc}}" mode="aspectFill"/>
-          </view>
-        </block>
-        <block wx:elif="{{modal.type === 'outfit'}}">
-          <view class="field-row"><label class="field"><text>日期</text><picker mode="date" value="{{modal.values.date}}" start="{{tripStartDate}}" end="{{tripEndDate}}" data-field="date" bindchange="bindDate"><view class="picker-value">{{modal.values.date}}</view></picker></label><label class="field"><text>场景</text><picker range="{{modal.scenes}}" value="{{modal.sceneIndex}}" bindchange="bindOutfitScene"><view class="picker-value">{{modal.values.scene}} 〉</view></picker></label></view>
-          <label class="field"><text>穿搭标题</text><input value="{{modal.values.title}}" placeholder="例如：上午徒步" data-field="title" bindinput="bindInput"/></label>
-          <view wx:if="{{modal.legacyPhotoSrc}}" class="legacy-outfit-photo"><text class="field-label">旧版整套参考照片</text><image src="{{modal.legacyPhotoSrc}}" mode="aspectFill"/></view>
-          <view class="outfit-item-heading"><text class="field-label">衣物清单</text></view>
-          <view wx:for="{{modal.values.items}}" wx:key="localId" class="outfit-item-editor">
-            <view class="outfit-item-top"><picker class="grow" range="{{outfitTypes}}" range-key="name" value="{{item.typeIndex}}" data-index="{{index}}" bindchange="bindOutfitItemType"><view class="picker-value">{{item.typeName}} 〉</view></picker><button class="danger-text outfit-item-remove" data-index="{{index}}" bindtap="removeOutfitItem">删除</button></view>
-            <input class="outfit-item-name" value="{{item.name}}" placeholder="填写具体衣物，例如白色打底衫" data-index="{{index}}" bindinput="bindOutfitItemName"/>
-            <view class="outfit-photo-picker"><button data-index="{{index}}" bindtap="chooseOutfitItemPhoto">{{item.photoLocalPath || (!item.removePhoto && item.photoFileId) ? '替换衣物照片' : '＋ 添加衣物照片（选填）'}}</button><button wx:if="{{item.photoLocalPath || (!item.removePhoto && item.photoFileId)}}" class="danger-text" data-index="{{index}}" bindtap="removeOutfitItemPhoto">移除照片</button></view>
-            <image wx:if="{{item.photoLocalPath || (!item.removePhoto && item.photoSrc)}}" class="outfit-photo-preview" src="{{item.photoLocalPath || item.photoSrc}}" mode="aspectFill"/>
-          </view>
-          <button wx:if="{{!modal.edit}}" class="outline full outfit-add-item" bindtap="addOutfitItem">＋ 添加衣物</button>
-          <label class="field"><text>备注（选填）</text><textarea value="{{modal.values.note}}" placeholder="温差、防晒、备用单品等" data-field="note" bindinput="bindInput"/></label>
-        </block>
-        <block wx:elif="{{modal.type === 'outfitTypes'}}">
-          <view class="outfit-type-create"><input value="{{modal.values.name}}" placeholder="例如：泳装、睡衣" data-field="name" bindinput="bindInput"/><button bindtap="saveOutfitType">{{modal.editingId ? '保存修改' : '新增类型'}}</button></view>
-          <button wx:if="{{modal.editingId}}" class="type-cancel" bindtap="cancelOutfitTypeEdit">取消编辑</button>
-          <view class="outfit-type-list"><view wx:for="{{modal.types}}" wx:key="id" class="outfit-type-row"><text class="grow">{{item.name}}</text><button data-id="{{item.id}}" data-action="move" data-direction="up" bindtap="mutateOutfitType">上移</button><button data-id="{{item.id}}" data-action="move" data-direction="down" bindtap="mutateOutfitType">下移</button><button data-id="{{item.id}}" bindtap="editOutfitType">编辑</button><button class="danger-text" data-id="{{item.id}}" data-action="delete" bindtap="mutateOutfitType">删除</button></view></view>
-          <button class="primary outfit-type-done" bindtap="returnToOutfit">完成</button>
-        </block>
-        <block wx:elif="{{modal.type === 'expense'}}">
-          <view class="field-row"><label class="field"><text>日期</text><picker mode="date" value="{{modal.values.date}}" start="{{tripStartDate}}" end="{{tripEndDate}}" data-field="date" bindchange="bindDate"><view class="picker-value">{{modal.values.date}}</view></picker></label><label class="field"><text>类目</text><picker range="{{modal.categories}}" value="{{modal.categoryIndex}}" bindchange="bindExpenseCategory"><view class="picker-value">{{modal.values.category}} 〉</view></picker></label></view>
-          <label class="field"><text>消费事项</text><input value="{{modal.values.title}}" placeholder="例如：晚餐、民宿订金" data-field="title" bindinput="bindInput"/></label>
-          <view class="field-row"><label class="field"><text>金额</text><input type="digit" value="{{modal.values.amount}}" placeholder="0.00" data-field="amount" bindinput="bindInput"/></label><label class="field"><text>币种</text><picker range="{{modal.currencies}}" value="{{modal.currencyIndex}}" bindchange="bindExpenseCurrency"><view class="picker-value">{{modal.values.currency}} 〉</view></picker></label></view>
-          <label wx:if="{{modal.values.currency !== expenseSettings.baseCurrency}}" class="field"><text>兑换为 {{expenseSettings.baseCurrency}} 的汇率</text><input type="digit" value="{{modal.values.exchangeRateToBase}}" placeholder="1 原币 = 多少本位币" data-field="exchangeRateToBase" bindinput="bindInput"/></label>
-          <label class="field"><text>谁付款</text><picker range="{{modal.payers}}" range-key="name" value="{{modal.payerIndex}}" bindchange="bindExpensePayer"><view class="picker-value">{{modal.payers[modal.payerIndex].name}} 〉</view></picker></label>
-          <label class="field"><text>怎么分</text><picker range="{{modal.splitModes}}" range-key="label" value="{{modal.splitIndex}}" bindchange="bindSplitMode"><view class="picker-value">{{modal.splitModes[modal.splitIndex].label}} 〉</view></picker></label>
-          <view wx:if="{{modal.values.splitMode !== 'personal'}}" class="expense-participants"><text class="field-label">参与成员</text><view wx:for="{{modal.members}}" wx:key="id" class="expense-participant"><view class="expense-participant-toggle" data-index="{{index}}" bindtap="toggleExpenseMember"><view class="check {{item.selected ? 'done' : ''}}">{{item.selected ? '✓' : ''}}</view><image src="{{item.avatarSrc}}" mode="aspectFill"/><text class="grow">{{item.name}}</text></view><input wx:if="{{modal.values.splitMode === 'custom' && item.selected}}" type="digit" value="{{item.amount}}" placeholder="分摊金额" data-index="{{index}}" bindinput="bindCustomShare"/></view></view>
-          <view class="receipt-actions"><button class="receipt-picker" bindtap="chooseExpenseReceipt">{{modal.receiptLocalPath || (!modal.values.removeReceipt && modal.values.receiptFileId) ? '替换票据照片' : '＋ 添加票据照片'}}</button><button wx:if="{{modal.receiptLocalPath || (!modal.values.removeReceipt && modal.values.receiptFileId)}}" class="receipt-remove danger-text" bindtap="removeExpenseReceipt">移除照片</button></view>
-          <label class="field"><text>备注（选填）</text><textarea value="{{modal.values.note}}" placeholder="地点、用途或补充说明" data-field="note" bindinput="bindInput"/></label>
-        </block>
-        <block wx:elif="{{modal.type === 'expenseSettings'}}"><label class="field"><text>本位币</text><picker range="{{modal.currencies}}" value="{{modal.currencyIndex}}" bindchange="bindSettingsCurrency"><view class="picker-value">{{modal.values.baseCurrency}} 〉</view></picker></label><label class="field"><text>全行程预算</text><input type="digit" value="{{modal.values.budget}}" placeholder="不填写则不设预算" data-field="budget" bindinput="bindInput"/></label><label class="field"><text>费用类目</text><textarea value="{{modal.values.categories}}" placeholder="使用顿号或逗号分隔" data-field="categories" bindinput="bindInput"/></label><view class="notice">已有旅行保留当前类目。停用类目时，历史费用仍会保留原分类。</view></block>
-      </scroll-view>
-      <button wx:if="{{modal.type === 'ticket'}}" class="primary modal-submit" disabled="{{busy}}" bindtap="submitTicket">上传票据</button>
-      <button wx:elif="{{modal.type !== 'templates' && modal.type !== 'templateDetail' && modal.type !== 'guestInvite' && modal.type !== 'outfitTypes'}}" class="primary modal-submit" disabled="{{busy}}" bindtap="submitModal">{{modal.type === 'join' ? '确认加入' : modal.type === 'cloneTrip' ? '创建副本' : '保存'}}</button>
-    </view>
-  </view>
+  <include src="views/form-sheet.wxml" />
 
-  <view wx:if="{{loginPrompt}}" class="modal-mask login-mask" bindtap="dismissLogin">
-    <view class="modal login-modal" catchtap="stopBubble"><view class="modal-head"><text>登录并保存旅行</text><button bindtap="dismissLogin">×</button></view><view class="login-brand"><image src="/assets/brand/logo-144.png" mode="aspectFill"/><text class="muted">使用当前微信身份一键登录。登录后可创建、编辑并同步旅行数据。</text></view><button class="primary wechat-login" disabled="{{busy}}" bindtap="startLogin">微信一键登录</button><text class="login-tip">无需手机号，头像和昵称可在登录后自行修改</text></view>
+  <block wx:for="{{detail || motionExitDetail ? [detail || motionExitDetail] : []}}" wx:for-item="detail" wx:key="id"><view wx:if="{{detail}}" class="modal-mask {{motionExitDetail ? 'motion-exit' : ''}}" bindtap="closeDetail"><view class="modal detail-panel" catchtap="stopBubble"><view class="modal-head"><text>{{detail.title}}</text><button bindtap="closeDetail" aria-label="关闭详情">×</button></view><scroll-view class="modal-body" scroll-y><text wx:if="{{detail.amount}}" class="detail-amount">{{detail.amount}}</text><text class="detail-meta">{{detail.date}} {{detail.time}}</text><text wx:if="{{detail.location}}" class="detail-location">{{detail.location}}{{detail.destination ? ' → ' + detail.destination : ''}}</text><text class="detail-note">{{detail.note || '暂无备注'}}</text></scroll-view><view wx:if="{{!trip.archived}}" class="detail-actions"><button class="outline danger-text" bindtap="deleteDetail">删除</button><button class="primary" bindtap="editDetail">编辑</button></view></view></view>
+  </block><view wx:if="{{loginPrompt || motionExitLoginPrompt}}" class="modal-mask login-mask {{motionExitLoginPrompt ? 'motion-exit' : ''}}" bindtap="dismissLogin">
+    <view class="modal login-modal" catchtap="stopBubble"><view class="modal-head"><text>登录并保存旅行</text><button bindtap="dismissLogin">×</button></view><view class="login-brand"><image src="/assets/loading-welcome/brand.svg" mode="aspectFit"/><text class="muted">使用当前微信身份一键登录。登录后可创建、编辑并同步旅行数据。</text></view><button class="primary wechat-login" disabled="{{busy}}" bindtap="startLogin">微信一键登录</button><text class="login-tip">无需手机号，头像和昵称可在登录后自行修改</text></view>
   </view>
 </view>

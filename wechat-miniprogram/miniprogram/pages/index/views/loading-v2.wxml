@@ -1,0 +1,7 @@
+<view class="photo-loading-surface" aria-hidden="true">
+  <view class="photo-loading-haze"></view>
+  <view class="photo-loading-stage">
+    <view class="photo-loading-brand">向野</view>
+    <view wx:for="{{loadingPhotoFragments}}" wx:key="id" class="photo-fragment photo-flight-{{item.orbit}}" style="{{item.style}}"><image src="{{item.src}}" mode="aspectFill" /></view>
+  </view>
+</view>

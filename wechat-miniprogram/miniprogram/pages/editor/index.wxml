@@ -1,0 +1,7 @@
+<view class="editor-page" style="padding-top:{{systemHeaderHeight}}px">
+  <view class="editor-header" style="height:{{systemHeaderHeight}}px;padding-top:{{systemContentTop}}px"><button bindtap="closeModal" aria-label="返回">‹</button><text>{{modal.title}}</text></view>
+  <scroll-view class="editor-scroll" style="height:calc(100vh - {{systemHeaderHeight + (keyboardHeight || 0) + 110}}px)" scroll-y enhanced>
+    <include src="../index/views/forms.wxml" />
+  </scroll-view>
+  <view class="editor-footer" style="bottom:{{keyboardHeight || 0}}px"><text wx:if="{{saveError}}" class="save-error">{{saveError}}</text><button class="primary" disabled="{{busy}}" bindtap="submitModal">{{busy ? '正在保存…' : '保存'}}</button></view>
+</view>

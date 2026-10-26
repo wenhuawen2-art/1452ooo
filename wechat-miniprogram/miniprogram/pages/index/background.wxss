@@ -1,0 +1,8 @@
+/* Latest page 166:04872. Rendered gradient spans calibrated against exported PNGs. */
+.page.theme-route,.page.mastergo-home,.page.theme-expenses{background:linear-gradient(180deg,#007bff 0%,rgba(6,126,255,.98) 13%,rgba(54,158,255,.65) 35%,rgba(255,255,255,0) 100%) 0 0/100% 720px no-repeat,#edf1f5}
+.page.mastergo-home{background-size:100% 680px}
+.page.theme-list{background:linear-gradient(180deg,#007bff 0%,rgba(6,126,255,.98) 20%,rgba(255,255,255,0) 100%) 0 0/100% 530px no-repeat,#edf1f5}
+.mg-home{isolation:isolate}
+.rg-atmosphere,.xy-list-atmosphere{position:absolute;left:-346px;top:226px;width:782px;height:737px;max-width:none;pointer-events:none;z-index:0;mix-blend-mode:lighten}
+.mastergo-home .rg-atmosphere{left:-550px;top:22px;width:1190px;height:1145px}
+.xy-list-page>view,.xy-list-page>scroll-view{position:relative}.xy-list-page>.xy-list-header{z-index:2}

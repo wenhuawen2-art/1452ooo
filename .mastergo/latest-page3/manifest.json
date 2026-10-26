@@ -1,0 +1,170 @@
+[
+  {
+    "id": "166:13576",
+    "name": "首页-亮色",
+    "style": {
+      "width": "393px",
+      "height": "1559px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 13%, rgba(54,158,255,0.65) 35%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-13576\\首页-亮色_166-13576.png"
+  },
+  {
+    "id": "166:14296",
+    "name": "首页-亮色",
+    "style": {
+      "width": "393px",
+      "height": "1559px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 13%, rgba(54,158,255,0.65) 35%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-14296\\首页-亮色_166-14296.png"
+  },
+  {
+    "id": "166:17027",
+    "name": "行程规划",
+    "style": {
+      "width": "393px",
+      "height": "1785px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 13%, rgba(54,158,255,0.65) 35%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-17027\\行程规划_166-17027.png"
+  },
+  {
+    "id": "166:14643",
+    "name": "记账-明细",
+    "style": {
+      "width": "393px",
+      "height": "1785px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 13%, rgba(54,158,255,0.65) 35%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-14643\\记账-明细_166-14643.png"
+  },
+  {
+    "id": "166:11432",
+    "name": "记账-分账",
+    "style": {
+      "width": "393px",
+      "height": "1184px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 13%, rgba(54,158,255,0.65) 35%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-11432\\记账-分账_166-11432.png"
+  },
+  {
+    "id": "166:11762",
+    "name": "记账-统计",
+    "style": {
+      "width": "393px",
+      "height": "2633px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 13%, rgba(54,158,255,0.65) 35%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-11762\\记账-统计_166-11762.png"
+  },
+  {
+    "id": "166:13015",
+    "name": "团队清单-亮色",
+    "style": {
+      "width": "393px",
+      "height": "1573px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 20%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-13015\\团队清单-亮色_166-13015.png"
+  },
+  {
+    "id": "166:15378",
+    "name": "我的清单-亮色",
+    "style": {
+      "width": "393px",
+      "height": "1573px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 20%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-15378\\我的清单-亮色_166-15378.png"
+  },
+  {
+    "id": "166:16574",
+    "name": "穿搭-亮色",
+    "style": {
+      "width": "393px",
+      "height": "1573px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 20%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-16574\\穿搭-亮色_166-16574.png"
+  },
+  {
+    "id": "166:13989",
+    "name": "穿搭-亮色",
+    "style": {
+      "width": "393px",
+      "height": "1573px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 20%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-13989\\穿搭-亮色_166-13989.png"
+  },
+  {
+    "id": "166:12639",
+    "name": "住宿与票据",
+    "style": {
+      "width": "393px",
+      "height": "1220px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 13%, rgba(54,158,255,0.65) 35%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-12639\\住宿与票据_166-12639.png"
+  },
+  {
+    "id": "166:12361",
+    "name": "住宿与票据-无",
+    "style": {
+      "width": "393px",
+      "height": "1220px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 13%, rgba(54,158,255,0.65) 35%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-12361\\住宿与票据-无_166-12361.png"
+  },
+  {
+    "id": "166:15849",
+    "name": "我的",
+    "style": {
+      "width": "393px",
+      "height": "1061px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 15%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-15849\\我的_166-15849.png"
+  },
+  {
+    "id": "166:16165",
+    "name": "我的",
+    "style": {
+      "width": "393px",
+      "height": "1061px",
+      "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 15%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+      "overflow": "hidden",
+      "position": "relative"
+    },
+    "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-16165\\我的_166-16165.png"
+  }
+]

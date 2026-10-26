@@ -1,0 +1,62 @@
+/* MasterGo 170:8160: static design foundation, flowing light, then crisp dot decoration. */
+.welcome-loading-surface{position:absolute;inset:0;overflow:hidden;background:linear-gradient(180deg,#007bff 0%,rgba(255,255,255,0) 100%),#edf1f5;color:#001126}
+.welcome-loading-surface view,.welcome-loading-surface text,.welcome-loading-surface image{box-sizing:border-box}
+.welcome-loading-art{position:absolute;inset:0;pointer-events:none;animation:welcome-atmosphere 12s ease-in-out infinite;will-change:transform}
+.welcome-loading-art:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 35% 14% at 0% 42%,#f2f9ff99 0%,#f2f9ff00 100%),linear-gradient(180deg,#edf1f800 0%,#edf1f81a 12%,#edf1f83d 25%,#edf1f875 41%,#edf1f800 57%)}
+.welcome-loading-art:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,#edf1f800 57%,#edf1f88c 71%,#edf1f8d9 82%,#edf1f86b 94%,#edf1f814 100%);mask-image:linear-gradient(90deg,#000 0%,#000 30%,#0005 100%);-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 30%,#0005 100%)}
+.welcome-glow{position:absolute;width:1190px;height:1145px;max-width:none;mix-blend-mode:lighten;animation:welcome-glow-drift 14s ease-in-out infinite;will-change:transform}
+.welcome-glow-left{left:calc(50% - 746.5px);top:122px}
+.welcome-glow-right{left:calc(50% - 213.5px);top:-424px}
+.welcome-glow-right{animation-direction:reverse}
+.welcome-floor{position:absolute;left:calc(50% - 618.5px);top:443.5px;width:1182.616px;height:639.5px;max-width:none;animation:welcome-floor-drift 18s ease-in-out infinite}
+.welcome-loading-decoration{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+.welcome-dots{position:absolute;width:665px;height:318px;max-width:none;z-index:1}
+.welcome-dots-top{left:calc(50% - 260.5px);top:0}
+.welcome-dots-corner{left:calc(50% - 528.5px);top:-181px;opacity:.4}
+.welcome-dots-bottom{left:calc(50% - 230.5px);bottom:-72px}
+.welcome-loading-core{position:absolute;left:50%;top:31.7488%;transform:translateX(-50%);width:180px;display:flex;align-items:center;flex-direction:column;gap:28px;z-index:3}
+.welcome-loading-logo{display:block;width:80px;height:80px;flex:none}
+.welcome-loading-copy{display:flex;align-items:center;flex-direction:column;gap:0}
+.welcome-loading-en{font-family:'Konkhmer Sleokchher',Arial,sans-serif;font-size:18px;line-height:33px;font-weight:400;color:rgba(0,17,38,.65);white-space:nowrap}
+.welcome-loading-name{font-family:'Alibaba PuHuiTi 2.0',sans-serif;font-size:28px;line-height:39px;font-weight:800}
+.welcome-loading-accent{position:absolute;left:19px;top:148.5px;width:244px;height:59px;z-index:-1}
+.welcome-loading-stickers{position:absolute;inset:0;pointer-events:none;z-index:3}
+.welcome-sticker{position:absolute;display:block;max-width:none}
+.welcome-sticker-tree{left:calc(50% - 170.5px);top:44.9531%;width:38px;height:43px}
+.welcome-sticker-mountain{left:calc(50% + 88.5px);top:25.7042%;width:48px;height:52px}
+.welcome-sticker-camera{left:calc(50% + 135.5px);top:54.8122%;width:35.71px;height:39px}
+.welcome-sticker-liberty{left:calc(50% - 107.5px);top:19.3662%;width:51.57px;height:54.15px}
+.welcome-sticker-tower{left:calc(50% - 98.5px);top:60.6808%;width:35px;height:39px}
+.welcome-runner{position:absolute;left:50%;bottom:calc(20px + var(--safe-bottom,0px));transform:translateX(-50%);width:104px;height:112px;z-index:3;overflow:hidden;pointer-events:none}
+.welcome-runner-strip{position:absolute;left:0;top:0;width:2184px;height:112px;max-width:none;animation:welcome-run-cycle .88s steps(20,end) infinite;will-change:transform}
+@keyframes welcome-run-cycle{from{transform:translateX(0)}to{transform:translateX(-2080px)}}
+.motion-paused .welcome-runner-strip{animation-play-state:paused}
+.reduced-motion .welcome-runner-strip{animation:none;transform:none;will-change:auto}
+@media(prefers-reduced-motion:reduce){.welcome-runner-strip{animation:none;transform:none;will-change:auto}}
+.welcome-loading-streams{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;opacity:.5}
+.welcome-stream{position:absolute;inset:-20% -38%;filter:blur(34px);will-change:transform,opacity;opacity:.7}
+.welcome-stream-top{background:linear-gradient(132deg,#e4f3ff00 24%,#edf7ff9c 43%,#cae7ff8c 55%,#e0f1ff00 79%),radial-gradient(ellipse 70% 60% at 72% 12%,#edf8ff8a 0%,#d6edff00 75%);animation:welcome-stream-top 9s ease-in-out infinite}
+.welcome-stream-middle{left:-60%;right:auto;width:180%;background:linear-gradient(146deg,#e1f2ff00 27%,#f9fcffbd 45%,#d5eeffa3 57%,#e1f2ff00 76%),radial-gradient(ellipse 65% 68% at 22% 52%,#faffff9c 0%,#dbefff00 78%);animation:welcome-stream-middle 11s ease-in-out infinite}
+.welcome-stream-bottom{background:linear-gradient(34deg,#c2e5ff00 20%,#c1e6ff96 43%,#d7f1ff8a 56%,#c2e5ff00 82%),radial-gradient(ellipse 76% 62% at 73% 88%,#c1e1ff94 0%,#d8ecff00 78%);animation:welcome-stream-bottom 10s ease-in-out infinite}
+@keyframes welcome-stream-top{0%,100%{transform:translate(8%,-3%) rotate(0deg) scale(1);opacity:.65}40%{transform:translate(-16%,7%) rotate(-5deg) scale(1.06);opacity:.85}70%{transform:translate(-23%,13%) rotate(-8deg) scale(1.12);opacity:.72}}
+@keyframes welcome-stream-middle{0%,100%{transform:translate(-15%,17%) rotate(-9deg) scale(1);opacity:.53}36%{transform:translate(10%,-6%) rotate(2deg) scale(1.09);opacity:.78}68%{transform:translate(21%,-16%) rotate(8deg) scale(1.15);opacity:.62}}
+@keyframes welcome-stream-bottom{0%,100%{transform:translate(14%,8%) rotate(3deg) scale(1);opacity:.7}42%{transform:translate(-13%,-9%) rotate(-5deg) scale(1.08);opacity:.92}73%{transform:translate(-24%,-16%) rotate(-9deg) scale(1.14);opacity:.7}}
+.welcome-loading-current{position:absolute;left:0;right:0;bottom:0;height:35%;overflow:hidden;pointer-events:none;opacity:.25;mask-image:linear-gradient(transparent,#000 55%);-webkit-mask-image:linear-gradient(transparent,#000 55%)}
+.welcome-current{position:absolute;width:145%;height:85%;bottom:-35%;left:-22%;border-radius:47% 53% 38% 62%;filter:blur(30px);transform-origin:50% 80%;animation:welcome-flow-blue 9s ease-in-out infinite;will-change:transform,opacity}
+.welcome-current-blue{background:radial-gradient(ellipse at 40% 55%,#3b9bff80,#78baff40 45%,#78baff00 72%)}
+.welcome-current-cyan{left:10%;bottom:-45%;background:radial-gradient(ellipse,#64ddffb3,#83cbff33 56%,#83cbff00 75%);animation:welcome-flow-cyan 11s ease-in-out -4s infinite}
+.welcome-current-violet{left:-50%;bottom:-50%;background:radial-gradient(ellipse,#8894ff80,#a2b5ff00 68%);animation:welcome-flow-violet 13s ease-in-out -7s infinite}
+@keyframes welcome-flow-blue{0%,100%{transform:translate(-8%,8%) rotate(-8deg) scale(1.05,.85);opacity:.7}45%{transform:translate(12%,-20%) rotate(9deg) scale(.95,1.25);opacity:1}75%{transform:translate(-3%,-5%) rotate(-4deg) scale(1.2,1.05);opacity:.85}}
+@keyframes welcome-flow-cyan{0%,100%{transform:translate(12%,2%) rotate(10deg) scale(1,.85);opacity:.8}50%{transform:translate(-20%,-24%) rotate(-12deg) scale(1.2,1.3);opacity:1}}
+@keyframes welcome-flow-violet{0%,100%{transform:translate(-4%,-10%) rotate(-10deg);opacity:.5}50%{transform:translate(30%,-32%) rotate(10deg) scale(1.15,1.3);opacity:.9}}
+@keyframes welcome-atmosphere{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-1%,1%) scale(1.035)}}
+@keyframes welcome-glow-drift{0%,100%{transform:translate(0,0) scale(1)}45%{transform:translate(-60px,50px) scale(1.08)}75%{transform:translate(25px,-35px) scale(.98)}}
+@keyframes welcome-floor-drift{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(45px,-65px) rotate(-6deg)}}
+.motion-paused .welcome-current,.motion-paused .welcome-loading-art,.motion-paused .welcome-glow,.motion-paused .welcome-floor{animation-play-state:paused}
+.motion-paused .welcome-stream{animation-play-state:paused}
+.reduced-motion .welcome-stream{animation:none;will-change:auto;opacity:0}
+.reduced-motion .welcome-loading-current{opacity:0}
+.reduced-motion .welcome-current,.reduced-motion .welcome-loading-art,.reduced-motion .welcome-glow,.reduced-motion .welcome-floor{animation:none;will-change:auto}
+@media(prefers-reduced-motion:reduce){.welcome-stream{animation:none;will-change:auto;opacity:0}.welcome-loading-current{opacity:0}}
+@media(prefers-reduced-motion:reduce){.welcome-current,.welcome-loading-art,.welcome-glow,.welcome-floor{animation:none;will-change:auto}}
+@media(max-height:600px){.welcome-loading-core{top:22%}.welcome-runner{transform:translateX(-50%) scale(.85);transform-origin:center bottom}.welcome-sticker-tree{top:50%}.welcome-sticker-camera{top:54%}.welcome-sticker-tower{top:62%}}

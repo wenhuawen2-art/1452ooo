@@ -1,0 +1,13 @@
+<view class="wc-page {{reducedMotion ? 'reduced-motion' : ''}}" style="padding-top:{{systemContentTop + 64}}px;--wc-top:{{systemContentTop}}px;--safe-bottom:{{safeBottomInset}}px">
+ <view class="wc-header"><button bindtap="back" aria-label="返回上一页"><image src="/assets/mastergo-profile/svg_28f66596.svg" mode="aspectFit"/></button><text>城市天气</text><view></view></view>
+ <text wx:if="{{guestMode}}" class="wc-demo">游客示例天气</text>
+ <view class="wc-cards">
+  <view wx:for="{{cities}}" wx:key="id" class="wc-card {{item.theme}}" data-index="{{index}}" bindtap="retryCity" hover-class="motion-pressed" hover-stop-propagation="true">
+   <image class="wc-sky" src="/assets/mastergo/weather-cloud.webp" mode="aspectFill"/><view class="wc-shade"></view>
+   <view class="wc-city"><text>{{item.cityName}}</text><text>{{item.conditionLabel}}</text></view>
+   <view class="wc-temperatures"><text class="wc-current">{{item.temperature}}°</text><text>{{item.highLabel}}° / {{item.lowLabel}}°</text></view>
+  </view>
+ </view>
+ <view wx:if="{{loading}}" class="wc-state" role="status">正在获取城市天气…</view>
+ <view wx:elif="{{!cities.length}}" class="wc-state"><text>还没有行程城市</text><text>填写行程地点后，这里会自动显示天气。</text></view>
+</view>

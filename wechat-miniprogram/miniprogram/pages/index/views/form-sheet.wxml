@@ -1,0 +1,13 @@
+<block wx:for="{{modal || motionExitModal ? [modal || motionExitModal] : []}}" wx:for-item="modal" wx:key="type">
+<view wx:if="{{modal && !editorActive}}" class="modal-mask form-mask {{motionExitModal ? 'motion-exit' : ''}} motion-panel-{{motionPanel}} {{reducedMotion ? 'reduced-motion' : ''}}" style="bottom:{{keyboardHeight || 0}}px;--sheet-safe-bottom:{{keyboardHeight ? 0 : safeBottomInset || 0}}px" bindtap="closeModal">
+ <view class="modal form-sheet {{formExpanded ? 'is-expanded' : ''}} {{formDragging ? 'is-dragging' : ''}}" style="--sheet-top:{{systemContentTop || 16}}px;height:{{motionExitModal && motionExitHeight ? motionExitHeight + 'px' : formPanelHeight != null ? formPanelHeight + 'px' : 'auto'}};max-height:{{formMaxHeight != null ? formMaxHeight + 'px' : 'calc(100vh - ' + (systemContentTop || 16) + 'px - ' + (keyboardHeight || 0) + 'px)'}}" catchtap="stopBubble">
+  <button class="form-drag-handle" hover-class="none" aria-label="{{formExpanded ? '收起表单' : '展开为全屏'}}" bindtap="toggleFormSheet" bindtouchstart="startFormSheetDrag" catchtouchmove="moveFormSheetDrag" bindtouchend="endFormSheetDrag" bindtouchcancel="cancelFormSheetDrag"><view></view></button>
+  <view class="modal-head"><text>{{modal.title}}</text><button wx:if="{{!modal.required && (modal.type === 'templates' || modal.type === 'templateDetail')}}" class="form-back-button" bindtap="modalBack" aria-label="返回上一级">←</button><button wx:elif="{{!modal.required}}" bindtap="closeModal" aria-label="关闭表单">×</button></view>
+  <include src="forms.wxml" />
+  <view class="form-footer"><text wx:if="{{saveError}}" class="save-error">{{saveError}}</text>
+   <button wx:if="{{modal.type === 'ticket'}}" class="primary modal-submit" disabled="{{busy}}" loading="{{busy}}" bindtap="submitTicket">{{busy ? '正在上传…' : '上传票据'}}</button>
+   <button wx:elif="{{modal.type !== 'templates' && modal.type !== 'templateDetail' && modal.type !== 'guestInvite' && modal.type !== 'outfitTypes'}}" class="primary modal-submit" disabled="{{busy}}" loading="{{busy}}" bindtap="submitModal">{{busy ? '正在保存…' : modal.type === 'join' ? '确认加入' : modal.type === 'cloneTrip' ? '创建副本' : '保存'}}</button>
+  </view>
+ </view>
+</view>
+</block>

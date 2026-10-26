@@ -17,6 +17,8 @@ await Promise.all([
   cp("shared/route-overview.cjs", "cloudfunctions/suixing-api/route-overview.cjs"),
   cp("shared/trip-types.cjs", "cloudfunctions/suixing-api/trip-types.cjs"),
   cp("shared/expenses.cjs", "cloudfunctions/suixing-api/expenses.cjs"),
+  cp("shared/weather-cities.cjs", "cloudfunctions/suixing-api/weather-cities.cjs"),
+  cp("shared/weather-cities.cjs", "wechat-miniprogram/miniprogram/utils/weather-cities.js"),
 ]);
 await build({
   entryPoints: ["public/app.js"],

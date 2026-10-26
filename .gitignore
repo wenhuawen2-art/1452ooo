@@ -8,6 +8,10 @@ dist/
 output/
 *.log
 .playwright-cli/
+/a.animationName
+/a.animationName)
+.mastergo/font-tools/
+__pycache__/
 wechat-miniprogram/project.private.config.json
 project.private.config.json
 /project.config.json

@@ -1,0 +1,28 @@
+<view class="welcome-loading-surface">
+  <view class="welcome-loading-art" aria-hidden="true">
+    <image class="welcome-glow welcome-glow-left" src="/assets/loading-welcome/glow.svg" mode="scaleToFill" />
+    <image class="welcome-glow welcome-glow-right" src="/assets/loading-welcome/glow.svg" mode="scaleToFill" />
+    <image class="welcome-floor" src="/assets/loading-welcome/floor.svg" mode="scaleToFill" />
+  </view>
+  <view class="welcome-loading-current" aria-hidden="true"><view class="welcome-current welcome-current-blue"></view><view class="welcome-current welcome-current-cyan"></view><view class="welcome-current welcome-current-violet"></view></view>
+  <view class="welcome-loading-streams" aria-hidden="true"><view class="welcome-stream welcome-stream-top"></view><view class="welcome-stream welcome-stream-middle"></view><view class="welcome-stream welcome-stream-bottom"></view></view>
+  <view class="welcome-loading-decoration" aria-hidden="true">
+    <image class="welcome-dots welcome-dots-top" src="/assets/loading-welcome/dots.webp" mode="scaleToFill" />
+    <image class="welcome-dots welcome-dots-corner" src="/assets/loading-welcome/dots.webp" mode="scaleToFill" />
+    <image class="welcome-dots welcome-dots-bottom" src="/assets/loading-welcome/dots.webp" mode="scaleToFill" />
+  </view>
+  <view class="welcome-loading-stickers" aria-hidden="true">
+    <image class="welcome-sticker welcome-sticker-tree" src="/assets/loading-welcome/sticker-tree-hd.webp" mode="aspectFit" />
+    <image class="welcome-sticker welcome-sticker-mountain" src="/assets/loading-welcome/sticker-mountain-hd.webp" mode="aspectFit" />
+    <image class="welcome-sticker welcome-sticker-camera" src="/assets/loading-welcome/sticker-camera-hd.webp" mode="aspectFit" />
+    <image class="welcome-sticker welcome-sticker-liberty" src="/assets/loading-welcome/sticker-liberty-hd.webp" mode="aspectFit" />
+    <image class="welcome-sticker welcome-sticker-tower" src="/assets/loading-welcome/sticker-tower-hd.webp" mode="aspectFit" />
+  </view>
+  <view class="welcome-loading-core">
+    <image class="welcome-loading-logo" src="/assets/loading-welcome/brand.svg" mode="aspectFit" />
+    <view class="welcome-loading-copy"><text class="welcome-loading-en">Welcome To</text><text class="welcome-loading-name">向野</text></view>
+    <image class="welcome-loading-accent" src="/assets/loading-welcome/accent.svg" mode="scaleToFill" />
+  </view>
+  <view class="welcome-runner welcome-runner-legacy" aria-hidden="true"><image class="welcome-runner-strip" src="/assets/loading-welcome/runner-sprite.svg" mode="scaleToFill" /></view>
+  <view class="welcome-walker" aria-hidden="true"><image class="welcome-walker-strip" src="/assets/loading-welcome/walker-sprite.svg" mode="scaleToFill" /></view>
+</view>

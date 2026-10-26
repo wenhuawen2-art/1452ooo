@@ -1,0 +1,7 @@
+<view class="journey-loading-glow"></view>
+<view class="journey-loading-stage" aria-hidden="true">
+  <view class="journey-loading-core"><text class="journey-loading-name">向野</text><text class="journey-loading-en">INTO THE WILD</text></view>
+  <view wx:for="{{loadingFragments}}" wx:key="id" class="journey-fragment journey-orbit-{{item.orbit}}" style="{{item.style}}"><image src="{{item.src}}" mode="aspectFill" /></view>
+</view>
+<view class="journey-loading-copy"><text class="journey-loading-title">把期待，装进行囊</text><view class="journey-loading-status"><view class="journey-loading-dot"></view><text>正在加载旅行</text></view></view>
+<text class="journey-loading-footer">下一程，从容出发。</text>

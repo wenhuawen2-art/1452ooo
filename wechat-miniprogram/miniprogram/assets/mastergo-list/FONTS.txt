@@ -1,0 +1,19 @@
+AlibabaPuHuiTi-2-55-Regular: https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-2/AlibabaPuHuiTi-2-55-Regular/AlibabaPuHuiTi-2-55-Regular.ttf
+Copyright ?2020-2021 Alibaba (China) Co., Ltd. All rights reserved.
+(c) 2020-2021 阿里巴巴（中国）有限公司，版权所有
+Copyright © 2020-2021 Alibaba (China) Co., Ltd. All rights reserved.
+AlibabaPuHuiTi-2-65-Medium: https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-2/AlibabaPuHuiTi-2-65-Medium/AlibabaPuHuiTi-2-65-Medium.ttf
+Copyright ?2020-2021 Alibaba (China) Co., Ltd. All rights reserved.
+(c) 2020-2021 阿里巴巴（中国）有限公司，版权所有
+Copyright © 2020-2021 Alibaba (China) Co., Ltd. All rights reserved.
+AlibabaPuHuiTi-2-75-SemiBold: https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-2/AlibabaPuHuiTi-2-75-SemiBold/AlibabaPuHuiTi-2-75-SemiBold.ttf
+Copyright ?2020-2021 Alibaba (China) Co., Ltd. All rights reserved.
+(c) 2020-2021 阿里巴巴（中国）有限公司，版权所有
+Copyright © 2020-2021 Alibaba (China) Co., Ltd. All rights reserved.
+AlibabaPuHuiTi-2-95-ExtraBold: https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-2/AlibabaPuHuiTi-2-95-ExtraBold/AlibabaPuHuiTi-2-95-ExtraBold.ttf
+Copyright ?2020-2021 Alibaba (China) Co., Ltd. All rights reserved.
+(c) 2020-2021 阿里巴巴（中国）有限公司，版权所有
+Copyright © 2020-2021 Alibaba (China) Co., Ltd. All rights reserved.
+Konkhmer Sleokchher: https://raw.githubusercontent.com/google/fonts/main/ofl/konkhmersleokchher/KonkhmerSleokchher-Regular.ttf
+Copyright 2022 The Konkhmer Sleokchher Project Authors. SIL Open Font License 1.1.
+Subsets retain source names and include application text, ASCII, and numeric glyphs. Uncovered user characters use system fallback.

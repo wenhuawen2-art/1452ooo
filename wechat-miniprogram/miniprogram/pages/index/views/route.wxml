@@ -1,0 +1,35 @@
+<view class="rg-page" style="padding-top:{{systemContentTop}}px" bindtap="closeRouteMenu">
+  <image class="rg-atmosphere" src="/assets/mastergo-route/planning/svg_a7d2aa9f.svg" mode="scaleToFill"/>
+  <view class="system-header-space"></view>
+  <scroll-view class="rg-dates" scroll-x enable-flex show-scrollbar="false" scroll-left="{{routeDateScroll}}" scroll-with-animation="{{!reducedMotion}}"><view class="rg-date-row"><button wx:for="{{dates}}" wx:key="value" class="rg-date {{item.active ? 'selected' : ''}}" data-date="{{item.value}}" bindtap="selectDate"><text>{{item.weekday}}</text><text class="rg-day">{{item.day}}</text><text>{{item.month}}月</text><view class="rg-date-dot {{item.hasContent ? 'has-content' : ''}}"></view></button></view></scroll-view>
+  <view class="rg-segment"><button class="{{routeSection === 'planning' ? 'selected' : ''}}" data-section="planning" bindtap="setRouteSection">行程规划</button><button class="{{routeSection === 'lodging' ? 'selected' : ''}}" data-section="lodging" bindtap="setRouteSection">住宿与票据</button></view>
+  <view class="rg-date-title"><text>{{routePrettyDate}}</text><view class="rg-title-dot"></view><text>{{routeWeekday}}</text><view class="rg-title-dot"></view><text>{{routeDayLabel}}</text><image src="/assets/mastergo-route/planning/svg_36d81f0a.svg" mode="aspectFit"/></view>
+  <view class="rg-main">
+    <block wx:if="{{routeSection === 'planning'}}">
+      <view wx:for="{{routePeriods}}" wx:key="name" class="rg-period {{item.tone}} {{routeMenu.periodName === item.name ? 'menu-open' : ''}}">
+        <view class="rg-period-head"><view class="rg-period-mark"></view><text>{{item.name}}行程</text><view class="rg-count"><image src="/assets/mastergo-route/planning/svg_167eda83.svg" mode="aspectFit"/><text>{{item.events.length}}项</text></view></view>
+        <view wx:for="{{item.events}}" wx:for-item="event" wx:key="id" class="rg-event-row">
+          <view class="rg-timeline"><text>{{event.number}}</text><view></view></view>
+          <view class="rg-event-card {{routeMenu.id === event.id ? 'menu-open' : ''}}" data-kind="event" data-id="{{event.id}}" bindtap="openDetail" hover-class="motion-pressed" hover-stop-propagation="true"><view><view class="rg-time"><text>{{event.startTime}}</text><view></view><text>{{event.endTime}}</text></view><text class="rg-event-title">{{event.title}}</text></view>
+            <button wx:if="{{!trip.archived}}" hover-stop-propagation="true" class="rg-more {{routeMenu.id === event.id ? 'selected' : ''}}" data-kind="event" data-id="{{event.id}}" catchtap="openRouteMenu" aria-label="行程更多操作"><image src="/assets/mastergo-route/planning/svg_2e9698ef.svg" mode="aspectFit"/></button>
+            <view wx:if="{{routeMenu.kind === 'event' && routeMenu.id === event.id}}"><include src="route-menu.wxml"/></view>
+            <view wx:if="{{event.startPlace || event.endPlace || event.address || event.distanceLabel || event.durationLabel}}" class="rg-transport"><image wx:if="{{event.transportMode === 'driving'}}" src="/assets/mastergo-route/planning/svg_4dcf3f54.svg" mode="aspectFit"/><text>{{event.transportLabel}}</text><text wx:if="{{event.distanceLabel}}">· {{event.distanceLabel}}</text><image wx:if="{{event.durationLabel}}" src="/assets/mastergo-route/planning/svg_9b3a6fc7.svg" mode="aspectFit"/><text wx:if="{{event.durationLabel}}">{{event.durationLabel}}</text></view>
+            <view wx:if="{{event.startPlace && event.endPlace}}" class="rg-leg" data-place="{{event.endPlace}}" catchtap="openMap" hover-class="motion-pressed" hover-stop-propagation="true"><text>{{event.startPlace}}</text><image src="/assets/mastergo-route/planning/svg_8d497967.svg"/><view></view><image src="/assets/mastergo-route/planning/svg_7bd2eedc.svg"/><text>{{event.endPlace}}</text></view>
+            <view wx:elif="{{event.locationText}}" class="rg-address" data-place="{{event.locationText}}" catchtap="openMap" hover-class="motion-pressed" hover-stop-propagation="true"><image src="/assets/mastergo-route/lodging/svg_7849bc3c.svg"/><text>{{event.locationText}}</text></view>
+            <view wx:if="{{event.note}}" class="rg-note"><text>{{event.note}}</text></view>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{!routePeriods.length}}" class="rg-empty">这一天还没有行程</view>
+    </block>
+    <block wx:else>
+      <view class="rg-section-head"><image src="/assets/mastergo-route/lodging/svg_86ca381c.svg"/><text>住宿</text></view>
+      <view class="rg-glass">
+        <block wx:if="{{routeHotel}}"><view class="rg-hotel-kind"><view><image src="/assets/mastergo-route/lodging/svg_42309d9d.svg"/></view><text>酒店</text></view><view class="rg-hotel-card"><view data-kind="hotel" data-id="{{routeHotel.id}}" bindtap="openDetail" hover-class="motion-pressed" hover-stop-propagation="true"><text class="rg-hotel-name">{{routeHotel.name}}</text><view class="rg-stay-dates"><view><text>{{routeHotel.checkinDisplay}}</text><text>入住</text></view><view class="rg-nights"><view></view><text>{{routeHotel.nights}}晚</text><view></view></view><view><text>{{routeHotel.checkoutDisplay}}</text><text>离店</text></view></view></view><button wx:if="{{!trip.archived}}" hover-stop-propagation="true" class="rg-more" data-kind="hotel" data-id="{{routeHotel.id}}" catchtap="openRouteMenu" aria-label="住宿更多操作"><image src="/assets/mastergo-route/lodging/svg_9e67a583.svg"/></button><view wx:if="{{routeMenu.kind === 'hotel' && routeMenu.id === routeHotel.id}}"><include src="route-menu.wxml"/></view><view class="rg-address" data-place="{{routeHotel.address || routeHotel.city}}" catchtap="openMap" hover-class="motion-pressed" hover-stop-propagation="true"><image src="/assets/mastergo-route/lodging/svg_7849bc3c.svg"/><text>{{routeHotel.address || routeHotel.city || '地址待填写'}}</text></view></view></block>
+        <button wx:elif="{{!trip.archived}}" class="rg-add-entry" data-date="{{selectedDate}}" bindtap="openHotel"><image src="/assets/mastergo-route/empty/svg_9fc99908.svg"/><text>添加住宿</text></button><text wx:else class="rg-empty">当晚尚未填写住宿</text>
+      </view>
+      <view class="rg-section-head rg-ticket-head"><image src="/assets/mastergo-route/lodging/svg_8328b7f3.svg"/><text>票据</text></view>
+      <view class="rg-glass rg-ticket-list"><view wx:for="{{selectedTickets}}" wx:key="id" class="rg-ticket-card"><text class="rg-ticket-type">{{item.type}}</text><button wx:if="{{!trip.archived}}" hover-stop-propagation="true" class="rg-more" data-kind="ticket" data-id="{{item.id}}" catchtap="openRouteMenu" aria-label="票据更多操作"><image src="/assets/mastergo-route/lodging/svg_9e67a583.svg"/></button><view wx:if="{{routeMenu.kind === 'ticket' && routeMenu.id === item.id}}"><include src="route-menu.wxml"/></view><button class="rg-ticket-preview" data-id="{{item.id}}" bindtap="previewTicket"><image src="{{item.previewSrc}}" mode="aspectFill"/></button></view><button wx:if="{{!trip.archived}}" class="rg-add-entry" bindtap="addTicket"><image src="/assets/mastergo-route/lodging/svg_ce00b352.svg"/><text>添加票据</text></button><text wx:if="{{trip.archived && !selectedTickets.length}}" class="rg-empty">当天尚未添加票据</text></view>
+    </block>
+  </view>
+</view>

@@ -1,0 +1,6 @@
+async(page)=>{
+ await page.setViewportSize({width:393,height:900});await page.goto('http://127.0.0.1:4192/app?mode=expense-design');await page.locator('.ee-more').first().click();await page.locator('.ee-menu').waitFor();await page.locator('.ee-menu').getByText('编辑',{exact:true}).click();await page.locator('.modal-mask').waitFor();const editor=await page.locator('.modal-mask').innerText();if(!editor.includes('费用'))throw Error(editor);
+ await page.goto('http://127.0.0.1:4192/app?mode=expense-design');await page.locator('.ee-entry').first().click();await page.locator('.modal-mask').waitFor();
+ await page.goto('http://127.0.0.1:4192/app?mode=expense-design-split');await page.locator('.ee-member-heading').click();await page.getByText('结算管理',{exact:true}).waitFor();await page.getByRole('button',{name:'关闭结算管理'}).click();await page.locator('.ee-tabs').getByText('统计',{exact:true}).click();await page.locator('.ee-daily-bars button').nth(1).click();await page.locator('.ee-dates .selected').waitFor();const selected=await page.locator('.ee-dates .selected').getAttribute('data-binding');if(!selected.includes('2026-10-11'))throw Error(selected);
+ await page.goto('http://127.0.0.1:4192/?mode=expense-design&tab=expenses');return 'Passed: detail, menu edit, split settlement panel, statistics date drill and selected date';
+}

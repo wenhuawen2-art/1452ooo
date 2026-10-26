@@ -1,0 +1,341 @@
+<view
+  data-node-id="199:04276"
+  data-name="未登录首页"
+  class="mg-export-1">
+  <view
+    data-node-id="199:04278"
+    data-name="路径 52897"
+    class="mg-export-2">
+    <image src="./asset/icons/svg_6957a998.svg" />
+  </view>
+  <view
+    data-node-id="199:04339"
+    data-name="圆形 2"
+    class="mg-export-3">
+    <image src="./asset/icons/svg_a7d2aa9f.svg" />
+  </view>
+  <view
+    data-node-id="199:04356"
+    data-name="容器 51459"
+    class="mg-export-4">
+    <view
+      data-node-id="199:04391"
+      data-name="容器 51452"
+      class="mg-export-5">
+      <image
+        src="./asset/icons/svg_77685d01.svg"
+        data-node-id="199:04401"
+        data-name="最终版"
+        class="mg-export-6" />
+      <view
+        data-node-id="199:04392"
+        data-name="容器 51451"
+        class="mg-export-7">
+        <text
+          data-node-id="199:04393"
+          data-name="登录后开启你的行程"
+          class="mg-export-8">
+          登录后开启你的行程
+        </text>
+        <p
+          data-node-id="199:04397"
+          data-name="创建旅行，邀请同行人，并在不同设备继续查看行程，清单与账本"
+          class="mg-export-9">
+          创建旅行，邀请同行人，并在不同设备继续查看行程，清单与账本
+        </p>
+      </view>
+    </view>
+    <view
+      data-node-id="199:04357"
+      data-name="容器 51460"
+      class="mg-export-10">
+      <view
+        data-node-id="199:04358"
+        data-name="容器 51458"
+        class="mg-export-11">
+        <view
+          data-node-id="199:04368"
+          data-name="容器 50672"
+          class="mg-export-12">
+          <view
+            data-node-id="199:04369"
+            data-name="容器"
+            class="mg-export-13">
+            <view
+              data-node-id="199:04370"
+              data-name="容器"
+              class="mg-export-14">
+              <image src="./asset/icons/svg_e3d30aed.svg" />
+            </view>
+          </view>
+          <text
+            data-node-id="199:04372"
+            data-name="规划每天的路线"
+            class="mg-export-15">
+            规划每天的路线
+          </text>
+        </view>
+        <view
+          data-node-id="199:04359"
+          data-name="容器 50674"
+          class="mg-export-16">
+          <view
+            data-node-id="199:04364"
+            data-name="容器"
+            class="mg-export-17">
+            <view
+              data-node-id="199:04365"
+              data-name="容器"
+              class="mg-export-18">
+              <image src="./asset/icons/svg_4c307391.svg" />
+            </view>
+          </view>
+          <text
+            data-node-id="199:04360"
+            data-name="添加住宿信息"
+            class="mg-export-19">
+            添加住宿信息
+          </text>
+        </view>
+        <view
+          data-node-id="199:04376"
+          data-name="容器 50673"
+          class="mg-export-20">
+          <image
+            src="./asset/icons/svg_f0a1dd8f.svg"
+            data-node-id="199:04377"
+            data-name="容器"
+            class="mg-export-21" />
+          <text
+            data-node-id="199:04379"
+            data-name="准备物品并且确认"
+            class="mg-export-22">
+            准备物品并且确认
+          </text>
+        </view>
+      </view>
+      <view
+        data-node-id="199:04383"
+        data-name="容器 50329"
+        class="mg-export-23">
+        <view
+          data-node-id="199:04384"
+          data-name="容器 50334"
+          class="mg-export-24">
+          <text
+            data-node-id="199:04385"
+            data-name="登录并开始使用"
+            class="mg-export-25">
+            登录并开始使用
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <text
+    data-node-id="199:04285"
+    data-name="全程路线"
+    class="mg-export-26">
+    全程路线
+  </text>
+  <view
+    data-node-id="199:04279"
+    data-name="容器 50356"
+    class="mg-export-27">
+    <image
+      data-node-id="199:04284"
+      data-name="收藏到 MOBILE"
+      class="mg-export-28"
+      src="./asset/images/收藏到-MOBILE-199-04284.jpg"
+      title="收藏到 MOBILE" />
+    <view
+      data-node-id="199:04280"
+      data-name="容器 50312"
+      class="mg-export-29">
+      <view
+        data-node-id="199:04281"
+        data-name="容器"
+        class="mg-export-30">
+        <image src="./asset/icons/svg_0cfdc61e.svg" />
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="199:04423"
+    data-name="容器 50313"
+    class="mg-export-31">
+    <view
+      data-node-id="199:04424"
+      data-name="容器 50306"
+      class="mg-export-32">
+      <image
+        src="./asset/icons/svg_be53a9b0.svg"
+        data-node-id="199:04429"
+        data-name="容器 50305"
+        class="mg-export-33" />
+      <text
+        data-node-id="199:04425"
+        data-name="向野清单"
+        class="mg-export-34">
+        向野清单
+      </text>
+    </view>
+    <view
+      data-node-id="199:04443"
+      data-name="容器 50315"
+      class="mg-export-35">
+      <view
+        data-node-id="199:04444"
+        data-name="容器 50316"
+        class="mg-export-36">
+        <view
+          data-node-id="199:04445"
+          data-name="容器"
+          class="mg-export-37">
+          <image src="./asset/icons/svg_a4153cd7.svg" />
+        </view>
+      </view>
+      <view
+        data-node-id="199:04447"
+        data-name="容器 50317"
+        class="mg-export-38">
+        <view
+          data-node-id="199:04448"
+          data-name="容器"
+          class="mg-export-39">
+          <image src="./asset/icons/svg_e184da89.svg" />
+        </view>
+      </view>
+    </view>
+    <view
+      data-node-id="199:04453"
+      data-name="容器 50316"
+      class="mg-export-40">
+      <view
+        data-node-id="199:04454"
+        data-name="容器"
+        class="mg-export-41">
+        <image src="./asset/icons/svg_392f6c67.svg" />
+      </view>
+    </view>
+  </view>
+  <p
+    data-node-id="199:04352"
+    data-name="旅行/游玩"
+    class="mg-export-42">
+    旅行/游玩
+  </p>
+  <text
+    data-node-id="199:04335"
+    data-name="从容出发"
+    class="mg-export-43">
+    从容出发
+  </text>
+  <view
+    data-node-id="199:04346"
+    data-name="组 51271"
+    class="mg-export-44">
+    <text
+      data-node-id="199:04347"
+      data-name="📸"
+      class="mg-export-45">
+      📸
+    </text>
+    <view
+      data-node-id="199:04351"
+      data-name="路径 52927"
+      class="mg-export-46">
+      <image src="./asset/icons/svg_23166d8b.svg" />
+    </view>
+  </view>
+  <view
+    data-node-id="199:04340"
+    data-name="组 51269"
+    class="mg-export-47">
+    <text
+      data-node-id="199:04341"
+      data-name="🏔️"
+      class="mg-export-48">
+      <text
+        class="mg-export-49">
+        �
+      </text>
+      <text
+        class="mg-export-50">
+        �
+      </text>
+    </text>
+    <view
+      data-node-id="199:04345"
+      data-name="路径 52925"
+      class="mg-export-51">
+      <image src="./asset/icons/svg_5391cd11.svg" />
+    </view>
+  </view>
+  <view
+    data-node-id="199:04289"
+    data-name="容器 50314"
+    class="mg-export-52">
+    <view
+      data-node-id="199:04290"
+      data-name="容器 50308"
+      class="mg-export-53">
+      <view
+        data-node-id="199:04291"
+        data-name="容器 50305"
+        class="mg-export-54">
+        <image src="./asset/icons/svg_10dc7770.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="199:04325"
+      data-name="容器 50309"
+      class="mg-export-55">
+      <view
+        data-node-id="199:04326"
+        data-name="容器"
+        class="mg-export-56">
+        <image src="./asset/icons/svg_7bb647bd.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="199:04299"
+      data-name="容器 50339"
+      class="mg-export-57">
+      <view
+        data-node-id="199:04300"
+        data-name="组 51041"
+        class="mg-export-58">
+        <image src="./asset/icons/svg_fe6f84d9.svg" />
+      </view>
+      <view
+        data-node-id="199:04310"
+        data-name="容器"
+        class="mg-export-59">
+        <image src="./asset/icons/svg_4b1e4686.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="199:04328"
+      data-name="容器 50310"
+      class="mg-export-60">
+      <view
+        data-node-id="199:04329"
+        data-name="容器 50318"
+        class="mg-export-61">
+        <image src="./asset/icons/svg_988bdf11.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="199:04322"
+      data-name="容器 50312"
+      class="mg-export-62">
+      <view
+        data-node-id="199:04323"
+        data-name="容器"
+        class="mg-export-63">
+        <image src="./asset/icons/svg_0634b27b.svg" />
+      </view>
+    </view>
+  </view>
+</view>

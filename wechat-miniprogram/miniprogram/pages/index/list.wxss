@@ -1,0 +1,118 @@
+
+/* MasterGo 5:03961 / 5:04740 / 5:03498 / 5:04436. */
+.page.theme-list{min-height:100vh;padding-left:0;padding-right:0;padding-bottom:0;color:#001126}
+.theme-list .content.list-content{padding:0;margin:0;max-width:none;width:100%;box-sizing:border-box}
+.xy-list-page{position:relative;isolation:isolate;box-sizing:border-box;min-height:100vh;padding:16px 16px 180px;overflow:hidden;font-family:'Alibaba PuHuiTi 2.0',-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif}
+.xy-list-page.is-checklist{padding-bottom:0}
+.xy-list-page view,.xy-list-page button,.xy-list-page text{box-sizing:border-box}
+.xy-list-page text,.xy-list-page button{font-family:'Alibaba PuHuiTi 2.0',-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif}
+.xy-list-page button{margin:0;line-height:normal}
+.xy-list-header{position:relative;z-index:2}
+.xy-list-mode{display:flex;gap:12px;height:80px;margin-top:25px}
+.xy-list-mode button{position:relative;display:flex;align-items:center;justify-content:center;gap:4px;flex:1;min-width:0;padding:0;border:1px solid transparent;border-radius:12px;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);font-size:16px;font-weight:400;overflow:hidden}
+.xy-list-mode button.selected{border-color:rgba(255,255,255,.4);background:linear-gradient(137deg,rgba(218,251,255,.55) 0%,rgba(0,191,255,0) 75%),radial-gradient(ellipse 60% 95% at 100% 130%,#f5ff82 0%,rgba(245,255,130,0) 95%),radial-gradient(ellipse 65% 100% at 0% 120%,rgba(104,237,222,.5) 0%,rgba(104,237,222,0) 95%),linear-gradient(180deg,#379fff,#4ca3fa);color:#fff}
+.xy-list-mode button:first-child{font-weight:800}
+.xy-list-mode .xy-mode-icon{position:relative;z-index:1;width:24px;height:24px}
+.xy-list-mode text{position:relative;z-index:1;line-height:24px}
+.xy-list-mode .xy-mode-art{position:absolute;right:-7px;top:9px;width:69px;height:69px;max-width:none;pointer-events:none}
+.xy-list-mode button:first-child .xy-mode-art{top:12px}
+.xy-list-segment{display:flex;gap:12px;height:52px;padding:6px;margin-top:28px;border-radius:224px;background:rgba(63,90,135,.16);backdrop-filter:blur(10px)}
+.xy-list-segment button{display:flex;align-items:center;justify-content:center;flex:1;min-width:0;min-height:0;height:40px;padding:0;border:1px solid transparent;border-radius:224px;background:transparent;color:#fff;font-size:16px;font-weight:500;line-height:22px}
+.xy-list-segment button.selected{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.6);color:#001126}
+.xy-list-summary{margin-top:36px}
+.xy-list-title{display:block;font-size:24px;line-height:34px;font-weight:400}
+.xy-progress-label{display:flex;align-items:center;gap:8px;margin-top:36px;color:rgba(4,9,17,.75);font-size:14px;height:20px}
+.xy-progress-label image{width:16px;height:16px}
+.xy-progress-numbers{display:flex;align-items:center;justify-content:space-between;height:64px;margin-top:13px}
+.xy-progress-numbers>view:first-child{display:flex;align-items:baseline;gap:8px}
+.xy-list-page .xy-progress-big{font-family:'Konkhmer Sleokchher',Arial,sans-serif;font-weight:400;font-size:64px;line-height:64px;letter-spacing:0}
+.xy-progress-unit{color:rgba(4,9,17,.5);font-size:24px;line-height:34px;font-weight:500}
+.xy-progress-fraction{display:flex;align-items:center;align-self:flex-end;height:51px;gap:2px;font-size:28px;font-weight:400;line-height:39px;margin-top:0}
+.xy-list-page .xy-progress-fraction text:first-child{font-family:'Konkhmer Sleokchher',Arial,sans-serif}
+.xy-progress-fraction text:last-child{font-size:20px;line-height:28px;color:rgba(4,9,17,.5);font-weight:500}
+.xy-progress-track{position:relative;height:16px;margin-top:16px;padding:0;border-radius:32px;background:#fff}
+.xy-progress-track>view{position:absolute;left:4px;top:3px;height:10px;max-width:calc(100% - 8px);border-radius:12px;background:linear-gradient(90deg,#c5e9ff,#0798ff);transition:width .4s ease}
+.xy-list-groups{margin:32px -16px 0;padding:15px 15px 16px;min-height:0;border:1px solid rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.7);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.3));backdrop-filter:blur(10px)}
+.xy-list-group{position:relative;margin-bottom:36px}
+.xy-list-group:last-of-type{margin-bottom:0}
+.xy-category-head{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;height:36px;margin-bottom:20px}
+.xy-category-label{display:flex;align-items:center;gap:16px;min-width:0;flex:1;min-height:44px;padding:0;text-align:left;background:transparent;color:#001126}
+.xy-category-title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:18px;line-height:25px;font-weight:600}
+.xy-category-count{display:flex;align-items:center;justify-content:center;flex:none;min-width:28px;height:28px;padding:0 7px;border-radius:50%;background:rgba(63,90,135,.16);box-shadow:inset 0 0 16px rgba(235,250,255,.6);font-size:16px;line-height:22px;font-weight:600}
+.xy-new-button{display:flex;align-items:center;justify-content:center;gap:4px;width:88px;flex:none;min-height:36px!important;height:36px;padding:0 12px;border:1px solid rgba(0,17,38,.1);border-radius:60px;background:rgba(255,255,255,.5);font-size:16px;color:#001126}
+.xy-new-button image{width:20px;height:20px}
+.xy-item-row{position:relative;display:flex;align-items:center;gap:16px;height:44px;margin-bottom:6px;padding:0 12px;border-radius:12px;background:rgba(63,90,135,.06)}
+.xy-item-row:last-child{margin-bottom:0}
+.xy-item-check{position:relative;display:flex;align-items:center;justify-content:center;flex:none;width:24px;height:24px;border:1px solid rgba(0,17,38,.4);border-radius:50%;background:rgba(63,90,135,.12);color:#fff;font-size:16px}
+.xy-item-check:before{content:'';position:absolute;inset:-10px}
+.xy-item-check.done{border-color:#438bff;background:#4a8cff}
+.xy-item-check image{width:16px;height:16px}
+.xy-item-main{display:flex;align-items:center;gap:20px;flex:1;min-width:0;height:100%;overflow:hidden}
+.xy-item-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px;line-height:22px;font-weight:500;color:#001126}
+.xy-item-name.done{text-decoration:line-through;color:#788596}
+.xy-item-main image{width:30px;height:30px;border:2px solid #fff;border-radius:50%;flex:none}
+.xy-confirm-name,.xy-reviewed{font-size:12px;line-height:16px;color:#75869b}
+.xy-reviewed{flex:none;color:#438fe8}
+.xy-item-star,.xy-item-more{display:flex;align-items:center;justify-content:center;position:relative;flex:none;width:30px;min-width:30px;height:44px;padding:0;background:transparent}
+.xy-item-star:before,.xy-item-more:before{content:'';position:absolute;inset:0 -7px}
+.xy-item-star image,.xy-item-more image{width:30px;height:30px}
+.xy-pop-menu{position:absolute;right:0;top:40px;z-index:25;min-width:110px;padding:6px;border:1px solid #fff;border-radius:12px;background:rgba(255,255,255,.92);box-shadow:0 12px 24px rgba(39,51,64,.14);backdrop-filter:blur(12px)}
+.xy-pop-menu button{width:100%;min-height:44px;padding:0 8px;border-radius:8px;background:transparent;text-align:center;font-size:14px;color:#001126}
+.xy-pop-menu button:last-child{color:#fa4545}
+.xy-list-group.menu-open,.xy-outfit-group.menu-open,.xy-outfit-piece.menu-open{position:relative;z-index:20}
+.xy-item-menu{right:0;top:42px}
+.xy-list-no-groups{padding:60px 20px;text-align:center;color:#405371}.xy-list-no-groups text{display:block}.xy-list-no-groups button{display:block;margin:24px auto 0;padding:10px 18px;border-radius:14px;background:#fff}
+.xy-list-fixed-add{position:fixed;left:50%;bottom:calc(112px + var(--safe-bottom,env(safe-area-inset-bottom)));z-index:29;display:flex;align-items:center;justify-content:center;gap:8px;transform:translateX(-50%);width:160px;height:52px;padding:0;border:1.5px solid transparent;border-radius:16px;background:linear-gradient(298deg,#e7fff0,#e6f1ff) padding-box,linear-gradient(110deg,#6daeff,#d9b3ff,#baff71,#5affbd) border-box;box-shadow:0 12px 20px rgba(39,51,64,.16);font-size:16px;font-weight:500;color:#001126}
+.xy-list-fixed-add image{width:20px;height:20px}
+.xy-list-fixed-add:active{transform:translateX(-50%) scale(.97)}
+.xy-outfit-dates{margin-top:28px}
+.xy-outfit-date-title{margin-top:32px}
+.xy-list-page .rg-date .rg-day{font-family:'Konkhmer Sleokchher',Arial,sans-serif;font-size:24px;font-weight:400}
+.xy-list-page .rg-date-title{line-height:24px}
+.xy-list-page .rg-date-title image{left:calc(100% - 246.5px);width:264px;height:64px;top:-10.5px;max-width:none}
+.xy-outfit-weather{display:flex;align-items:center;gap:8px;height:52px;margin-top:24px;padding:8px;border:1px solid rgba(255,255,255,.2);border-radius:16px;background:rgba(255,255,255,.6);backdrop-filter:blur(10px);font-size:14px;white-space:nowrap}
+.xy-weather-place{display:flex;align-items:center;justify-content:center;gap:8px;flex:none;min-width:0;height:48px;padding:6px 12px 6px 6px;border-radius:12px;background:radial-gradient(58.57% 54.57% at 50% 50%,#fffdce 0,rgba(255,243,210,0) 100%),linear-gradient(180deg,#008bf4,rgba(5,147,255,.98) 29%,rgba(5,147,255,.2));color:#fff;overflow:hidden;font-weight:800}
+.xy-weather-place text{max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.xy-weather-place image{width:36px;height:36px;flex:none}
+.xy-weather-reading{display:flex;align-items:center;justify-content:center;gap:4px;flex:1;min-width:0;height:48px;padding:0 4px;border:1px solid rgba(255,255,255,.2);border-radius:12px;background:rgba(255,255,255,.2)}
+.xy-weather-reading image{width:20px;height:20px;flex:none}
+.xy-list-page .xy-weather-number{font-family:'Konkhmer Sleokchher',Arial,sans-serif;font-size:16px;font-weight:400}
+.xy-outfit-groups{margin-top:24px}
+.xy-outfit-group{position:relative;margin-bottom:16px;padding:11px;border:1px solid rgba(255,255,255,.2);border-radius:16px;background:rgba(255,255,255,.9);backdrop-filter:blur(10px)}
+.xy-outfit-head{position:relative;display:flex;align-items:center;gap:16px;height:52px;padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid rgba(0,0,0,.1)}
+.xy-outfit-head>text{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:18px;line-height:25px;font-weight:600}
+.xy-outfit-group-more{display:flex;align-items:center;justify-content:center;position:relative;width:36px;min-width:36px;height:36px;min-height:36px!important;padding:2px;background:rgba(255,255,255,.3);border:1px solid rgba(0,17,38,.1);border-radius:50%}
+.xy-outfit-group-more:before{content:'';position:absolute;inset:-4px}
+.xy-outfit-group-more image{width:30px;height:30px}
+.xy-outfit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.xy-outfit-piece{position:relative;min-width:0;height:200px;border-radius:12px;background:rgba(63,90,135,.06)}
+.xy-piece-media{position:relative;display:block;height:162px;border-radius:12px 12px 0 0;overflow:hidden;background:#e7edf4}
+.xy-piece-placeholder{width:100%;height:100%}
+.xy-piece-media>image{position:absolute;left:0;top:0;width:100%;height:200px;max-width:none}
+.xy-piece-placeholder{display:flex;align-items:center;justify-content:center;background:linear-gradient(140deg,#dae8f8,#eff5fc)}
+.xy-piece-placeholder image{width:80px;height:80px;opacity:.5}
+.xy-piece-type{position:absolute;top:8px;left:8px;height:28px;padding:4px 8px;border-radius:8px;background:rgba(255,255,255,.3);backdrop-filter:blur(10px);color:#fff;font-size:14px;line-height:20px}
+.xy-piece-bottom{display:flex;align-items:center;justify-content:space-between;height:38px;gap:8px;padding:0 12px;border-top:1px solid rgba(0,0,0,.2);border-radius:0 0 12px 12px;background:#fff;font-size:14px;line-height:20px}
+.xy-piece-bottom>text{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.xy-piece-bottom button{position:relative;display:flex;align-items:center;justify-content:center;height:36px;min-height:36px!important;width:30px;min-width:30px;padding:0;background:transparent}
+.xy-piece-bottom button:before{content:'';position:absolute;inset:-4px -7px}
+.xy-piece-bottom button image{width:30px;height:30px}
+.xy-piece-menu{top:auto;bottom:38px;right:0}
+.xy-outfit-empty{display:flex;align-items:center;justify-content:center;height:280px;margin-top:24px;border:1px solid rgba(255,255,255,.2);border-radius:16px;background:rgba(255,255,255,.3);backdrop-filter:blur(10px);font-size:16px;color:#001126}
+.theme-list .guest-banner,.theme-list .notice{position:relative;z-index:2;margin:12px 16px 0}
+@media(max-width:374px){.xy-list-header{gap:10px}.xy-list-mode{gap:12px}.xy-weather-place{gap:4px;padding-right:6px}.xy-weather-place text{max-width:58px}.xy-weather-reading{font-size:12px;gap:2px;padding:0}.xy-weather-reading image{width:16px;height:16px}.xy-category-label{gap:10px}}
+@media(prefers-reduced-motion:reduce){.xy-progress-track>view{transition:none}}
+.reduced-motion .xy-progress-track>view{transition:none}
+
+.xy-category-label[disabled]{color:#001126;background:transparent;opacity:1}
+
+.xy-weather-sun{position:relative;display:block;flex:none;width:36px;height:36px}.xy-weather-place .xy-weather-sun image{position:absolute;left:50%;top:50%;width:74.14px;height:73.13px;max-width:none;transform:translate(-50%,-50%)}
+
+.xy-weather-condition{width:36px;max-height:36px;font-size:12px;line-height:16px;overflow:hidden;white-space:normal;text-align:center}
+
+/* Latest weather strip: plain place/condition, sun, low-to-high range. */
+.xy-outfit-weather{gap:28px;padding:12px;border-color:#ffffffcc}.xy-weather-place{flex:1;justify-content:flex-start;gap:12px;height:28px;padding:0;background:none;color:#001126;font-weight:400;border-radius:0}.xy-weather-place text{max-width:86px}.xy-weather-place text:last-child{font-weight:500}.xy-weather-sun{width:28px;height:28px}.xy-weather-sun image{width:58px;height:58px;max-width:none;position:relative;left:-15px;top:-15px}.xy-weather-range{display:flex;align-items:center;gap:6px;font-size:14px;line-height:20px}.xy-weather-track{width:88px;height:12px;border:1px solid white;border-radius:30px;background:linear-gradient(90deg,#b8f6ff,#77e494,#f8e357,#ff982e);position:relative}.xy-weather-track>view{position:absolute;left:40%;top:-1px;height:12px;width:8px;border:1px solid white;border-radius:4px;background:#fff8}
+@media(max-width:374px){.xy-outfit-weather{gap:12px}.xy-weather-place{gap:6px}.xy-weather-track{width:74px}}
+.xy-weather-place text:first-child{max-width:86px}.xy-outfit-weather .xy-weather-place{overflow:visible}
+
+.xy-outfit-group:last-child{margin-bottom:0}

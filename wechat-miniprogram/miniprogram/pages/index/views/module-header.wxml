@@ -1,0 +1,5 @@
+<view wx:if="{{!loading && !error}}" class="system-header" style="padding-top:{{systemContentTop}}px;--header-progress:{{headerScrollProgress || 0}}" bindtap="closeHeaderMenus">
+ <view class="system-header-blur"></view>
+ <view wx:if="{{tab === 'today' || !trip}}" class="mg-top"><view class="mg-brand"><image src="/assets/mastergo/svg_3b35dfdc.svg" mode="aspectFit"/><text>向野清单</text></view><view class="mg-theme"><view class="selected"><image src="/assets/mastergo/svg_a4153cd7.svg" mode="aspectFit"/></view><view><image src="/assets/mastergo/svg_242f662f.svg" mode="aspectFit"/></view></view><include src="account-entry.wxml" /></view>
+ <view wx:else class="rg-header"><text class="rg-greeting">{{routeGreeting}}，{{account.nickname}}</text><view class="rg-theme"><view class="selected"><image src="/assets/mastergo-route/planning/svg_eb172eb8.svg" mode="aspectFit"/></view><view><image src="/assets/mastergo-route/planning/svg_0b2c12a8.svg" mode="aspectFit"/></view></view><include src="account-entry.wxml" /></view>
+</view>

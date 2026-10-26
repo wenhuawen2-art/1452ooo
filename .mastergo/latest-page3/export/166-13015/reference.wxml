@@ -1,0 +1,1078 @@
+<view
+  data-node-id="166:13015"
+  data-name="团队清单-亮色"
+  class="reference-style-1">
+  <view
+    data-node-id="166:13467"
+    data-name="圆形 2"
+    class="reference-style-2">
+    <image src="./asset/icons/svg_a7d2aa9f.svg" />
+  </view>
+  <view
+    data-node-id="166:13055"
+    data-name="容器 50441"
+    class="reference-style-3">
+    <view
+      data-node-id="166:13056"
+      data-name="容器 50439"
+      class="reference-style-4">
+      <view
+        data-node-id="166:13069"
+        data-name="容器 50443"
+        class="reference-style-5">
+        <image
+          src="./asset/icons/svg_f4581768.svg"
+          data-node-id="166:13070"
+          data-name="容器"
+          class="reference-style-6" />
+        <text
+          data-node-id="166:13081"
+          data-name="物品清单"
+          class="reference-style-7">
+          物品清单
+        </text>
+      </view>
+      <view
+        data-node-id="166:13086"
+        data-name="容器"
+        class="reference-style-8">
+        <image src="./asset/icons/svg_e748a776.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:13095"
+      data-name="容器 50440"
+      class="reference-style-9">
+      <view
+        data-node-id="166:13096"
+        data-name="容器"
+        class="reference-style-10">
+        <image src="./asset/icons/svg_f40f06bc.svg" />
+      </view>
+      <view
+        data-node-id="166:13104"
+        data-name="容器 50444"
+        class="reference-style-11">
+        <image
+          src="./asset/icons/svg_cf9b9037.svg"
+          data-node-id="166:13110"
+          data-name="容器"
+          class="reference-style-12" />
+        <text
+          data-node-id="166:13105"
+          data-name="每日穿搭"
+          class="reference-style-13">
+          每日穿搭
+        </text>
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:13020"
+    data-name="容器 50313"
+    class="reference-style-14">
+    <view
+      data-node-id="166:13026"
+      data-name="容器 50306"
+      class="reference-style-15">
+      <text
+        data-node-id="166:13041"
+        data-name="早上好，Zero"
+        class="reference-style-16">
+        早上好，Zero
+      </text>
+    </view>
+    <view
+      data-node-id="166:13045"
+      data-name="容器 50315"
+      class="reference-style-17">
+      <view
+        data-node-id="166:13052"
+        data-name="容器 50316"
+        class="reference-style-18">
+        <view
+          data-node-id="166:13053"
+          data-name="容器"
+          class="reference-style-19">
+          <image src="./asset/icons/svg_a4153cd7.svg" />
+        </view>
+      </view>
+      <view
+        data-node-id="166:13046"
+        data-name="容器 50317"
+        class="reference-style-20">
+        <view
+          data-node-id="166:13047"
+          data-name="容器"
+          class="reference-style-21">
+          <image src="./asset/icons/svg_0b2c12a8.svg" />
+        </view>
+      </view>
+    </view>
+    <view
+      data-node-id="166:13021"
+      data-name="容器 50312"
+      class="reference-style-22">
+      <view
+        data-node-id="166:13022"
+        data-name="容器"
+        class="reference-style-23">
+        <image src="./asset/icons/svg_7f2095aa.svg" />
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:13550"
+    data-name="容器 50416"
+    class="reference-style-24">
+    <view
+      data-node-id="166:13551"
+      data-name="容器 50419"
+      class="reference-style-25">
+      <view
+        data-node-id="166:13557"
+        data-name="容器 50417"
+        class="reference-style-26">
+        <text
+          data-node-id="166:13558"
+          data-name="团队准备"
+          class="reference-style-27">
+          团队准备
+        </text>
+      </view>
+      <view
+        data-node-id="166:13552"
+        data-name="容器 50418"
+        class="reference-style-28">
+        <text
+          data-node-id="166:13553"
+          data-name="我的准备"
+          class="reference-style-29">
+          我的准备
+        </text>
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:13468"
+    data-name="组 51045"
+    class="reference-style-30">
+    <view
+      data-node-id="166:13469"
+      data-name="组 51039"
+      class="reference-style-31">
+      <text
+        data-node-id="166:13470"
+        data-name="75"
+        class="reference-style-32">
+        75
+      </text>
+      <text
+        data-node-id="166:13476"
+        data-name="%"
+        class="reference-style-33">
+        %
+      </text>
+    </view>
+  </view>
+  <view
+    data-node-id="166:13562"
+    data-name="容器 50321"
+    class="reference-style-34">
+    <view
+      data-node-id="166:13568"
+      data-name="容器 50327"
+      class="reference-style-35">
+      <text
+        data-node-id="166:13569"
+        data-name="团队行囊准备"
+        class="reference-style-36">
+        团队行囊准备
+      </text>
+    </view>
+  </view>
+  <view
+    data-node-id="166:13539"
+    data-name="容器 50323"
+    class="reference-style-37">
+    <image
+      src="./asset/icons/svg_09acd1ff.svg"
+      data-node-id="166:13540"
+      data-name="容器 50322"
+      class="reference-style-38" />
+    <text
+      data-node-id="166:13546"
+      data-name="进度"
+      class="reference-style-39">
+      进度
+    </text>
+  </view>
+  <view
+    data-node-id="166:13537"
+    data-name="容器 50342"
+    class="reference-style-40">
+    <image src="./asset/icons/svg_ccddb370.svg" />
+  </view>
+  <view
+    data-node-id="166:13114"
+    data-name="容器 50442"
+    class="reference-style-41">
+    <text
+      data-node-id="166:13115"
+      data-name="31"
+      class="reference-style-42">
+      31
+    </text>
+    <text
+      data-node-id="166:13120"
+      data-name="/60项"
+      class="reference-style-43">
+      /60项
+    </text>
+  </view>
+  <view
+    data-node-id="166:13126"
+    data-name="容器 50319"
+    class="reference-style-44">
+    <view
+      data-node-id="166:13155"
+      data-name="容器 50464"
+      class="reference-style-45">
+      <view
+        data-node-id="166:13156"
+        data-name="容器 50462"
+        class="reference-style-46">
+        <view
+          data-node-id="166:13157"
+          data-name="容器 50459"
+          class="reference-style-47">
+          <view
+            data-node-id="166:13166"
+            data-name="容器 50446"
+            class="reference-style-48">
+            <text
+              data-node-id="166:13171"
+              data-name="携带物品"
+              class="reference-style-49">
+              携带物品
+            </text>
+            <view
+              data-node-id="166:13175"
+              data-name="容器 50320"
+              class="reference-style-50">
+              <text
+                data-node-id="166:13178"
+                data-name="4"
+                class="reference-style-51">
+                4
+              </text>
+            </view>
+            <p
+              data-node-id="166:13167"
+              data-name="常"
+              class="reference-style-52">
+              常
+            </p>
+          </view>
+          <view
+            data-node-id="166:13158"
+            data-name="容器 50331"
+            class="reference-style-53">
+            <view
+              data-node-id="166:13159"
+              data-name="容器 50447"
+              class="reference-style-54">
+              <image
+                src="./asset/icons/svg_116003db.svg"
+                data-node-id="166:13160"
+                data-name="容器"
+                class="reference-style-55" />
+              <text
+                data-node-id="166:13162"
+                data-name="新增"
+                class="reference-style-56">
+                新增
+              </text>
+            </view>
+          </view>
+        </view>
+        <view
+          data-node-id="166:13183"
+          data-name="容器 50457"
+          class="reference-style-57">
+          <view
+            data-node-id="166:13239"
+            data-name="容器 50448"
+            class="reference-style-58">
+            <view
+              data-node-id="166:13240"
+              data-name="容器 50456"
+              class="reference-style-59">
+              <view
+                data-node-id="166:13249"
+                data-name="容器 50455"
+                class="reference-style-60">
+                <view
+                  data-node-id="166:13254"
+                  data-name="容器 50453"
+                  class="reference-style-61"></view>
+                <p
+                  data-node-id="166:13250"
+                  data-name="墨镜"
+                  class="reference-style-62">
+                  墨镜
+                </p>
+              </view>
+              <view
+                data-node-id="166:13241"
+                data-name="容器 50454"
+                class="reference-style-63">
+                <image
+                  src="./asset/icons/svg_423ebcf7.svg"
+                  data-node-id="166:13242"
+                  data-name="容器"
+                  class="reference-style-64" />
+                <image
+                  src="./asset/icons/svg_e722cee2.svg"
+                  data-node-id="166:13244"
+                  data-name="容器"
+                  class="reference-style-65" />
+              </view>
+            </view>
+          </view>
+          <view
+            data-node-id="166:13207"
+            data-name="容器 50453"
+            class="reference-style-66">
+            <view
+              data-node-id="166:13208"
+              data-name="容器 50456"
+              class="reference-style-67">
+              <view
+                data-node-id="166:13219"
+                data-name="容器 50458"
+                class="reference-style-68">
+                <view
+                  data-node-id="166:13220"
+                  data-name="容器 50455"
+                  class="reference-style-69">
+                  <view
+                    data-node-id="166:13226"
+                    data-name="容器 50453"
+                    class="reference-style-70">
+                    <view
+                      data-node-id="166:13231"
+                      data-name="容器"
+                      class="reference-style-71">
+                      <image src="./asset/icons/svg_fa47f8a6.svg" />
+                    </view>
+                  </view>
+                  <text
+                    data-node-id="166:13221"
+                    data-name="墨镜"
+                    class="reference-style-72">
+                    墨镜
+                  </text>
+                </view>
+                <view
+                  data-node-id="166:13233"
+                  data-name="容器 50359"
+                  class="reference-style-73">
+                  <image
+                    data-node-id="166:13234"
+                    data-name="image"
+                    class="reference-style-74"
+                    src="./asset/images/image-166-13234.png"
+                    title="image" />
+                </view>
+              </view>
+              <p
+                data-node-id="166:13235"
+                data-name="31"
+                class="reference-style-75">
+                31
+              </p>
+              <view
+                data-node-id="166:13209"
+                data-name="容器 50454"
+                class="reference-style-76">
+                <image
+                  src="./asset/icons/svg_423ebcf7.svg"
+                  data-node-id="166:13215"
+                  data-name="容器"
+                  class="reference-style-77" />
+                <image
+                  src="./asset/icons/svg_e722cee2.svg"
+                  data-node-id="166:13210"
+                  data-name="容器"
+                  class="reference-style-78" />
+              </view>
+            </view>
+          </view>
+          <view
+            data-node-id="166:13255"
+            data-name="容器 50454"
+            class="reference-style-79">
+            <view
+              data-node-id="166:13256"
+              data-name="容器 50456"
+              class="reference-style-80">
+              <view
+                data-node-id="166:13265"
+                data-name="容器 50455"
+                class="reference-style-81">
+                <view
+                  data-node-id="166:13266"
+                  data-name="容器 50453"
+                  class="reference-style-82"></view>
+                <p
+                  data-node-id="166:13267"
+                  data-name="饮用水与纸巾"
+                  class="reference-style-83">
+                  饮用水与纸巾
+                </p>
+              </view>
+              <view
+                data-node-id="166:13257"
+                data-name="容器 50454"
+                class="reference-style-84">
+                <image
+                  src="./asset/icons/svg_9121e71e.svg"
+                  data-node-id="166:13258"
+                  data-name="容器"
+                  class="reference-style-85" />
+                <image
+                  src="./asset/icons/svg_4adde697.svg"
+                  data-node-id="166:13260"
+                  data-name="容器"
+                  class="reference-style-86" />
+              </view>
+            </view>
+          </view>
+          <view
+            data-node-id="166:13184"
+            data-name="容器 50455"
+            class="reference-style-87">
+            <view
+              data-node-id="166:13185"
+              data-name="容器 50456"
+              class="reference-style-88">
+              <view
+                data-node-id="166:13186"
+                data-name="容器 50455"
+                class="reference-style-89">
+                <view
+                  data-node-id="166:13192"
+                  data-name="容器 50453"
+                  class="reference-style-90"></view>
+                <p
+                  data-node-id="166:13187"
+                  data-name="湿巾"
+                  class="reference-style-91">
+                  湿巾
+                </p>
+              </view>
+              <view
+                data-node-id="166:13195"
+                data-name="容器 50454"
+                class="reference-style-92">
+                <image
+                  src="./asset/icons/svg_9121e71e.svg"
+                  data-node-id="166:13196"
+                  data-name="容器"
+                  class="reference-style-93" />
+                <image
+                  src="./asset/icons/svg_e722cee2.svg"
+                  data-node-id="166:13202"
+                  data-name="容器"
+                  class="reference-style-94" />
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view
+        data-node-id="166:13271"
+        data-name="容器 50461"
+        class="reference-style-95">
+        <view
+          data-node-id="166:13362"
+          data-name="容器 50459"
+          class="reference-style-96">
+          <view
+            data-node-id="166:13371"
+            data-name="容器 50446"
+            class="reference-style-97">
+            <text
+              data-node-id="166:13381"
+              data-name="常用药品与急救"
+              class="reference-style-98">
+              常用药品与急救
+            </text>
+            <view
+              data-node-id="166:13376"
+              data-name="容器 50320"
+              class="reference-style-99">
+              <text
+                data-node-id="166:13377"
+                data-name="5"
+                class="reference-style-100">
+                5
+              </text>
+            </view>
+            <p
+              data-node-id="166:13372"
+              data-name="常"
+              class="reference-style-101">
+              常
+            </p>
+          </view>
+          <view
+            data-node-id="166:13363"
+            data-name="容器 50331"
+            class="reference-style-102">
+            <view
+              data-node-id="166:13364"
+              data-name="容器 50447"
+              class="reference-style-103">
+              <image
+                src="./asset/icons/svg_116003db.svg"
+                data-node-id="166:13365"
+                data-name="容器"
+                class="reference-style-104" />
+              <text
+                data-node-id="166:13367"
+                data-name="新增"
+                class="reference-style-105">
+                新增
+              </text>
+            </view>
+          </view>
+        </view>
+        <view
+          data-node-id="166:13272"
+          data-name="容器 50457"
+          class="reference-style-106">
+          <view
+            data-node-id="166:13346"
+            data-name="容器 50448"
+            class="reference-style-107">
+            <view
+              data-node-id="166:13347"
+              data-name="容器 50456"
+              class="reference-style-108">
+              <view
+                data-node-id="166:13356"
+                data-name="容器 50455"
+                class="reference-style-109">
+                <view
+                  data-node-id="166:13361"
+                  data-name="容器 50453"
+                  class="reference-style-110"></view>
+                <p
+                  data-node-id="166:13357"
+                  data-name="个人处方药"
+                  class="reference-style-111">
+                  个人处方药
+                </p>
+              </view>
+              <view
+                data-node-id="166:13348"
+                data-name="容器 50454"
+                class="reference-style-112">
+                <image
+                  src="./asset/icons/svg_423ebcf7.svg"
+                  data-node-id="166:13349"
+                  data-name="容器"
+                  class="reference-style-113" />
+                <image
+                  src="./asset/icons/svg_4adde697.svg"
+                  data-node-id="166:13351"
+                  data-name="容器"
+                  class="reference-style-114" />
+              </view>
+            </view>
+          </view>
+          <view
+            data-node-id="166:13305"
+            data-name="容器 50453"
+            class="reference-style-115">
+            <view
+              data-node-id="166:13306"
+              data-name="容器 50456"
+              class="reference-style-116">
+              <view
+                data-node-id="166:13311"
+                data-name="容器 50458"
+                class="reference-style-117">
+                <view
+                  data-node-id="166:13314"
+                  data-name="容器 50455"
+                  class="reference-style-118">
+                  <view
+                    data-node-id="166:13315"
+                    data-name="容器 50453"
+                    class="reference-style-119">
+                    <view
+                      data-node-id="166:13316"
+                      data-name="容器"
+                      class="reference-style-120">
+                      <image src="./asset/icons/svg_fa47f8a6.svg" />
+                    </view>
+                  </view>
+                  <text
+                    data-node-id="166:13318"
+                    data-name="创可贴"
+                    class="reference-style-121">
+                    创可贴
+                  </text>
+                </view>
+                <view
+                  data-node-id="166:13312"
+                  data-name="容器 50359"
+                  class="reference-style-122">
+                  <image
+                    data-node-id="166:13313"
+                    data-name="image"
+                    class="reference-style-123"
+                    src="./asset/images/image-166-13313.png"
+                    title="image" />
+                </view>
+              </view>
+              <p
+                data-node-id="166:13307"
+                data-name="31"
+                class="reference-style-124">
+                31
+              </p>
+              <view
+                data-node-id="166:13322"
+                data-name="容器 50454"
+                class="reference-style-125">
+                <image
+                  src="./asset/icons/svg_423ebcf7.svg"
+                  data-node-id="166:13328"
+                  data-name="容器"
+                  class="reference-style-126" />
+                <image
+                  src="./asset/icons/svg_4adde697.svg"
+                  data-node-id="166:13323"
+                  data-name="容器"
+                  class="reference-style-127" />
+              </view>
+            </view>
+          </view>
+          <view
+            data-node-id="166:13330"
+            data-name="容器 50454"
+            class="reference-style-128">
+            <view
+              data-node-id="166:13331"
+              data-name="容器 50456"
+              class="reference-style-129">
+              <view
+                data-node-id="166:13332"
+                data-name="容器 50455"
+                class="reference-style-130">
+                <view
+                  data-node-id="166:13333"
+                  data-name="容器 50453"
+                  class="reference-style-131"></view>
+                <p
+                  data-node-id="166:13334"
+                  data-name="布洛芬"
+                  class="reference-style-132">
+                  布洛芬
+                </p>
+              </view>
+              <view
+                data-node-id="166:13338"
+                data-name="容器 50454"
+                class="reference-style-133">
+                <image
+                  src="./asset/icons/svg_9121e71e.svg"
+                  data-node-id="166:13344"
+                  data-name="容器"
+                  class="reference-style-134" />
+                <image
+                  src="./asset/icons/svg_e722cee2.svg"
+                  data-node-id="166:13339"
+                  data-name="容器"
+                  class="reference-style-135" />
+              </view>
+            </view>
+          </view>
+          <view
+            data-node-id="166:13289"
+            data-name="容器 50455"
+            class="reference-style-136">
+            <view
+              data-node-id="166:13290"
+              data-name="容器 50456"
+              class="reference-style-137">
+              <view
+                data-node-id="166:13299"
+                data-name="容器 50455"
+                class="reference-style-138">
+                <view
+                  data-node-id="166:13300"
+                  data-name="容器 50453"
+                  class="reference-style-139"></view>
+                <p
+                  data-node-id="166:13301"
+                  data-name="晕车药"
+                  class="reference-style-140">
+                  晕车药
+                </p>
+              </view>
+              <view
+                data-node-id="166:13291"
+                data-name="容器 50454"
+                class="reference-style-141">
+                <image
+                  src="./asset/icons/svg_9121e71e.svg"
+                  data-node-id="166:13297"
+                  data-name="容器"
+                  class="reference-style-142" />
+                <image
+                  src="./asset/icons/svg_e722cee2.svg"
+                  data-node-id="166:13292"
+                  data-name="容器"
+                  class="reference-style-143" />
+              </view>
+            </view>
+          </view>
+          <view
+            data-node-id="166:13273"
+            data-name="容器 50456"
+            class="reference-style-144">
+            <view
+              data-node-id="166:13274"
+              data-name="容器 50456"
+              class="reference-style-145">
+              <view
+                data-node-id="166:13283"
+                data-name="容器 50455"
+                class="reference-style-146">
+                <view
+                  data-node-id="166:13284"
+                  data-name="容器 50453"
+                  class="reference-style-147"></view>
+                <p
+                  data-node-id="166:13285"
+                  data-name="感冒药"
+                  class="reference-style-148">
+                  感冒药
+                </p>
+              </view>
+              <view
+                data-node-id="166:13275"
+                data-name="容器 50454"
+                class="reference-style-149">
+                <image
+                  src="./asset/icons/svg_9121e71e.svg"
+                  data-node-id="166:13281"
+                  data-name="容器"
+                  class="reference-style-150" />
+                <image
+                  src="./asset/icons/svg_e722cee2.svg"
+                  data-node-id="166:13276"
+                  data-name="容器"
+                  class="reference-style-151" />
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view
+        data-node-id="166:13385"
+        data-name="容器 50463"
+        class="reference-style-152">
+        <view
+          data-node-id="166:13386"
+          data-name="容器 50459"
+          class="reference-style-153">
+          <view
+            data-node-id="166:13395"
+            data-name="容器 50446"
+            class="reference-style-154">
+            <text
+              data-node-id="166:13396"
+              data-name="车辆出发检查"
+              class="reference-style-155">
+              车辆出发检查
+            </text>
+            <view
+              data-node-id="166:13404"
+              data-name="容器 50320"
+              class="reference-style-156">
+              <text
+                data-node-id="166:13405"
+                data-name="3"
+                class="reference-style-157">
+                3
+              </text>
+            </view>
+            <p
+              data-node-id="166:13400"
+              data-name="常"
+              class="reference-style-158">
+              常
+            </p>
+          </view>
+          <view
+            data-node-id="166:13387"
+            data-name="容器 50331"
+            class="reference-style-159">
+            <view
+              data-node-id="166:13388"
+              data-name="容器 50447"
+              class="reference-style-160">
+              <image
+                src="./asset/icons/svg_116003db.svg"
+                data-node-id="166:13393"
+                data-name="容器"
+                class="reference-style-161" />
+              <text
+                data-node-id="166:13389"
+                data-name="新增"
+                class="reference-style-162">
+                新增
+              </text>
+            </view>
+          </view>
+        </view>
+        <view
+          data-node-id="166:13409"
+          data-name="容器 50457"
+          class="reference-style-163">
+          <view
+            data-node-id="166:13435"
+            data-name="容器 50448"
+            class="reference-style-164">
+            <view
+              data-node-id="166:13436"
+              data-name="容器 50456"
+              class="reference-style-165">
+              <view
+                data-node-id="166:13445"
+                data-name="容器 50455"
+                class="reference-style-166">
+                <view
+                  data-node-id="166:13450"
+                  data-name="容器 50453"
+                  class="reference-style-167"></view>
+                <p
+                  data-node-id="166:13446"
+                  data-name="轮胎胎压"
+                  class="reference-style-168">
+                  轮胎胎压
+                </p>
+              </view>
+              <view
+                data-node-id="166:13437"
+                data-name="容器 50454"
+                class="reference-style-169">
+                <image
+                  src="./asset/icons/svg_423ebcf7.svg"
+                  data-node-id="166:13443"
+                  data-name="容器"
+                  class="reference-style-170" />
+                <image
+                  src="./asset/icons/svg_e722cee2.svg"
+                  data-node-id="166:13438"
+                  data-name="容器"
+                  class="reference-style-171" />
+              </view>
+            </view>
+          </view>
+          <view
+            data-node-id="166:13410"
+            data-name="容器 50453"
+            class="reference-style-172">
+            <view
+              data-node-id="166:13411"
+              data-name="容器 50456"
+              class="reference-style-173">
+              <view
+                data-node-id="166:13424"
+                data-name="容器 50458"
+                class="reference-style-174">
+                <view
+                  data-node-id="166:13425"
+                  data-name="容器 50455"
+                  class="reference-style-175">
+                  <view
+                    data-node-id="166:13426"
+                    data-name="容器 50453"
+                    class="reference-style-176">
+                    <view
+                      data-node-id="166:13427"
+                      data-name="容器"
+                      class="reference-style-177">
+                      <image src="./asset/icons/svg_fa47f8a6.svg" />
+                    </view>
+                  </view>
+                  <text
+                    data-node-id="166:13429"
+                    data-name="蓄电池与充电"
+                    class="reference-style-178">
+                    蓄电池与充电
+                  </text>
+                </view>
+                <view
+                  data-node-id="166:13433"
+                  data-name="容器 50359"
+                  class="reference-style-179">
+                  <image
+                    data-node-id="166:13434"
+                    data-name="image"
+                    class="reference-style-180"
+                    src="./asset/images/image-166-13434.png"
+                    title="image" />
+                </view>
+              </view>
+              <p
+                data-node-id="166:13412"
+                data-name="31"
+                class="reference-style-181">
+                31
+              </p>
+              <view
+                data-node-id="166:13416"
+                data-name="容器 50454"
+                class="reference-style-182">
+                <image
+                  src="./asset/icons/svg_423ebcf7.svg"
+                  data-node-id="166:13422"
+                  data-name="容器"
+                  class="reference-style-183" />
+                <image
+                  src="./asset/icons/svg_4adde697.svg"
+                  data-node-id="166:13417"
+                  data-name="容器"
+                  class="reference-style-184" />
+              </view>
+            </view>
+          </view>
+          <view
+            data-node-id="166:13451"
+            data-name="容器 50454"
+            class="reference-style-185">
+            <view
+              data-node-id="166:13452"
+              data-name="容器 50456"
+              class="reference-style-186">
+              <view
+                data-node-id="166:13461"
+                data-name="容器 50455"
+                class="reference-style-187">
+                <view
+                  data-node-id="166:13466"
+                  data-name="容器 50453"
+                  class="reference-style-188"></view>
+                <p
+                  data-node-id="166:13462"
+                  data-name="雨刷"
+                  class="reference-style-189">
+                  雨刷
+                </p>
+              </view>
+              <view
+                data-node-id="166:13453"
+                data-name="容器 50454"
+                class="reference-style-190">
+                <image
+                  src="./asset/icons/svg_9121e71e.svg"
+                  data-node-id="166:13459"
+                  data-name="容器"
+                  class="reference-style-191" />
+                <image
+                  src="./asset/icons/svg_4adde697.svg"
+                  data-node-id="166:13454"
+                  data-name="容器"
+                  class="reference-style-192" />
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view
+      data-node-id="166:13131"
+      data-name="容器 50443"
+      class="reference-style-193">
+      <image
+        src="./asset/icons/svg_d6845368.svg"
+        data-node-id="166:13148"
+        data-name="容器"
+        class="reference-style-194" />
+    </view>
+  </view>
+  <view
+    data-node-id="166:13480"
+    data-name="容器 50314"
+    class="reference-style-195">
+    <view
+      data-node-id="166:13508"
+      data-name="容器 50308"
+      class="reference-style-196">
+      <view
+        data-node-id="166:13509"
+        data-name="容器 50305"
+        class="reference-style-197">
+        <image src="./asset/icons/svg_f5c0d9d1.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:13520"
+      data-name="容器 50309"
+      class="reference-style-198">
+      <view
+        data-node-id="166:13521"
+        data-name="容器"
+        class="reference-style-199">
+        <image src="./asset/icons/svg_8d42f63b.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:13481"
+      data-name="容器 50339"
+      class="reference-style-200">
+      <view
+        data-node-id="166:13486"
+        data-name="组 51041"
+        class="reference-style-201">
+        <image src="./asset/icons/svg_88a15e5a.svg" />
+      </view>
+      <view
+        data-node-id="166:13496"
+        data-name="容器"
+        class="reference-style-202">
+        <image src="./asset/icons/svg_d8229fcc.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:13523"
+      data-name="容器 50310"
+      class="reference-style-203">
+      <view
+        data-node-id="166:13524"
+        data-name="容器 50318"
+        class="reference-style-204">
+        <image src="./asset/icons/svg_b5625062.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:13517"
+      data-name="容器 50312"
+      class="reference-style-205">
+      <view
+        data-node-id="166:13518"
+        data-name="容器"
+        class="reference-style-206">
+        <image src="./asset/icons/svg_0634b27b.svg" />
+      </view>
+    </view>
+  </view>
+</view>

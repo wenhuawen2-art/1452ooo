@@ -1,13 +1,16 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/profile/index",
+    "pages/weather/index",
+    "pages/editor/index"
   ],
   "window": {
     "navigationBarTitleText": "向野",
-    "navigationBarBackgroundColor": "#eef5ff",
+    "navigationBarBackgroundColor": "#e7f2fd",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#eef5ff",
-    "navigationStyle": "default"
+    "backgroundColor": "#f8fafc",
+    "navigationStyle": "custom"
   },
   "lazyCodeLoading": "requiredComponents",
   "sitemapLocation": "sitemap.json"

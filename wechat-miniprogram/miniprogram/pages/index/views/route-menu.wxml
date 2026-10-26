@@ -1,0 +1,1 @@
+<view class="rg-menu" catchtap="stopBubble"><button bindtap="editRouteEntry">编辑</button><button class="rg-delete" bindtap="deleteRouteEntry">删除</button></view>

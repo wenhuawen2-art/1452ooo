@@ -1,0 +1,1108 @@
+<view
+  data-node-id="166:11762"
+  data-name="记账-统计"
+  class="reference-style-1">
+  <view
+    data-node-id="166:11782"
+    data-name="容器 50313"
+    class="reference-style-2">
+    <view
+      data-node-id="166:11798"
+      data-name="容器 50306"
+      class="reference-style-3">
+      <text
+        data-node-id="166:11813"
+        data-name="早上好，Zero"
+        class="reference-style-4">
+        早上好，Zero
+      </text>
+    </view>
+    <view
+      data-node-id="166:11783"
+      data-name="容器 50315"
+      class="reference-style-5">
+      <view
+        data-node-id="166:11790"
+        data-name="容器 50316"
+        class="reference-style-6">
+        <view
+          data-node-id="166:11791"
+          data-name="容器"
+          class="reference-style-7">
+          <image src="./asset/icons/svg_a4153cd7.svg" />
+        </view>
+      </view>
+      <view
+        data-node-id="166:11784"
+        data-name="容器 50317"
+        class="reference-style-8">
+        <view
+          data-node-id="166:11785"
+          data-name="容器"
+          class="reference-style-9">
+          <image src="./asset/icons/svg_0b2c12a8.svg" />
+        </view>
+      </view>
+    </view>
+    <view
+      data-node-id="166:11793"
+      data-name="容器 50312"
+      class="reference-style-10">
+      <view
+        data-node-id="166:11794"
+        data-name="容器"
+        class="reference-style-11">
+        <image src="./asset/icons/svg_7f2095aa.svg" />
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:11817"
+    data-name="圆形 2"
+    class="reference-style-12">
+    <image src="./asset/icons/svg_a7d2aa9f.svg" />
+  </view>
+  <view
+    data-node-id="166:11818"
+    data-name="组 51045"
+    class="reference-style-13">
+    <view
+      data-node-id="166:11819"
+      data-name="组 51039"
+      class="reference-style-14">
+      <text
+        data-node-id="166:11820"
+        data-name="688.5"
+        class="reference-style-15">
+        688.5
+      </text>
+      <text
+        data-node-id="166:11824"
+        data-name="￥"
+        class="reference-style-16">
+        ￥
+      </text>
+    </view>
+  </view>
+  <view
+    data-node-id="166:12350"
+    data-name="容器 50327"
+    class="reference-style-17">
+    <text
+      data-node-id="166:12357"
+      data-name="旅行账本"
+      class="reference-style-18">
+      旅行账本
+    </text>
+    <view
+      data-node-id="166:12354"
+      data-name="容器 50316"
+      class="reference-style-19">
+      <image
+        src="./asset/icons/svg_aa12c6ee.svg"
+        data-node-id="166:12355"
+        data-name="容器"
+        class="reference-style-20" />
+    </view>
+  </view>
+  <view
+    data-node-id="166:11764"
+    data-name="容器 50323"
+    class="reference-style-21">
+    <image
+      src="./asset/icons/svg_bf1045d6.svg"
+      data-node-id="166:11769"
+      data-name="容器 50322"
+      class="reference-style-22" />
+    <text
+      data-node-id="166:11765"
+      data-name="全行程支出"
+      class="reference-style-23">
+      全行程支出
+    </text>
+  </view>
+  <view
+    data-node-id="166:11828"
+    data-name="容器 50342"
+    class="reference-style-24">
+    <image src="./asset/icons/svg_ccddb370.svg" />
+  </view>
+  <text
+    data-node-id="166:11778"
+    data-name="/1920"
+    class="reference-style-25">
+    /1920
+  </text>
+  <view
+    data-node-id="166:11830"
+    data-name="容器 50416"
+    class="reference-style-26">
+    <view
+      data-node-id="166:11831"
+      data-name="容器 50419"
+      class="reference-style-27">
+      <view
+        data-node-id="166:11837"
+        data-name="容器 50418"
+        class="reference-style-28">
+        <text
+          data-node-id="166:11838"
+          data-name="明细"
+          class="reference-style-29">
+          明细
+        </text>
+      </view>
+      <view
+        data-node-id="166:11842"
+        data-name="容器 50419"
+        class="reference-style-30">
+        <text
+          data-node-id="166:11843"
+          data-name="分账"
+          class="reference-style-31">
+          分账
+        </text>
+      </view>
+      <view
+        data-node-id="166:11832"
+        data-name="容器 50417"
+        class="reference-style-32">
+        <text
+          data-node-id="166:11833"
+          data-name="统计"
+          class="reference-style-33">
+          统计
+        </text>
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:11883"
+    data-name="容器 51450"
+    class="reference-style-34">
+    <view
+      data-node-id="166:11884"
+      data-name="容器 50489"
+      class="reference-style-35">
+      <view
+        data-node-id="166:11885"
+        data-name="容器 50493"
+        class="reference-style-36">
+        <view
+          data-node-id="166:11904"
+          data-name="容器 50490"
+          class="reference-style-37">
+          <view
+            data-node-id="166:11914"
+            data-name="容器 50334"
+            class="reference-style-38">
+            <image
+              src="./asset/icons/svg_4ffd286c.svg"
+              data-node-id="166:11919"
+              data-name="容器"
+              class="reference-style-39" />
+            <text
+              data-node-id="166:11915"
+              data-name="支出"
+              class="reference-style-40">
+              支出
+            </text>
+          </view>
+          <view
+            data-node-id="166:11905"
+            data-name="容器 50486"
+            class="reference-style-41">
+            <text
+              data-node-id="166:11906"
+              data-name="￥"
+              class="reference-style-42">
+              ￥
+            </text>
+            <text
+              data-node-id="166:11910"
+              data-name="668.12"
+              class="reference-style-43">
+              668.12
+            </text>
+          </view>
+        </view>
+        <image
+          src="./asset/icons/svg_af443486.svg"
+          data-node-id="166:11903"
+          data-name="直线 7"
+          class="reference-style-44" />
+        <view
+          data-node-id="166:11886"
+          data-name="容器 50491"
+          class="reference-style-45">
+          <view
+            data-node-id="166:11887"
+            data-name="容器 50334"
+            class="reference-style-46">
+            <image
+              src="./asset/icons/svg_f00ee709.svg"
+              data-node-id="166:11892"
+              data-name="容器"
+              class="reference-style-47" />
+            <text
+              data-node-id="166:11888"
+              data-name="结余"
+              class="reference-style-48">
+              结余
+            </text>
+          </view>
+          <view
+            data-node-id="166:11894"
+            data-name="容器 50486"
+            class="reference-style-49">
+            <text
+              data-node-id="166:11899"
+              data-name="￥"
+              class="reference-style-50">
+              ￥
+            </text>
+            <text
+              data-node-id="166:11895"
+              data-name="444.23"
+              class="reference-style-51">
+              444.23
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view
+      data-node-id="166:11924"
+      data-name="容器 51449"
+      class="reference-style-52">
+      <view
+        data-node-id="166:11925"
+        data-name="容器 50495"
+        class="reference-style-53">
+        <text
+          data-node-id="166:12041"
+          data-name="支出分类构成"
+          class="reference-style-54">
+          支出分类构成
+        </text>
+        <view
+          data-node-id="166:11926"
+          data-name="组 51047"
+          class="reference-style-55">
+          <image src="./asset/icons/svg_6a9d858a.svg" />
+        </view>
+        <view
+          data-node-id="166:12045"
+          data-name="容器 50499"
+          class="reference-style-56">
+          <view
+            data-node-id="166:12046"
+            data-name="容器 50496"
+            class="reference-style-57">
+            <view
+              data-node-id="166:12051"
+              data-name="矩形 3617"
+              class="reference-style-58"></view>
+            <text
+              data-node-id="166:12047"
+              data-name="住宿"
+              class="reference-style-59">
+              住宿
+            </text>
+          </view>
+          <view
+            data-node-id="166:12052"
+            data-name="容器 50497"
+            class="reference-style-60">
+            <view
+              data-node-id="166:12053"
+              data-name="矩形 3617"
+              class="reference-style-61"></view>
+            <text
+              data-node-id="166:12054"
+              data-name="景点活动"
+              class="reference-style-62">
+              景点活动
+            </text>
+          </view>
+          <view
+            data-node-id="166:12058"
+            data-name="容器 50498"
+            class="reference-style-63">
+            <view
+              data-node-id="166:12063"
+              data-name="矩形 3617"
+              class="reference-style-64"></view>
+            <text
+              data-node-id="166:12059"
+              data-name="餐饮"
+              class="reference-style-65">
+              餐饮
+            </text>
+          </view>
+        </view>
+        <view
+          data-node-id="166:12064"
+          data-name="容器 50486"
+          class="reference-style-66">
+          <text
+            data-node-id="166:12069"
+            data-name="￥"
+            class="reference-style-67">
+            ￥
+          </text>
+          <text
+            data-node-id="166:12065"
+            data-name="668.12"
+            class="reference-style-68">
+            668.12
+          </text>
+        </view>
+        <view
+          data-node-id="166:12082"
+          data-name="容器 50500"
+          class="reference-style-69">
+          <text
+            data-node-id="166:12087"
+            data-name="￥"
+            class="reference-style-70">
+            ￥
+          </text>
+          <text
+            data-node-id="166:12083"
+            data-name="668.12"
+            class="reference-style-71">
+            668.12
+          </text>
+        </view>
+        <view
+          data-node-id="166:12073"
+          data-name="容器 50501"
+          class="reference-style-72">
+          <text
+            data-node-id="166:12074"
+            data-name="￥"
+            class="reference-style-73">
+            ￥
+          </text>
+          <text
+            data-node-id="166:12078"
+            data-name="668.12"
+            class="reference-style-74">
+            668.12
+          </text>
+        </view>
+        <view
+          data-node-id="166:12092"
+          data-name="路径 52903"
+          class="reference-style-75">
+          <image src="./asset/icons/svg_63b96594.svg" />
+        </view>
+        <view
+          data-node-id="166:11931"
+          data-name="路径 52904"
+          class="reference-style-76">
+          <image src="./asset/icons/svg_e50050f7.svg" />
+        </view>
+        <view
+          data-node-id="166:12091"
+          data-name="路径 52905"
+          class="reference-style-77">
+          <image src="./asset/icons/svg_59294556.svg" />
+        </view>
+        <view
+          data-node-id="166:11932"
+          data-name="容器 50662"
+          class="reference-style-78">
+          <view
+            data-node-id="166:12005"
+            data-name="容器 50458"
+            class="reference-style-79">
+            <view
+              data-node-id="166:12006"
+              data-name="容器 50456"
+              class="reference-style-80">
+              <view
+                data-node-id="166:12011"
+                data-name="容器 50455"
+                class="reference-style-81">
+                <text
+                  data-node-id="166:12016"
+                  data-name="餐饮"
+                  class="reference-style-82">
+                  餐饮
+                </text>
+                <p
+                  data-node-id="166:12012"
+                  data-name="93.5%"
+                  class="reference-style-83">
+                  93.5%
+                </p>
+              </view>
+              <p
+                data-node-id="166:12007"
+                data-name="31"
+                class="reference-style-84">
+                31
+              </p>
+              <text
+                data-node-id="166:12026"
+                data-name="￥83.00"
+                class="reference-style-85">
+                ￥83.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:12030"
+              data-name="容器 50661"
+              class="reference-style-86">
+              <image
+                src="./asset/icons/svg_0f6addd8.svg"
+                data-node-id="166:12031"
+                data-name="容器 50342"
+                class="reference-style-87" />
+              <text
+                data-node-id="166:12033"
+                data-name="5笔"
+                class="reference-style-88">
+                5笔
+              </text>
+            </view>
+          </view>
+          <view
+            data-node-id="166:11969"
+            data-name="容器 50502"
+            class="reference-style-89">
+            <view
+              data-node-id="166:11970"
+              data-name="容器 50456"
+              class="reference-style-90">
+              <view
+                data-node-id="166:11975"
+                data-name="容器 50455"
+                class="reference-style-91">
+                <text
+                  data-node-id="166:11980"
+                  data-name="交通"
+                  class="reference-style-92">
+                  交通
+                </text>
+                <p
+                  data-node-id="166:11976"
+                  data-name="93.5%"
+                  class="reference-style-93">
+                  93.5%
+                </p>
+              </view>
+              <p
+                data-node-id="166:11971"
+                data-name="31"
+                class="reference-style-94">
+                31
+              </p>
+              <text
+                data-node-id="166:11990"
+                data-name="￥83.00"
+                class="reference-style-95">
+                ￥83.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:11998"
+              data-name="容器 50661"
+              class="reference-style-96">
+              <image
+                src="./asset/icons/svg_0f6addd8.svg"
+                data-node-id="166:11999"
+                data-name="容器 50342"
+                class="reference-style-97" />
+              <text
+                data-node-id="166:12001"
+                data-name="5笔"
+                class="reference-style-98">
+                5笔
+              </text>
+            </view>
+          </view>
+          <view
+            data-node-id="166:11933"
+            data-name="容器 50503"
+            class="reference-style-99">
+            <view
+              data-node-id="166:11934"
+              data-name="容器 50456"
+              class="reference-style-100">
+              <view
+                data-node-id="166:11943"
+                data-name="容器 50455"
+                class="reference-style-101">
+                <text
+                  data-node-id="166:11948"
+                  data-name="景点活动"
+                  class="reference-style-102">
+                  景点活动
+                </text>
+                <p
+                  data-node-id="166:11944"
+                  data-name="93.5%"
+                  class="reference-style-103">
+                  93.5%
+                </p>
+              </view>
+              <p
+                data-node-id="166:11935"
+                data-name="31"
+                class="reference-style-104">
+                31
+              </p>
+              <text
+                data-node-id="166:11939"
+                data-name="￥83.00"
+                class="reference-style-105">
+                ￥83.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:11958"
+              data-name="容器 50661"
+              class="reference-style-106">
+              <image
+                src="./asset/icons/svg_0f6addd8.svg"
+                data-node-id="166:11959"
+                data-name="容器 50342"
+                class="reference-style-107" />
+              <text
+                data-node-id="166:11961"
+                data-name="5笔"
+                class="reference-style-108">
+                5笔
+              </text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view
+        data-node-id="166:12093"
+        data-name="容器 50496"
+        class="reference-style-109">
+        <text
+          data-node-id="166:12096"
+          data-name="每日支出趋势"
+          class="reference-style-110">
+          每日支出趋势
+        </text>
+        <view
+          data-node-id="166:12108"
+          data-name="容器 50594"
+          class="reference-style-111">
+          <text
+            data-node-id="166:12113"
+            data-name="10.10"
+            class="reference-style-112">
+            10.10
+          </text>
+          <text
+            data-node-id="166:12117"
+            data-name="10.11"
+            class="reference-style-113">
+            10.11
+          </text>
+          <text
+            data-node-id="166:12121"
+            data-name="10.12"
+            class="reference-style-114">
+            10.12
+          </text>
+          <text
+            data-node-id="166:12133"
+            data-name="10.13"
+            class="reference-style-115">
+            10.13
+          </text>
+          <text
+            data-node-id="166:12129"
+            data-name="10.14"
+            class="reference-style-116">
+            10.14
+          </text>
+          <text
+            data-node-id="166:12125"
+            data-name="10.15"
+            class="reference-style-117">
+            10.15
+          </text>
+          <text
+            data-node-id="166:12109"
+            data-name="10.16"
+            class="reference-style-118">
+            10.16
+          </text>
+        </view>
+        <view
+          data-node-id="166:12102"
+          data-name="容器 50654"
+          class="reference-style-119">
+          <image src="./asset/icons/svg_c335c5bb.svg" />
+        </view>
+        <view
+          data-node-id="166:12106"
+          data-name="容器 50655"
+          class="reference-style-120">
+          <image src="./asset/icons/svg_c1c0fbce.svg" />
+        </view>
+        <view
+          data-node-id="166:12100"
+          data-name="容器 50661"
+          class="reference-style-121">
+          <image src="./asset/icons/svg_bcab6ce7.svg" />
+        </view>
+        <view
+          data-node-id="166:12137"
+          data-name="容器 50656"
+          class="reference-style-122">
+          <image src="./asset/icons/svg_f828590c.svg" />
+        </view>
+        <view
+          data-node-id="166:12142"
+          data-name="容器 50657"
+          class="reference-style-123">
+          <image src="./asset/icons/svg_70840b09.svg" />
+        </view>
+        <view
+          data-node-id="166:12104"
+          data-name="容器 50658"
+          class="reference-style-124">
+          <image src="./asset/icons/svg_a02a98bc.svg" />
+        </view>
+        <view
+          data-node-id="166:12139"
+          data-name="容器 50659"
+          class="reference-style-125">
+          <image src="./asset/icons/svg_9db3d08a.svg" />
+        </view>
+        <view
+          data-node-id="166:12094"
+          data-name="容器 50660"
+          class="reference-style-126">
+          <image src="./asset/icons/svg_000209ee.svg" />
+        </view>
+        <view
+          data-node-id="166:12141"
+          data-name="直线 12"
+          class="reference-style-127"></view>
+      </view>
+      <view
+        data-node-id="166:12144"
+        data-name="容器 50497"
+        class="reference-style-128">
+        <text
+          data-node-id="166:12145"
+          data-name="单笔支出排行"
+          class="reference-style-129">
+          单笔支出排行
+        </text>
+        <view
+          data-node-id="166:12149"
+          data-name="容器 50662"
+          class="reference-style-130">
+          <view
+            data-node-id="166:12150"
+            data-name="容器 50458"
+            class="reference-style-131">
+            <view
+              data-node-id="166:12155"
+              data-name="容器 50456"
+              class="reference-style-132">
+              <view
+                data-node-id="166:12156"
+                data-name="容器 50455"
+                class="reference-style-133">
+                <view
+                  data-node-id="166:12157"
+                  data-name="容器 50476"
+                  class="reference-style-134">
+                  <text
+                    data-node-id="166:12158"
+                    data-name="1"
+                    class="reference-style-135">
+                    1
+                  </text>
+                </view>
+                <text
+                  data-node-id="166:12162"
+                  data-name="餐饮"
+                  class="reference-style-136">
+                  餐饮
+                </text>
+              </view>
+              <p
+                data-node-id="166:12170"
+                data-name="31"
+                class="reference-style-137">
+                31
+              </p>
+              <text
+                data-node-id="166:12166"
+                data-name="￥83.00"
+                class="reference-style-138">
+                ￥83.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:12180"
+              data-name="容器 50664"
+              class="reference-style-139">
+              <p
+                data-node-id="166:12186"
+                data-name="2026-10-11"
+                class="reference-style-140">
+                2026-10-11
+              </p>
+              <view
+                data-node-id="166:12181"
+                data-name="容器 50403"
+                class="reference-style-141">
+                <p
+                  data-node-id="166:12182"
+                  data-name="牛肉火锅"
+                  class="reference-style-142">
+                  牛肉火锅
+                </p>
+              </view>
+            </view>
+          </view>
+          <view
+            data-node-id="166:12310"
+            data-name="容器 50505"
+            class="reference-style-143">
+            <view
+              data-node-id="166:12311"
+              data-name="容器 50456"
+              class="reference-style-144">
+              <view
+                data-node-id="166:12318"
+                data-name="容器 50455"
+                class="reference-style-145">
+                <view
+                  data-node-id="166:12319"
+                  data-name="容器 50476"
+                  class="reference-style-146">
+                  <text
+                    data-node-id="166:12320"
+                    data-name="2"
+                    class="reference-style-147">
+                    2
+                  </text>
+                </view>
+                <text
+                  data-node-id="166:12324"
+                  data-name="餐饮"
+                  class="reference-style-148">
+                  餐饮
+                </text>
+              </view>
+              <p
+                data-node-id="166:12328"
+                data-name="31"
+                class="reference-style-149">
+                31
+              </p>
+              <text
+                data-node-id="166:12332"
+                data-name="￥83.00"
+                class="reference-style-150">
+                ￥83.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:12340"
+              data-name="容器 50664"
+              class="reference-style-151">
+              <p
+                data-node-id="166:12341"
+                data-name="2026-10-11"
+                class="reference-style-152">
+                2026-10-11
+              </p>
+              <view
+                data-node-id="166:12345"
+                data-name="容器 50403"
+                class="reference-style-153">
+                <p
+                  data-node-id="166:12346"
+                  data-name="牛肉火锅"
+                  class="reference-style-154">
+                  牛肉火锅
+                </p>
+              </view>
+            </view>
+          </view>
+          <view
+            data-node-id="166:12190"
+            data-name="容器 50506"
+            class="reference-style-155">
+            <view
+              data-node-id="166:12191"
+              data-name="容器 50456"
+              class="reference-style-156">
+              <view
+                data-node-id="166:12198"
+                data-name="容器 50455"
+                class="reference-style-157">
+                <view
+                  data-node-id="166:12203"
+                  data-name="容器 50476"
+                  class="reference-style-158">
+                  <text
+                    data-node-id="166:12204"
+                    data-name="3"
+                    class="reference-style-159">
+                    3
+                  </text>
+                </view>
+                <text
+                  data-node-id="166:12199"
+                  data-name="餐饮"
+                  class="reference-style-160">
+                  餐饮
+                </text>
+              </view>
+              <p
+                data-node-id="166:12212"
+                data-name="31"
+                class="reference-style-161">
+                31
+              </p>
+              <text
+                data-node-id="166:12208"
+                data-name="￥83.00"
+                class="reference-style-162">
+                ￥83.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:12216"
+              data-name="容器 50664"
+              class="reference-style-163">
+              <p
+                data-node-id="166:12217"
+                data-name="2026-10-11"
+                class="reference-style-164">
+                2026-10-11
+              </p>
+              <view
+                data-node-id="166:12221"
+                data-name="容器 50403"
+                class="reference-style-165">
+                <p
+                  data-node-id="166:12222"
+                  data-name="牛肉火锅"
+                  class="reference-style-166">
+                  牛肉火锅
+                </p>
+              </view>
+            </view>
+          </view>
+          <view
+            data-node-id="166:12230"
+            data-name="容器 50507"
+            class="reference-style-167">
+            <view
+              data-node-id="166:12231"
+              data-name="容器 50456"
+              class="reference-style-168">
+              <view
+                data-node-id="166:12242"
+                data-name="容器 50455"
+                class="reference-style-169">
+                <view
+                  data-node-id="166:12243"
+                  data-name="容器 50476"
+                  class="reference-style-170">
+                  <text
+                    data-node-id="166:12244"
+                    data-name="4"
+                    class="reference-style-171">
+                    4
+                  </text>
+                </view>
+                <text
+                  data-node-id="166:12248"
+                  data-name="餐饮"
+                  class="reference-style-172">
+                  餐饮
+                </text>
+              </view>
+              <p
+                data-node-id="166:12232"
+                data-name="31"
+                class="reference-style-173">
+                31
+              </p>
+              <text
+                data-node-id="166:12252"
+                data-name="￥83.00"
+                class="reference-style-174">
+                ￥83.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:12256"
+              data-name="容器 50664"
+              class="reference-style-175">
+              <p
+                data-node-id="166:12262"
+                data-name="2026-10-11"
+                class="reference-style-176">
+                2026-10-11
+              </p>
+              <view
+                data-node-id="166:12257"
+                data-name="容器 50403"
+                class="reference-style-177">
+                <p
+                  data-node-id="166:12258"
+                  data-name="牛肉火锅"
+                  class="reference-style-178">
+                  牛肉火锅
+                </p>
+              </view>
+            </view>
+          </view>
+          <view
+            data-node-id="166:12270"
+            data-name="容器 50508"
+            class="reference-style-179">
+            <view
+              data-node-id="166:12271"
+              data-name="容器 50456"
+              class="reference-style-180">
+              <view
+                data-node-id="166:12282"
+                data-name="容器 50455"
+                class="reference-style-181">
+                <view
+                  data-node-id="166:12283"
+                  data-name="容器 50476"
+                  class="reference-style-182">
+                  <text
+                    data-node-id="166:12284"
+                    data-name="5"
+                    class="reference-style-183">
+                    5
+                  </text>
+                </view>
+                <text
+                  data-node-id="166:12288"
+                  data-name="餐饮"
+                  class="reference-style-184">
+                  餐饮
+                </text>
+              </view>
+              <p
+                data-node-id="166:12292"
+                data-name="31"
+                class="reference-style-185">
+                31
+              </p>
+              <text
+                data-node-id="166:12272"
+                data-name="￥83.00"
+                class="reference-style-186">
+                ￥83.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:12296"
+              data-name="容器 50664"
+              class="reference-style-187">
+              <p
+                data-node-id="166:12297"
+                data-name="2026-10-11"
+                class="reference-style-188">
+                2026-10-11
+              </p>
+              <view
+                data-node-id="166:12301"
+                data-name="容器 50403"
+                class="reference-style-189">
+                <p
+                  data-node-id="166:12302"
+                  data-name="牛肉火锅"
+                  class="reference-style-190">
+                  牛肉火锅
+                </p>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:11847"
+    data-name="容器 50314"
+    class="reference-style-191">
+    <view
+      data-node-id="166:11855"
+      data-name="容器 50308"
+      class="reference-style-192">
+      <view
+        data-node-id="166:11856"
+        data-name="容器 50305"
+        class="reference-style-193">
+        <image src="./asset/icons/svg_f5c0d9d1.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:11880"
+      data-name="容器 50339"
+      class="reference-style-194">
+      <view
+        data-node-id="166:11881"
+        data-name="容器"
+        class="reference-style-195">
+        <image src="./asset/icons/svg_7bb647bd.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:11867"
+      data-name="容器 50338"
+      class="reference-style-196">
+      <view
+        data-node-id="166:11868"
+        data-name="组 51041"
+        class="reference-style-197">
+        <image src="./asset/icons/svg_5aa03b54.svg" />
+      </view>
+      <view
+        data-node-id="166:11878"
+        data-name="容器"
+        class="reference-style-198">
+        <image src="./asset/icons/svg_9be063e4.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:11848"
+      data-name="容器 50310"
+      class="reference-style-199">
+      <view
+        data-node-id="166:11849"
+        data-name="容器 50318"
+        class="reference-style-200">
+        <image src="./asset/icons/svg_988bdf11.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:11864"
+      data-name="容器 50309"
+      class="reference-style-201">
+      <view
+        data-node-id="166:11865"
+        data-name="容器"
+        class="reference-style-202">
+        <image src="./asset/icons/svg_1d8be48b.svg" />
+      </view>
+    </view>
+  </view>
+</view>

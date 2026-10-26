@@ -1,0 +1,686 @@
+<view
+  data-node-id="166:15849"
+  data-name="我的"
+  class="reference-style-1">
+  <view
+    data-node-id="166:16111"
+    data-name="蒙版组 5"
+    class="reference-style-2">
+    <image
+      data-node-id="166:16112"
+      data-name="白云 - 搜索结果 - 花瓣"
+      class="reference-style-3"
+      src="./asset/images/白云-搜索结果-花瓣-166-16112.png"
+      title="白云 - 搜索结果 - 花瓣" />
+  </view>
+  <view
+    data-node-id="166:16141"
+    data-name="蒙版组 6"
+    class="reference-style-4">
+    <image
+      data-node-id="166:16143"
+      data-name="白云 - 搜索结果 - 花瓣"
+      class="reference-style-5"
+      src="./asset/images/白云-搜索结果-花瓣-166-16143.png"
+      title="白云 - 搜索结果 - 花瓣" />
+  </view>
+  <view
+    data-node-id="166:16115"
+    data-name="蒙版组 8"
+    class="reference-style-6">
+    <image
+      data-node-id="166:16117"
+      data-name="白云 - 搜索结果 - 花瓣"
+      class="reference-style-7"
+      src="./asset/images/白云-搜索结果-花瓣-166-16117.png"
+      title="白云 - 搜索结果 - 花瓣" />
+  </view>
+  <view
+    data-node-id="166:16075"
+    data-name="容器 50313"
+    class="reference-style-8">
+    <view
+      data-node-id="166:16108"
+      data-name="容器 50316"
+      class="reference-style-9">
+      <view
+        data-node-id="166:16109"
+        data-name="容器"
+        class="reference-style-10">
+        <image src="./asset/icons/svg_28f66596.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:16086"
+      data-name="容器 50306"
+      class="reference-style-11">
+      <text
+        data-node-id="166:16101"
+        data-name="我的"
+        class="reference-style-12">
+        我的
+      </text>
+    </view>
+    <view
+      data-node-id="166:16105"
+      data-name="容器 50317"
+      class="reference-style-13">
+      <view
+        data-node-id="166:16106"
+        data-name="容器"
+        class="reference-style-14">
+        <image src="./asset/icons/svg_95534126.svg" />
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:16157"
+    data-name="容器 50666"
+    class="reference-style-15">
+    <image
+      data-node-id="166:16158"
+      data-name="搜索结果页面"
+      class="reference-style-16"
+      src="./asset/images/搜索结果页面-166-16158.png"
+      title="搜索结果页面" />
+  </view>
+  <view
+    data-node-id="166:16137"
+    data-name="容器"
+    class="reference-style-17">
+    <image src="./asset/icons/svg_e6fdad95.svg" />
+  </view>
+  <view
+    data-node-id="166:16159"
+    data-name="组 51048"
+    class="reference-style-18">
+    <text
+      data-node-id="166:16160"
+      data-name="🏕"
+      class="reference-style-19">
+      🏕
+    </text>
+    <view
+      data-node-id="166:16164"
+      data-name="路径 52907"
+      class="reference-style-20">
+      <image src="./asset/icons/svg_a72cefd5.svg" />
+    </view>
+  </view>
+  <view
+    data-node-id="166:16131"
+    data-name="组 51049"
+    class="reference-style-21">
+    <text
+      data-node-id="166:16133"
+      data-name="🚲"
+      class="reference-style-22">
+      🚲
+    </text>
+    <view
+      data-node-id="166:16132"
+      data-name="路径 52910"
+      class="reference-style-23">
+      <image src="./asset/icons/svg_37e117d2.svg" />
+    </view>
+  </view>
+  <view
+    data-node-id="166:16118"
+    data-name="组 51051"
+    class="reference-style-24">
+    <text
+      data-node-id="166:16120"
+      data-name="🚗"
+      class="reference-style-25">
+      🚗
+    </text>
+    <view
+      data-node-id="166:16119"
+      data-name="路径 52914"
+      class="reference-style-26">
+      <image src="./asset/icons/svg_d05da17e.svg" />
+    </view>
+  </view>
+  <view
+    data-node-id="166:16064"
+    data-name="容器 50327"
+    class="reference-style-27">
+    <text
+      data-node-id="166:16065"
+      data-name="啦啦啦"
+      class="reference-style-28">
+      啦啦啦
+    </text>
+    <view
+      data-node-id="166:16072"
+      data-name="容器 50316"
+      class="reference-style-29">
+      <image
+        src="./asset/icons/svg_09d1fa5a.svg"
+        data-node-id="166:16073"
+        data-name="容器"
+        class="reference-style-30" />
+    </view>
+  </view>
+  <view
+    data-node-id="166:15854"
+    data-name="容器 50488"
+    class="reference-style-31">
+    <view
+      data-node-id="166:16002"
+      data-name="容器 50382"
+      class="reference-style-32">
+      <view
+        data-node-id="166:16015"
+        data-name="容器 50456"
+        class="reference-style-33">
+        <view
+          data-node-id="166:16023"
+          data-name="容器 50672"
+          class="reference-style-34">
+          <text
+            data-node-id="166:16024"
+            data-name="川西秋日自驾"
+            class="reference-style-35">
+            川西秋日自驾
+          </text>
+          <view
+            data-node-id="166:16028"
+            data-name="容器 50476"
+            class="reference-style-36">
+            <text
+              data-node-id="166:16029"
+              data-name="自驾游"
+              class="reference-style-37">
+              自驾游
+            </text>
+          </view>
+        </view>
+        <view
+          data-node-id="166:16016"
+          data-name="容器 50477"
+          class="reference-style-38">
+          <p
+            data-node-id="166:16017"
+            data-name="川西"
+            class="reference-style-39">
+            川西
+          </p>
+        </view>
+        <image
+          src="./asset/icons/svg_c8fcc180.svg"
+          data-node-id="166:16021"
+          data-name="容器"
+          class="reference-style-40" />
+      </view>
+      <view
+        data-node-id="166:16003"
+        data-name="容器 50672"
+        class="reference-style-41">
+        <p
+          data-node-id="166:16011"
+          data-name="2026-10-10 08:00"
+          class="reference-style-42">
+          2026-10-10 08:00
+        </p>
+        <image
+          src="./asset/icons/svg_18e28d3c.svg"
+          data-node-id="166:16004"
+          data-name="容器"
+          class="reference-style-43" />
+        <p
+          data-node-id="166:16007"
+          data-name="2026-10-10 08:00"
+          class="reference-style-44">
+          2026-10-10 08:00
+        </p>
+      </view>
+    </view>
+    <view
+      data-node-id="166:15855"
+      data-name="容器 50419"
+      class="reference-style-45">
+      <view
+        data-node-id="166:15974"
+        data-name="容器 50456"
+        class="reference-style-46">
+        <view
+          data-node-id="166:15977"
+          data-name="容器 50672"
+          class="reference-style-47">
+          <text
+            data-node-id="166:15978"
+            data-name="川西秋日自驾"
+            class="reference-style-48">
+            川西秋日自驾
+          </text>
+          <view
+            data-node-id="166:15982"
+            data-name="容器 50476"
+            class="reference-style-49">
+            <text
+              data-node-id="166:15987"
+              data-name="自驾游"
+              class="reference-style-50">
+              自驾游
+            </text>
+          </view>
+          <view
+            data-node-id="166:15991"
+            data-name="容器 51446"
+            class="reference-style-51">
+            <image
+              src="./asset/icons/svg_4e82b769.svg"
+              data-node-id="166:15996"
+              data-name="圆形 1108"
+              class="reference-style-52" />
+            <text
+              data-node-id="166:15992"
+              data-name="当前旅行"
+              class="reference-style-53">
+              当前旅行
+            </text>
+          </view>
+        </view>
+        <view
+          data-node-id="166:15997"
+          data-name="容器 50477"
+          class="reference-style-54">
+          <p
+            data-node-id="166:15998"
+            data-name="川西"
+            class="reference-style-55">
+            川西
+          </p>
+        </view>
+        <image
+          src="./asset/icons/svg_04b0a7d7.svg"
+          data-node-id="166:15975"
+          data-name="容器"
+          class="reference-style-56" />
+      </view>
+      <view
+        data-node-id="166:15870"
+        data-name="容器 50672"
+        class="reference-style-57">
+        <p
+          data-node-id="166:15878"
+          data-name="2026-10-10 08:00"
+          class="reference-style-58">
+          2026-10-10 08:00
+        </p>
+        <image
+          src="./asset/icons/svg_18e28d3c.svg"
+          data-node-id="166:15875"
+          data-name="容器"
+          class="reference-style-59" />
+        <p
+          data-node-id="166:15871"
+          data-name="2026-10-10 08:00"
+          class="reference-style-60">
+          2026-10-10 08:00
+        </p>
+      </view>
+      <view
+        data-node-id="166:15882"
+        data-name="容器 50458"
+        class="reference-style-61">
+        <view
+          data-node-id="166:15887"
+          data-name="容器 50675"
+          class="reference-style-62">
+          <p
+            data-node-id="166:15892"
+            data-name="同行成员"
+            class="reference-style-63">
+            同行成员
+          </p>
+          <text
+            data-node-id="166:15888"
+            data-name="2人"
+            class="reference-style-64">
+            2人
+          </text>
+        </view>
+        <view
+          data-node-id="166:15896"
+          data-name="容器 50485"
+          class="reference-style-65">
+          <view
+            data-node-id="166:15897"
+            data-name="容器 50484"
+            class="reference-style-66">
+            <view
+              data-node-id="166:15910"
+              data-name="容器 50483"
+              class="reference-style-67">
+              <view
+                data-node-id="166:15911"
+                data-name="容器 50456"
+                class="reference-style-68">
+                <image
+                  data-node-id="166:15913"
+                  data-name="image"
+                  class="reference-style-69"
+                  src="./asset/images/image-166-15913.png"
+                  title="image" />
+                <image
+                  data-node-id="166:15912"
+                  data-name="image"
+                  class="reference-style-70"
+                  src="./asset/images/image-166-15912.png"
+                  title="image" />
+                <image
+                  data-node-id="166:15914"
+                  data-name="image"
+                  class="reference-style-71"
+                  src="./asset/images/image-166-15914.png"
+                  title="image" />
+              </view>
+              <text
+                data-node-id="166:15915"
+                data-name="用户昵称"
+                class="reference-style-72">
+                用户昵称
+              </text>
+            </view>
+            <p
+              data-node-id="166:15902"
+              data-name="-￥12.00"
+              class="reference-style-73">
+              -￥12.00
+            </p>
+            <text
+              data-node-id="166:15898"
+              data-name="创建者"
+              class="reference-style-74">
+              创建者
+            </text>
+          </view>
+          <view
+            data-node-id="166:15941"
+            data-name="容器 50488"
+            class="reference-style-75">
+            <view
+              data-node-id="166:15942"
+              data-name="容器 50483"
+              class="reference-style-76">
+              <view
+                data-node-id="166:15947"
+                data-name="容器 50456"
+                class="reference-style-77">
+                <image
+                  data-node-id="166:15948"
+                  data-name="image"
+                  class="reference-style-78"
+                  src="./asset/images/image-166-15948.png"
+                  title="image" />
+                <image
+                  data-node-id="166:15950"
+                  data-name="image"
+                  class="reference-style-79"
+                  src="./asset/images/image-166-15950.png"
+                  title="image" />
+                <image
+                  data-node-id="166:15949"
+                  data-name="image"
+                  class="reference-style-80"
+                  src="./asset/images/image-166-15949.png"
+                  title="image" />
+              </view>
+              <text
+                data-node-id="166:15943"
+                data-name="用户昵称"
+                class="reference-style-81">
+                用户昵称
+              </text>
+            </view>
+            <p
+              data-node-id="166:15955"
+              data-name="-￥12.00"
+              class="reference-style-82">
+              -￥12.00
+            </p>
+            <text
+              data-node-id="166:15951"
+              data-name="移除"
+              class="reference-style-83">
+              移除
+            </text>
+          </view>
+          <view
+            data-node-id="166:15919"
+            data-name="容器 50489"
+            class="reference-style-84">
+            <view
+              data-node-id="166:15932"
+              data-name="容器 50483"
+              class="reference-style-85">
+              <view
+                data-node-id="166:15937"
+                data-name="容器 50456"
+                class="reference-style-86">
+                <image
+                  data-node-id="166:15938"
+                  data-name="image"
+                  class="reference-style-87"
+                  src="./asset/images/image-166-15938.png"
+                  title="image" />
+                <image
+                  data-node-id="166:15940"
+                  data-name="image"
+                  class="reference-style-88"
+                  src="./asset/images/image-166-15940.png"
+                  title="image" />
+                <image
+                  data-node-id="166:15939"
+                  data-name="image"
+                  class="reference-style-89"
+                  src="./asset/images/image-166-15939.png"
+                  title="image" />
+              </view>
+              <text
+                data-node-id="166:15933"
+                data-name="用户昵称"
+                class="reference-style-90">
+                用户昵称
+              </text>
+            </view>
+            <p
+              data-node-id="166:15924"
+              data-name="-￥12.00"
+              class="reference-style-91">
+              -￥12.00
+            </p>
+            <text
+              data-node-id="166:15928"
+              data-name="移除"
+              class="reference-style-92">
+              移除
+            </text>
+          </view>
+        </view>
+        <view
+          data-node-id="166:15963"
+          data-name="容器 50329"
+          class="reference-style-93">
+          <view
+            data-node-id="166:15964"
+            data-name="容器 50334"
+            class="reference-style-94">
+            <image
+              src="./asset/icons/svg_7e4204e4.svg"
+              data-node-id="166:15969"
+              data-name="容器"
+              class="reference-style-95" />
+            <text
+              data-node-id="166:15965"
+              data-name="邀请同行人"
+              class="reference-style-96">
+              邀请同行人
+            </text>
+          </view>
+        </view>
+      </view>
+      <view
+        data-node-id="166:15859"
+        data-name="容器 50487"
+        class="reference-style-97">
+        <view
+          data-node-id="166:15860"
+          data-name="容器 50331"
+          class="reference-style-98">
+          <image
+            src="./asset/icons/svg_f6798b13.svg"
+            data-node-id="166:15861"
+            data-name="容器"
+            class="reference-style-99" />
+        </view>
+        <view
+          data-node-id="166:15867"
+          data-name="容器 50332"
+          class="reference-style-100">
+          <image
+            src="./asset/icons/svg_d8593e3e.svg"
+            data-node-id="166:15868"
+            data-name="容器"
+            class="reference-style-101" />
+        </view>
+        <view
+          data-node-id="166:15864"
+          data-name="容器 50333"
+          class="reference-style-102">
+          <image
+            src="./asset/icons/svg_e6691c47.svg"
+            data-node-id="166:15865"
+            data-name="容器"
+            class="reference-style-103" />
+        </view>
+      </view>
+    </view>
+    <view
+      data-node-id="166:16033"
+      data-name="容器 50420"
+      class="reference-style-104">
+      <view
+        data-node-id="166:16046"
+        data-name="容器 50456"
+        class="reference-style-105">
+        <view
+          data-node-id="166:16052"
+          data-name="容器 50672"
+          class="reference-style-106">
+          <text
+            data-node-id="166:16058"
+            data-name="川西秋日自驾"
+            class="reference-style-107">
+            川西秋日自驾
+          </text>
+          <view
+            data-node-id="166:16053"
+            data-name="容器 50476"
+            class="reference-style-108">
+            <text
+              data-node-id="166:16054"
+              data-name="露营"
+              class="reference-style-109">
+              露营
+            </text>
+          </view>
+        </view>
+        <view
+          data-node-id="166:16047"
+          data-name="容器 50477"
+          class="reference-style-110">
+          <p
+            data-node-id="166:16048"
+            data-name="川西"
+            class="reference-style-111">
+            川西
+          </p>
+        </view>
+        <image
+          src="./asset/icons/svg_c8fcc180.svg"
+          data-node-id="166:16062"
+          data-name="容器"
+          class="reference-style-112" />
+      </view>
+      <view
+        data-node-id="166:16034"
+        data-name="容器 50672"
+        class="reference-style-113">
+        <p
+          data-node-id="166:16039"
+          data-name="2026-10-10 08:00"
+          class="reference-style-114">
+          2026-10-10 08:00
+        </p>
+        <image
+          src="./asset/icons/svg_18e28d3c.svg"
+          data-node-id="166:16043"
+          data-name="容器"
+          class="reference-style-115" />
+        <p
+          data-node-id="166:16035"
+          data-name="2026-10-10 08:00"
+          class="reference-style-116">
+          2026-10-10 08:00
+        </p>
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:16124"
+    data-name="组 51052"
+    class="reference-style-117">
+    <view
+      data-node-id="166:16125"
+      data-name="组 51050"
+      class="reference-style-118">
+      <text
+        data-node-id="166:16126"
+        data-name="🌳"
+        class="reference-style-119">
+        🌳
+      </text>
+    </view>
+    <view
+      data-node-id="166:16130"
+      data-name="路径 52915"
+      class="reference-style-120">
+      <image src="./asset/icons/svg_e1ee6e24.svg" />
+    </view>
+  </view>
+  <view
+    data-node-id="166:16144"
+    data-name="容器 50671"
+    class="reference-style-121">
+    <text
+      data-node-id="166:16153"
+      data-name="旅行与同行人管理"
+      class="reference-style-122">
+      旅行与同行人管理
+    </text>
+    <view
+      data-node-id="166:16145"
+      data-name="容器 50331"
+      class="reference-style-123">
+      <view
+        data-node-id="166:16146"
+        data-name="容器 50447"
+        class="reference-style-124">
+        <image
+          src="./asset/icons/svg_116003db.svg"
+          data-node-id="166:16151"
+          data-name="容器"
+          class="reference-style-125" />
+        <text
+          data-node-id="166:16147"
+          data-name="新建旅行"
+          class="reference-style-126">
+          新建旅行
+        </text>
+      </view>
+    </view>
+  </view>
+</view>

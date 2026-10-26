@@ -22,7 +22,7 @@ function createDemoExperience() {
     hotels: [{ id: "demo-hotel", name: "山野民宿", city: "小金县", address: "四姑娘山镇", checkin: start, checkout: end, phone: "", note: "含早餐，可免费停车" }],
     tickets: [],
     outfits: [
-      { id: "demo-outfit-1", ownerMemberId: "demo-owner", date: start, title: "高原出发穿搭", scene: "日常出行", items: [["上装", "速干长袖"], ["下装", "轻量长裤"], ["外套", "防风外套"], ["鞋履", "缓震运动鞋"], ["配饰", "遮阳帽、墨镜"]].map(([typeName, name], sortOrder) => ({ id: `demo-1-${sortOrder}`, typeName, name, sortOrder })), note: "早晚温差大，外套放在随手可取的位置", sortOrder: 0, createdAt: 1 },
+      { id: "demo-outfit-1", ownerMemberId: "demo-owner", date: start, title: "高原出发穿搭", scene: "日常出行", items: [["上装", "速干长袖"], ["下装", "轻量长裤"], ["外套", "防风外套"], ["鞋履", "缓震运动鞋"], ["配饰", "遮阳帽、墨镜"]].map(([typeName, name], sortOrder) => ({ id: `demo-1-${sortOrder}`, typeName, name, sortOrder, photoUrl: "/assets/mastergo-list/outfit/demo-look.jpg" })), note: "早晚温差大，外套放在随手可取的位置", sortOrder: 0, createdAt: 1 },
       { id: "demo-outfit-2", ownerMemberId: "demo-owner", date: start, title: "双桥沟轻徒步", scene: "户外徒步", items: [["内搭", "排汗内搭"], ["下装", "徒步裤"], ["外套", "冲锋衣"], ["鞋履", "防滑徒步鞋"], ["袜子", "吸湿排汗袜"]].map(([typeName, name], sortOrder) => ({ id: `demo-2-${sortOrder}`, typeName, name, sortOrder })), note: "准备一双备用袜子", sortOrder: 1, createdAt: 2 },
       { id: "demo-outfit-3", ownerMemberId: "demo-owner", date: second, title: "观景拍照穿搭", scene: "拍照打卡", items: [["内搭", "米色针织衫"], ["下装", "深色牛仔裤"], ["外套", "焦糖色夹克"], ["鞋履", "短靴"], ["配饰", "围巾"]].map(([typeName, name], sortOrder) => ({ id: `demo-3-${sortOrder}`, typeName, name, sortOrder })), note: "颜色与秋日山景协调", sortOrder: 0, createdAt: 3 },
     ],
@@ -43,7 +43,7 @@ function createDemoExperience() {
   return {
     account: { id: "guest", nickname: "游客", avatarId: "avatar-01", avatarData: "", profileComplete: false },
     trip,
-    weather: { available: true, location: "四姑娘山", condition: "晴间多云", code: 1, high: 18, low: 7, source: "体验数据", geoSource: "演示地点" },
+    weather: { available: true, location: "四姑娘山", condition: "晴间多云", code: 1, high: 18, low: 7, current: 14, humidity: 48, uvIndex: 3.6, uvLevel: "中等", source: "体验数据", geoSource: "演示地点" },
     routeOverview: {
       configured: true, available: true, distanceMeters: 226000, durationMinutes: 270, unresolved: [],
       transportModes: [{ id: "driving", label: "自驾" }, { id: "walking", label: "步行" }],

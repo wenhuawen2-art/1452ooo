@@ -1,0 +1,33 @@
+<view class="xy-list-page {{listSection !== 'outfit' ? 'is-checklist' : ''}}" id="list-{{listSection}}" style="padding-top:{{16 + listSafeInset}}px" bindtap="closeListMenus">
+  <image class="xy-list-atmosphere" src="/assets/mastergo-route/planning/svg_a7d2aa9f.svg" mode="scaleToFill"/>
+  <view class="system-header-space"></view>
+  <view class="xy-list-mode">
+    <button class="{{listSection !== 'outfit' ? 'selected' : ''}}" data-section="public" bindtap="setListSection"><image class="xy-mode-art" src="/assets/mastergo-list/public/svg_e748a776.svg" mode="aspectFit"/><image class="xy-mode-icon" src="/assets/mastergo-list/public/svg_f4581768.svg" mode="aspectFit"/><text>物品清单</text></button>
+    <button class="{{listSection === 'outfit' ? 'selected' : ''}}" data-section="outfit" bindtap="setListSection"><image class="xy-mode-art" src="/assets/mastergo-list/shared/svg_f34b0e05.svg" mode="aspectFit"/><image class="xy-mode-icon" src="/assets/mastergo-list/outfit/svg_11a55262.svg" mode="aspectFit"/><text>每日穿搭</text></button>
+  </view>
+  <block wx:if="{{listSection !== 'outfit'}}">
+    <view class="xy-list-segment"><button class="{{listSection === 'public' ? 'selected' : ''}}" data-section="public" bindtap="setListSection">团队准备</button><button class="{{listSection === 'personal' ? 'selected' : ''}}" data-section="personal" bindtap="setListSection">我的准备</button></view>
+    <view class="xy-list-summary">
+      <text class="xy-list-title">{{listSection === 'public' ? '团队行囊准备' : '我的行囊准备'}}</text>
+      <view class="xy-progress-label"><image src="/assets/mastergo-list/public/svg_09acd1ff.svg" mode="aspectFit"/><text>进度</text></view>
+      <view class="xy-progress-numbers"><view><text class="xy-progress-big">{{listSection === 'public' ? publicProgress.percent : mineProgress.percent}}</text><text class="xy-progress-unit">%</text></view><view class="xy-progress-fraction"><text>{{listSection === 'public' ? publicProgress.done : mineProgress.done}}</text><text>/{{listSection === 'public' ? publicProgress.total : mineProgress.total}}项</text></view></view>
+      <view class="xy-progress-track"><view style="width:{{listSection === 'public' ? publicProgress.percent : mineProgress.percent}}%"></view></view>
+    </view>
+    <view class="xy-list-groups">
+      <view wx:for="{{checklistGroups}}" wx:key="id" class="xy-list-group {{categoryMenuId === item.id || listMenuCategoryId === item.id ? 'menu-open' : ''}}">
+        <view class="xy-category-head"><button class="xy-category-label" disabled="{{trip.archived}}" data-id="{{item.id}}" catchtap="toggleCategoryMenu" aria-label="{{item.name}}分类操作"><text class="xy-category-title">{{item.name}}</text><text class="xy-category-count">{{item.items.length}}</text></button><button wx:if="{{!trip.archived}}" class="xy-new-button" data-category="{{item.id}}" bindtap="openItem"><image src="/assets/mastergo-profile/svg_116003db.svg" mode="aspectFit"/><text>新增</text></button>
+          <view wx:if="{{!trip.archived && categoryMenuId === item.id}}" class="xy-pop-menu" catchtap="stopBubble"><button data-id="{{item.id}}" bindtap="openCategory">编辑分类</button><button data-action="deleteCategory" data-id="{{item.id}}" bindtap="confirmDelete">删除分类</button></view>
+        </view>
+        <view wx:for="{{item.items}}" wx:for-item="entry" wx:key="id" class="xy-item-row">
+          <view class="xy-item-check {{entry.done ? 'done' : ''}}" data-action="toggle" data-id="{{entry.id}}" bindtap="mutateAction" hover-class="motion-pressed" hover-stop-propagation="true"><image wx:if="{{entry.done}}" src="/assets/mastergo-list/public/svg_fa47f8a6.svg" mode="aspectFit"/></view>
+          <view class="xy-item-main" data-kind="item" data-id="{{entry.id}}" bindtap="openDetail" hover-class="motion-pressed" hover-stop-propagation="true"><text class="xy-item-name {{entry.done ? 'done' : ''}}">{{entry.title}}</text><image wx:if="{{entry.done && entry.confirmerAvatarSrc}}" src="{{entry.confirmerAvatarSrc}}" mode="aspectFill"/><text wx:if="{{entry.done && !entry.confirmerAvatarSrc}}" class="xy-confirm-name">{{entry.confirmerName}}</text><text wx:if="{{entry.reviewed}}" class="xy-reviewed">已复核</text></view>
+          <button wx:if="{{!trip.archived}}" class="xy-item-star" data-action="key" data-id="{{entry.id}}" catchtap="mutateAction" aria-label="{{entry.key ? '取消关键项' : '标为关键项'}}"><image src="/assets/mastergo-list/shared/{{entry.key ? 'svg_9121e71e' : 'svg_423ebcf7'}}.svg" mode="aspectFit"/></button><view wx:else class="xy-item-star"><image src="/assets/mastergo-list/shared/{{entry.key ? 'svg_9121e71e' : 'svg_423ebcf7'}}.svg" mode="aspectFit"/></view>
+          <button wx:if="{{!trip.archived}}" class="xy-item-more" data-id="{{entry.id}}" data-category="{{item.id}}" catchtap="toggleListItemMenu" aria-label="{{entry.title}}更多操作"><image src="/assets/mastergo-list/public/svg_2e9698ef.svg" mode="aspectFit"/></button>
+          <view wx:if="{{!trip.archived && listItemMenuId === entry.id}}" class="xy-pop-menu xy-item-menu" catchtap="stopBubble"><button data-id="{{entry.id}}" bindtap="openItem">编辑</button><button wx:if="{{entry.done && entry.key}}" data-action="review" data-id="{{entry.id}}" bindtap="mutateAction">{{entry.reviewed ? '已复核' : '复核'}}</button><button data-action="deleteItem" data-id="{{entry.id}}" bindtap="confirmDelete">删除</button></view>
+        </view>
+      </view>
+      <view wx:if="{{!checklistGroups.length}}" class="xy-list-no-groups"><text>还没有准备分类</text><button wx:if="{{!trip.archived}}" bindtap="openCategory">＋ 新建分类</button></view>
+    </view>
+  </block>
+  <block wx:else><include src="outfit.wxml"/></block>
+</view>

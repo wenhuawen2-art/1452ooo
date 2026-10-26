@@ -1,0 +1,14 @@
+<view class="onboarding {{guestMode ? 'is-logged-out' : 'is-empty-account'}}" style="--onboarding-inset:{{systemContentTop - 16}}px;--safe-bottom:{{safeBottomInset}}px">
+ <image class="onboarding-atmosphere" src="/assets/mastergo-route/planning/svg_a7d2aa9f.svg" mode="scaleToFill"/>
+ <view wx:if="{{!guestMode}}" class="onboarding-intro"><text class="onboarding-title">旅行/游玩</text><text class="onboarding-subtitle">从容出发</text><image class="onboarding-accent" src="/assets/loading-welcome/accent.svg" mode="scaleToFill"/><image class="onboarding-camera" src="/assets/loading-welcome/sticker-camera-hd.webp" mode="aspectFit"/><image class="onboarding-mountain" src="/assets/loading-welcome/sticker-mountain-hd.webp" mode="aspectFit"/></view>
+ <view class="onboarding-panel">
+  <view wx:if="{{guestMode}}" class="onboarding-login-summary"><image class="onboarding-logo" src="/assets/loading-welcome/brand.svg" mode="aspectFit"/><text class="onboarding-login-title">登录后开启你的行程</text><text class="onboarding-copy">创建旅行，邀请同行人，并在不同设备继续查看行程，清单与账本</text></view>
+  <view class="onboarding-features">
+   <view class="onboarding-feature"><view class="onboarding-icon route"><image src="/assets/mastergo-onboarding/route.svg" mode="aspectFit"/></view><text>规划每天的路线</text></view>
+   <view class="onboarding-feature"><view class="onboarding-icon lodging"><image src="/assets/mastergo-onboarding/hotel.svg" mode="aspectFit"/></view><text>添加住宿信息</text></view>
+   <view class="onboarding-feature"><view class="onboarding-icon items"><image src="/assets/mastergo-onboarding/items.svg" mode="aspectFit"/></view><text>准备物品并且确认</text></view>
+  </view>
+  <button wx:if="{{guestMode}}" class="onboarding-primary" disabled="{{busy}}" bindtap="confirmWechatLogin">{{busy ? '微信登录中…' : '登录并开始使用'}}</button>
+  <button wx:else class="onboarding-primary" bindtap="openCreateTrip"><image src="/assets/mastergo-route/create-icon.svg" mode="aspectFit"/><text>创建我的游玩计划</text></button>
+ </view>
+</view>

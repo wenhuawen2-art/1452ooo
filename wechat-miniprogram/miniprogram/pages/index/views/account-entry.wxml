@@ -1,0 +1,4 @@
+<button class="profile-entry {{!trip ? 'header-avatar' : tab === 'today' ? 'mg-profile' : 'rg-avatar'}} {{authState === 'authenticated' && !guestMode ? 'has-avatar' : 'is-guest'}}" bindtap="openProfilePage" aria-label="我的">
+ <image wx:if="{{authState === 'authenticated' && !guestMode}}" src="{{account && (account.avatarSrc || account.avatarData) || '/assets/avatars/avatar-01-alpaca.png'}}" mode="aspectFill"/>
+ <image wx:else src="/assets/mastergo-route/planning/svg_7f2095aa.svg" mode="aspectFit"/>
+</button>

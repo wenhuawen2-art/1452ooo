@@ -1,0 +1,14 @@
+/* 所有模块统一采用行程设计稿的悬浮底栏。 */
+.page .master-nav{bottom:calc(16px + var(--safe-bottom,env(safe-area-inset-bottom)))}
+.page .rg-add-event{bottom:calc(112px + var(--safe-bottom,env(safe-area-inset-bottom)))}
+.page .master-nav .nav-item image{opacity:1}
+.page .master-nav .nav-item.active image{filter:brightness(0) saturate(100%) invert(43%) sepia(89%) saturate(2918%) hue-rotate(203deg) brightness(101%) contrast(101%)}
+.page .master-nav .nav-create{position:relative;overflow:hidden;background:transparent;border-radius:20px;box-shadow:none}
+.page .master-nav .nav-create .nav-create-background{position:absolute;inset:0;width:100%;height:100%;max-width:none;pointer-events:none}
+.page .master-nav .nav-create .nav-create-plus{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateY(6px);z-index:1;width:74.105px;height:73.828px;max-width:none;opacity:1;pointer-events:none}
+
+.page .rg-add-event,.page .xy-list-fixed-add{left:auto;right:16px;transform:none;width:52px;height:52px;min-width:52px;padding:0;border-radius:16px;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,#8aaaff,#eadbff,#9fff79) border-box;border:2px solid transparent;box-shadow:0 12px 20px #27334029;gap:0}
+.page .rg-add-event text,.page .xy-list-fixed-add text{display:none}.page .rg-add-event image,.page .xy-list-fixed-add image{width:24px;height:24px;flex:none}.page .rg-add-event:active,.page .xy-list-fixed-add:active{transform:scale(.97)}
+/* User supplied bg.png, displayed uncropped at the shared central action bounds. */
+.page .master-nav .nav-create{background:transparent;border:0;box-shadow:0 4px 10px #0064c126}.page .master-nav .nav-create .nav-create-background{inset:0;width:100%;height:100%;object-fit:contain}
+.page .master-nav .nav-item.active image{filter:none}

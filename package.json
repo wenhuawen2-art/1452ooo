@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "preview:mini": "node scripts/preview-mini.mjs",
+    "test:preview": "node scripts/check-preview.mjs",
     "build": "node scripts/build.mjs",
     "deploy:plan": "npm run build && tcb deploy --dry-run",
     "deploy": "node scripts/deploy-cloudbase.mjs",
@@ -21,6 +23,7 @@
   },
   "devDependencies": {
     "@cloudbase/cli": "3.8.1",
-    "esbuild": "0.25.9"
+    "esbuild": "0.25.9",
+    "miniprogram-automator": "0.12.1"
   }
 }

@@ -1,0 +1,1690 @@
+<view
+  data-node-id="166:14643"
+  data-name="记账-明细"
+  class="reference-style-1">
+  <view
+    data-node-id="166:15314"
+    data-name="容器 50313"
+    class="reference-style-2">
+    <view
+      data-node-id="166:15320"
+      data-name="容器 50306"
+      class="reference-style-3">
+      <text
+        data-node-id="166:15335"
+        data-name="早上好，Zero"
+        class="reference-style-4">
+        早上好，Zero
+      </text>
+    </view>
+    <view
+      data-node-id="166:15339"
+      data-name="容器 50315"
+      class="reference-style-5">
+      <view
+        data-node-id="166:15346"
+        data-name="容器 50316"
+        class="reference-style-6">
+        <view
+          data-node-id="166:15347"
+          data-name="容器"
+          class="reference-style-7">
+          <image src="./asset/icons/svg_a4153cd7.svg" />
+        </view>
+      </view>
+      <view
+        data-node-id="166:15340"
+        data-name="容器 50317"
+        class="reference-style-8">
+        <view
+          data-node-id="166:15341"
+          data-name="容器"
+          class="reference-style-9">
+          <image src="./asset/icons/svg_0b2c12a8.svg" />
+        </view>
+      </view>
+    </view>
+    <view
+      data-node-id="166:15315"
+      data-name="容器 50312"
+      class="reference-style-10">
+      <view
+        data-node-id="166:15316"
+        data-name="容器"
+        class="reference-style-11">
+        <image src="./asset/icons/svg_7f2095aa.svg" />
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:15377"
+    data-name="圆形 2"
+    class="reference-style-12">
+    <image src="./asset/icons/svg_a7d2aa9f.svg" />
+  </view>
+  <view
+    data-node-id="166:15353"
+    data-name="组 51045"
+    class="reference-style-13">
+    <view
+      data-node-id="166:15354"
+      data-name="组 51039"
+      class="reference-style-14">
+      <text
+        data-node-id="166:15359"
+        data-name="688.5"
+        class="reference-style-15">
+        688.5
+      </text>
+      <text
+        data-node-id="166:15355"
+        data-name="￥"
+        class="reference-style-16">
+        ￥
+      </text>
+    </view>
+  </view>
+  <view
+    data-node-id="166:15177"
+    data-name="容器 50327"
+    class="reference-style-17">
+    <text
+      data-node-id="166:15181"
+      data-name="旅行账本"
+      class="reference-style-18">
+      旅行账本
+    </text>
+    <view
+      data-node-id="166:15185"
+      data-name="容器 50316"
+      class="reference-style-19">
+      <image
+        src="./asset/icons/svg_aa12c6ee.svg"
+        data-node-id="166:15186"
+        data-name="容器"
+        class="reference-style-20" />
+    </view>
+  </view>
+  <view
+    data-node-id="166:15368"
+    data-name="容器 50323"
+    class="reference-style-21">
+    <image
+      src="./asset/icons/svg_bf1045d6.svg"
+      data-node-id="166:15373"
+      data-name="容器 50322"
+      class="reference-style-22" />
+    <text
+      data-node-id="166:15369"
+      data-name="全行程支出"
+      class="reference-style-23">
+      全行程支出
+    </text>
+  </view>
+  <view
+    data-node-id="166:14645"
+    data-name="容器 50342"
+    class="reference-style-24">
+    <image src="./asset/icons/svg_ccddb370.svg" />
+  </view>
+  <text
+    data-node-id="166:15173"
+    data-name="/1920"
+    class="reference-style-25">
+    /1920
+  </text>
+  <view
+    data-node-id="166:15297"
+    data-name="容器 50416"
+    class="reference-style-26">
+    <view
+      data-node-id="166:15298"
+      data-name="容器 50419"
+      class="reference-style-27">
+      <view
+        data-node-id="166:15309"
+        data-name="容器 50417"
+        class="reference-style-28">
+        <text
+          data-node-id="166:15310"
+          data-name="明细"
+          class="reference-style-29">
+          明细
+        </text>
+      </view>
+      <view
+        data-node-id="166:15299"
+        data-name="容器 50418"
+        class="reference-style-30">
+        <text
+          data-node-id="166:15300"
+          data-name="分账"
+          class="reference-style-31">
+          分账
+        </text>
+      </view>
+      <view
+        data-node-id="166:15304"
+        data-name="容器 50419"
+        class="reference-style-32">
+        <text
+          data-node-id="166:15305"
+          data-name="统计"
+          class="reference-style-33">
+          统计
+        </text>
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:14647"
+    data-name="容器 50399"
+    class="reference-style-34">
+    <view
+      data-node-id="166:14648"
+      data-name="容器 50382"
+      class="reference-style-35">
+      <view
+        data-node-id="166:14649"
+        data-name="容器 50459"
+        class="reference-style-36">
+        <view
+          data-node-id="166:14660"
+          data-name="容器 50377"
+          class="reference-style-37">
+          <text
+            data-node-id="166:14666"
+            data-name="10月11日"
+            class="reference-style-38">
+            10月11日
+          </text>
+          <image
+            src="./asset/icons/svg_f1ac8389.svg"
+            data-node-id="166:14665"
+            data-name="圆形 8"
+            class="reference-style-39" />
+          <text
+            data-node-id="166:14661"
+            data-name="12笔"
+            class="reference-style-40">
+            12笔
+          </text>
+        </view>
+        <p
+          data-node-id="166:14670"
+          data-name="今"
+          class="reference-style-41">
+          今
+        </p>
+        <view
+          data-node-id="166:14650"
+          data-name="容器 50447"
+          class="reference-style-42">
+          <view
+            data-node-id="166:14651"
+            data-name="容器 50447"
+            class="reference-style-43">
+            <text
+              data-node-id="166:14656"
+              data-name="￥"
+              class="reference-style-44">
+              ￥
+            </text>
+            <text
+              data-node-id="166:14652"
+              data-name="429"
+              class="reference-style-45">
+              429
+            </text>
+          </view>
+        </view>
+      </view>
+      <view
+        data-node-id="166:14674"
+        data-name="容器 50457"
+        class="reference-style-46">
+        <view
+          data-node-id="166:14807"
+          data-name="容器 50458"
+          class="reference-style-47">
+          <view
+            data-node-id="166:14848"
+            data-name="容器 50456"
+            class="reference-style-48">
+            <view
+              data-node-id="166:14849"
+              data-name="容器 50455"
+              class="reference-style-49">
+              <text
+                data-node-id="166:14855"
+                data-name="门票"
+                class="reference-style-50">
+                门票
+              </text>
+              <view
+                data-node-id="166:14850"
+                data-name="容器 50476"
+                class="reference-style-51">
+                <text
+                  data-node-id="166:14851"
+                  data-name="景点活动"
+                  class="reference-style-52">
+                  景点活动
+                </text>
+              </view>
+            </view>
+            <p
+              data-node-id="166:14859"
+              data-name="31"
+              class="reference-style-53">
+              31
+            </p>
+            <view
+              data-node-id="166:14863"
+              data-name="容器 50454"
+              class="reference-style-54">
+              <image
+                src="./asset/icons/svg_e722cee2.svg"
+                data-node-id="166:14864"
+                data-name="容器"
+                class="reference-style-55" />
+            </view>
+          </view>
+          <p
+            data-node-id="166:14869"
+            data-name="2026-10-11"
+            class="reference-style-56">
+            2026-10-11
+          </p>
+          <view
+            data-node-id="166:14812"
+            data-name="容器 50485"
+            class="reference-style-57">
+            <view
+              data-node-id="166:14813"
+              data-name="容器 50484"
+              class="reference-style-58">
+              <view
+                data-node-id="166:14822"
+                data-name="容器 50483"
+                class="reference-style-59">
+                <view
+                  data-node-id="166:14827"
+                  data-name="容器 50359"
+                  class="reference-style-60">
+                  <view
+                    data-node-id="166:14828"
+                    data-name="容器 50456"
+                    class="reference-style-61">
+                    <image
+                      data-node-id="166:14830"
+                      data-name="image"
+                      class="reference-style-62"
+                      src="./asset/images/image-166-14830.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:14829"
+                      data-name="image"
+                      class="reference-style-63"
+                      src="./asset/images/image-166-14829.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:14831"
+                      data-name="image"
+                      class="reference-style-64"
+                      src="./asset/images/image-166-14831.png"
+                      title="image" />
+                  </view>
+                  <text
+                    data-node-id="166:14832"
+                    data-name="付款"
+                    class="reference-style-65">
+                    付款
+                  </text>
+                </view>
+                <view
+                  data-node-id="166:14836"
+                  data-name="容器 50456"
+                  class="reference-style-66">
+                  <image
+                    data-node-id="166:14837"
+                    data-name="image"
+                    class="reference-style-67"
+                    src="./asset/images/image-166-14837.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14838"
+                    data-name="image"
+                    class="reference-style-68"
+                    src="./asset/images/image-166-14838.png"
+                    title="image" />
+                </view>
+                <view
+                  data-node-id="166:14823"
+                  data-name="容器 50457"
+                  class="reference-style-69">
+                  <image
+                    data-node-id="166:14824"
+                    data-name="image"
+                    class="reference-style-70"
+                    src="./asset/images/image-166-14824.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14826"
+                    data-name="image"
+                    class="reference-style-71"
+                    src="./asset/images/image-166-14826.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14825"
+                    data-name="image"
+                    class="reference-style-72"
+                    src="./asset/images/image-166-14825.png"
+                    title="image" />
+                </view>
+              </view>
+              <p
+                data-node-id="166:14818"
+                data-name="-￥12.00"
+                class="reference-style-73">
+                -￥12.00
+              </p>
+              <text
+                data-node-id="166:14814"
+                data-name="-￥12.00"
+                class="reference-style-74">
+                -￥12.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:14843"
+              data-name="容器 50403"
+              class="reference-style-75">
+              <p
+                data-node-id="166:14844"
+                data-name="这是一段备注文本"
+                class="reference-style-76">
+                这是一段备注文本
+              </p>
+            </view>
+          </view>
+        </view>
+        <view
+          data-node-id="166:14939"
+          data-name="容器 50459"
+          class="reference-style-77">
+          <view
+            data-node-id="166:14980"
+            data-name="容器 50456"
+            class="reference-style-78">
+            <view
+              data-node-id="166:14981"
+              data-name="容器 50455"
+              class="reference-style-79">
+              <text
+                data-node-id="166:14987"
+                data-name="门票"
+                class="reference-style-80">
+                门票
+              </text>
+              <view
+                data-node-id="166:14982"
+                data-name="容器 50476"
+                class="reference-style-81">
+                <text
+                  data-node-id="166:14983"
+                  data-name="景点活动"
+                  class="reference-style-82">
+                  景点活动
+                </text>
+              </view>
+            </view>
+            <p
+              data-node-id="166:14991"
+              data-name="31"
+              class="reference-style-83">
+              31
+            </p>
+            <view
+              data-node-id="166:14995"
+              data-name="容器 50454"
+              class="reference-style-84">
+              <image
+                src="./asset/icons/svg_4adde697.svg"
+                data-node-id="166:14996"
+                data-name="容器"
+                class="reference-style-85" />
+            </view>
+          </view>
+          <p
+            data-node-id="166:14940"
+            data-name="2026-10-11"
+            class="reference-style-86">
+            2026-10-11
+          </p>
+          <view
+            data-node-id="166:14944"
+            data-name="容器 50485"
+            class="reference-style-87">
+            <view
+              data-node-id="166:14945"
+              data-name="容器 50484"
+              class="reference-style-88">
+              <view
+                data-node-id="166:14954"
+                data-name="容器 50483"
+                class="reference-style-89">
+                <view
+                  data-node-id="166:14962"
+                  data-name="容器 50359"
+                  class="reference-style-90">
+                  <view
+                    data-node-id="166:14967"
+                    data-name="容器 50456"
+                    class="reference-style-91">
+                    <image
+                      data-node-id="166:14968"
+                      data-name="image"
+                      class="reference-style-92"
+                      src="./asset/images/image-166-14968.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:14969"
+                      data-name="image"
+                      class="reference-style-93"
+                      src="./asset/images/image-166-14969.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:14970"
+                      data-name="image"
+                      class="reference-style-94"
+                      src="./asset/images/image-166-14970.png"
+                      title="image" />
+                  </view>
+                  <text
+                    data-node-id="166:14963"
+                    data-name="付款"
+                    class="reference-style-95">
+                    付款
+                  </text>
+                </view>
+                <view
+                  data-node-id="166:14959"
+                  data-name="容器 50456"
+                  class="reference-style-96">
+                  <image
+                    data-node-id="166:14960"
+                    data-name="image"
+                    class="reference-style-97"
+                    src="./asset/images/image-166-14960.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14961"
+                    data-name="image"
+                    class="reference-style-98"
+                    src="./asset/images/image-166-14961.png"
+                    title="image" />
+                </view>
+                <view
+                  data-node-id="166:14955"
+                  data-name="容器 50457"
+                  class="reference-style-99">
+                  <image
+                    data-node-id="166:14958"
+                    data-name="image"
+                    class="reference-style-100"
+                    src="./asset/images/image-166-14958.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14957"
+                    data-name="image"
+                    class="reference-style-101"
+                    src="./asset/images/image-166-14957.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14956"
+                    data-name="image"
+                    class="reference-style-102"
+                    src="./asset/images/image-166-14956.png"
+                    title="image" />
+                </view>
+              </view>
+              <p
+                data-node-id="166:14971"
+                data-name="-￥12.00"
+                class="reference-style-103">
+                -￥12.00
+              </p>
+              <text
+                data-node-id="166:14946"
+                data-name="-￥12.00"
+                class="reference-style-104">
+                -￥12.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:14975"
+              data-name="容器 50403"
+              class="reference-style-105">
+              <p
+                data-node-id="166:14976"
+                data-name="这是一段备注文本"
+                class="reference-style-106">
+                这是一段备注文本
+              </p>
+            </view>
+          </view>
+        </view>
+        <view
+          data-node-id="166:14675"
+          data-name="容器 50462"
+          class="reference-style-107">
+          <view
+            data-node-id="166:14712"
+            data-name="容器 50456"
+            class="reference-style-108">
+            <view
+              data-node-id="166:14723"
+              data-name="容器 50455"
+              class="reference-style-109">
+              <text
+                data-node-id="166:14729"
+                data-name="门票"
+                class="reference-style-110">
+                门票
+              </text>
+              <view
+                data-node-id="166:14724"
+                data-name="容器 50476"
+                class="reference-style-111">
+                <text
+                  data-node-id="166:14725"
+                  data-name="景点活动"
+                  class="reference-style-112">
+                  景点活动
+                </text>
+              </view>
+            </view>
+            <p
+              data-node-id="166:14713"
+              data-name="31"
+              class="reference-style-113">
+              31
+            </p>
+            <view
+              data-node-id="166:14717"
+              data-name="容器 50454"
+              class="reference-style-114">
+              <image
+                src="./asset/icons/svg_e722cee2.svg"
+                data-node-id="166:14718"
+                data-name="容器"
+                class="reference-style-115" />
+            </view>
+          </view>
+          <p
+            data-node-id="166:14733"
+            data-name="2026-10-11"
+            class="reference-style-116">
+            2026-10-11
+          </p>
+          <view
+            data-node-id="166:14676"
+            data-name="容器 50485"
+            class="reference-style-117">
+            <view
+              data-node-id="166:14677"
+              data-name="容器 50484"
+              class="reference-style-118">
+              <view
+                data-node-id="166:14678"
+                data-name="容器 50483"
+                class="reference-style-119">
+                <view
+                  data-node-id="166:14679"
+                  data-name="容器 50359"
+                  class="reference-style-120">
+                  <view
+                    data-node-id="166:14684"
+                    data-name="容器 50456"
+                    class="reference-style-121">
+                    <image
+                      data-node-id="166:14687"
+                      data-name="image"
+                      class="reference-style-122"
+                      src="./asset/images/image-166-14687.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:14685"
+                      data-name="image"
+                      class="reference-style-123"
+                      src="./asset/images/image-166-14685.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:14686"
+                      data-name="image"
+                      class="reference-style-124"
+                      src="./asset/images/image-166-14686.png"
+                      title="image" />
+                  </view>
+                  <text
+                    data-node-id="166:14680"
+                    data-name="付款"
+                    class="reference-style-125">
+                    付款
+                  </text>
+                </view>
+                <view
+                  data-node-id="166:14688"
+                  data-name="容器 50456"
+                  class="reference-style-126">
+                  <image
+                    data-node-id="166:14689"
+                    data-name="image"
+                    class="reference-style-127"
+                    src="./asset/images/image-166-14689.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14690"
+                    data-name="image"
+                    class="reference-style-128"
+                    src="./asset/images/image-166-14690.png"
+                    title="image" />
+                </view>
+                <view
+                  data-node-id="166:14691"
+                  data-name="容器 50457"
+                  class="reference-style-129">
+                  <image
+                    data-node-id="166:14694"
+                    data-name="image"
+                    class="reference-style-130"
+                    src="./asset/images/image-166-14694.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14692"
+                    data-name="image"
+                    class="reference-style-131"
+                    src="./asset/images/image-166-14692.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14693"
+                    data-name="image"
+                    class="reference-style-132"
+                    src="./asset/images/image-166-14693.png"
+                    title="image" />
+                </view>
+              </view>
+              <p
+                data-node-id="166:14695"
+                data-name="-￥12.00"
+                class="reference-style-133">
+                -￥12.00
+              </p>
+              <text
+                data-node-id="166:14703"
+                data-name="-￥12.00"
+                class="reference-style-134">
+                -￥12.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:14707"
+              data-name="容器 50403"
+              class="reference-style-135">
+              <p
+                data-node-id="166:14708"
+                data-name="这是一段备注文本"
+                class="reference-style-136">
+                这是一段备注文本
+              </p>
+            </view>
+          </view>
+        </view>
+        <view
+          data-node-id="166:14873"
+          data-name="容器 50463"
+          class="reference-style-137">
+          <view
+            data-node-id="166:14882"
+            data-name="容器 50456"
+            class="reference-style-138">
+            <view
+              data-node-id="166:14887"
+              data-name="容器 50455"
+              class="reference-style-139">
+              <text
+                data-node-id="166:14893"
+                data-name="门票"
+                class="reference-style-140">
+                门票
+              </text>
+              <view
+                data-node-id="166:14888"
+                data-name="容器 50476"
+                class="reference-style-141">
+                <text
+                  data-node-id="166:14889"
+                  data-name="景点活动"
+                  class="reference-style-142">
+                  景点活动
+                </text>
+              </view>
+            </view>
+            <p
+              data-node-id="166:14883"
+              data-name="31"
+              class="reference-style-143">
+              31
+            </p>
+            <view
+              data-node-id="166:14897"
+              data-name="容器 50454"
+              class="reference-style-144">
+              <image
+                src="./asset/icons/svg_4adde697.svg"
+                data-node-id="166:14898"
+                data-name="容器"
+                class="reference-style-145" />
+            </view>
+          </view>
+          <p
+            data-node-id="166:14878"
+            data-name="2026-10-11"
+            class="reference-style-146">
+            2026-10-11
+          </p>
+          <view
+            data-node-id="166:14903"
+            data-name="容器 50485"
+            class="reference-style-147">
+            <view
+              data-node-id="166:14909"
+              data-name="容器 50484"
+              class="reference-style-148">
+              <view
+                data-node-id="166:14910"
+                data-name="容器 50483"
+                class="reference-style-149">
+                <view
+                  data-node-id="166:14918"
+                  data-name="容器 50359"
+                  class="reference-style-150">
+                  <view
+                    data-node-id="166:14919"
+                    data-name="容器 50456"
+                    class="reference-style-151">
+                    <image
+                      data-node-id="166:14922"
+                      data-name="image"
+                      class="reference-style-152"
+                      src="./asset/images/image-166-14922.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:14920"
+                      data-name="image"
+                      class="reference-style-153"
+                      src="./asset/images/image-166-14920.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:14921"
+                      data-name="image"
+                      class="reference-style-154"
+                      src="./asset/images/image-166-14921.png"
+                      title="image" />
+                  </view>
+                  <text
+                    data-node-id="166:14923"
+                    data-name="付款"
+                    class="reference-style-155">
+                    付款
+                  </text>
+                </view>
+                <view
+                  data-node-id="166:14915"
+                  data-name="容器 50456"
+                  class="reference-style-156">
+                  <image
+                    data-node-id="166:14917"
+                    data-name="image"
+                    class="reference-style-157"
+                    src="./asset/images/image-166-14917.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14916"
+                    data-name="image"
+                    class="reference-style-158"
+                    src="./asset/images/image-166-14916.png"
+                    title="image" />
+                </view>
+                <view
+                  data-node-id="166:14911"
+                  data-name="容器 50457"
+                  class="reference-style-159">
+                  <image
+                    data-node-id="166:14912"
+                    data-name="image"
+                    class="reference-style-160"
+                    src="./asset/images/image-166-14912.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14913"
+                    data-name="image"
+                    class="reference-style-161"
+                    src="./asset/images/image-166-14913.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14914"
+                    data-name="image"
+                    class="reference-style-162"
+                    src="./asset/images/image-166-14914.png"
+                    title="image" />
+                </view>
+              </view>
+              <p
+                data-node-id="166:14927"
+                data-name="-￥12.00"
+                class="reference-style-163">
+                -￥12.00
+              </p>
+              <text
+                data-node-id="166:14935"
+                data-name="-￥12.00"
+                class="reference-style-164">
+                -￥12.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:14904"
+              data-name="容器 50403"
+              class="reference-style-165">
+              <p
+                data-node-id="166:14905"
+                data-name="这是一段备注文本"
+                class="reference-style-166">
+                这是一段备注文本
+              </p>
+            </view>
+          </view>
+        </view>
+        <view
+          data-node-id="166:15071"
+          data-name="容器 50464"
+          class="reference-style-167">
+          <view
+            data-node-id="166:15116"
+            data-name="容器 50456"
+            class="reference-style-168">
+            <view
+              data-node-id="166:15127"
+              data-name="容器 50455"
+              class="reference-style-169">
+              <text
+                data-node-id="166:15133"
+                data-name="门票"
+                class="reference-style-170">
+                门票
+              </text>
+              <view
+                data-node-id="166:15128"
+                data-name="容器 50476"
+                class="reference-style-171">
+                <text
+                  data-node-id="166:15129"
+                  data-name="景点活动"
+                  class="reference-style-172">
+                  景点活动
+                </text>
+              </view>
+            </view>
+            <p
+              data-node-id="166:15117"
+              data-name="31"
+              class="reference-style-173">
+              31
+            </p>
+            <view
+              data-node-id="166:15121"
+              data-name="容器 50454"
+              class="reference-style-174">
+              <image
+                src="./asset/icons/svg_e722cee2.svg"
+                data-node-id="166:15122"
+                data-name="容器"
+                class="reference-style-175" />
+            </view>
+          </view>
+          <p
+            data-node-id="166:15072"
+            data-name="2026-10-11"
+            class="reference-style-176">
+            2026-10-11
+          </p>
+          <view
+            data-node-id="166:15080"
+            data-name="容器 50485"
+            class="reference-style-177">
+            <view
+              data-node-id="166:15081"
+              data-name="容器 50484"
+              class="reference-style-178">
+              <view
+                data-node-id="166:15086"
+                data-name="容器 50483"
+                class="reference-style-179">
+                <view
+                  data-node-id="166:15087"
+                  data-name="容器 50359"
+                  class="reference-style-180">
+                  <view
+                    data-node-id="166:15088"
+                    data-name="容器 50456"
+                    class="reference-style-181">
+                    <image
+                      data-node-id="166:15090"
+                      data-name="image"
+                      class="reference-style-182"
+                      src="./asset/images/image-166-15090.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:15091"
+                      data-name="image"
+                      class="reference-style-183"
+                      src="./asset/images/image-166-15091.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:15089"
+                      data-name="image"
+                      class="reference-style-184"
+                      src="./asset/images/image-166-15089.png"
+                      title="image" />
+                  </view>
+                  <text
+                    data-node-id="166:15092"
+                    data-name="付款"
+                    class="reference-style-185">
+                    付款
+                  </text>
+                </view>
+                <view
+                  data-node-id="166:15100"
+                  data-name="容器 50456"
+                  class="reference-style-186">
+                  <image
+                    data-node-id="166:15102"
+                    data-name="image"
+                    class="reference-style-187"
+                    src="./asset/images/image-166-15102.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:15101"
+                    data-name="image"
+                    class="reference-style-188"
+                    src="./asset/images/image-166-15101.png"
+                    title="image" />
+                </view>
+                <view
+                  data-node-id="166:15096"
+                  data-name="容器 50457"
+                  class="reference-style-189">
+                  <image
+                    data-node-id="166:15098"
+                    data-name="image"
+                    class="reference-style-190"
+                    src="./asset/images/image-166-15098.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:15099"
+                    data-name="image"
+                    class="reference-style-191"
+                    src="./asset/images/image-166-15099.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:15097"
+                    data-name="image"
+                    class="reference-style-192"
+                    src="./asset/images/image-166-15097.png"
+                    title="image" />
+                </view>
+              </view>
+              <p
+                data-node-id="166:15082"
+                data-name="-￥12.00"
+                class="reference-style-193">
+                -￥12.00
+              </p>
+              <text
+                data-node-id="166:15103"
+                data-name="-￥12.00"
+                class="reference-style-194">
+                -￥12.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:15111"
+              data-name="容器 50403"
+              class="reference-style-195">
+              <p
+                data-node-id="166:15112"
+                data-name="这是一段备注文本"
+                class="reference-style-196">
+                这是一段备注文本
+              </p>
+            </view>
+          </view>
+        </view>
+        <view
+          data-node-id="166:14741"
+          data-name="容器 50465"
+          class="reference-style-197">
+          <view
+            data-node-id="166:14786"
+            data-name="容器 50456"
+            class="reference-style-198">
+            <view
+              data-node-id="166:14787"
+              data-name="容器 50455"
+              class="reference-style-199">
+              <text
+                data-node-id="166:14788"
+                data-name="门票"
+                class="reference-style-200">
+                门票
+              </text>
+              <view
+                data-node-id="166:14792"
+                data-name="容器 50476"
+                class="reference-style-201">
+                <text
+                  data-node-id="166:14793"
+                  data-name="景点活动"
+                  class="reference-style-202">
+                  景点活动
+                </text>
+              </view>
+            </view>
+            <p
+              data-node-id="166:14797"
+              data-name="31"
+              class="reference-style-203">
+              31
+            </p>
+            <view
+              data-node-id="166:14801"
+              data-name="容器 50454"
+              class="reference-style-204">
+              <image
+                src="./asset/icons/svg_4adde697.svg"
+                data-node-id="166:14802"
+                data-name="容器"
+                class="reference-style-205" />
+            </view>
+          </view>
+          <p
+            data-node-id="166:14742"
+            data-name="2026-10-11"
+            class="reference-style-206">
+            2026-10-11
+          </p>
+          <view
+            data-node-id="166:14746"
+            data-name="容器 50485"
+            class="reference-style-207">
+            <view
+              data-node-id="166:14747"
+              data-name="容器 50484"
+              class="reference-style-208">
+              <view
+                data-node-id="166:14760"
+                data-name="容器 50483"
+                class="reference-style-209">
+                <view
+                  data-node-id="166:14761"
+                  data-name="容器 50359"
+                  class="reference-style-210">
+                  <view
+                    data-node-id="166:14762"
+                    data-name="容器 50456"
+                    class="reference-style-211">
+                    <image
+                      data-node-id="166:14764"
+                      data-name="image"
+                      class="reference-style-212"
+                      src="./asset/images/image-166-14764.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:14763"
+                      data-name="image"
+                      class="reference-style-213"
+                      src="./asset/images/image-166-14763.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:14765"
+                      data-name="image"
+                      class="reference-style-214"
+                      src="./asset/images/image-166-14765.png"
+                      title="image" />
+                  </view>
+                  <text
+                    data-node-id="166:14766"
+                    data-name="付款"
+                    class="reference-style-215">
+                    付款
+                  </text>
+                </view>
+                <view
+                  data-node-id="166:14770"
+                  data-name="容器 50456"
+                  class="reference-style-216">
+                  <image
+                    data-node-id="166:14771"
+                    data-name="image"
+                    class="reference-style-217"
+                    src="./asset/images/image-166-14771.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14772"
+                    data-name="image"
+                    class="reference-style-218"
+                    src="./asset/images/image-166-14772.png"
+                    title="image" />
+                </view>
+                <view
+                  data-node-id="166:14773"
+                  data-name="容器 50457"
+                  class="reference-style-219">
+                  <image
+                    data-node-id="166:14774"
+                    data-name="image"
+                    class="reference-style-220"
+                    src="./asset/images/image-166-14774.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14775"
+                    data-name="image"
+                    class="reference-style-221"
+                    src="./asset/images/image-166-14775.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:14776"
+                    data-name="image"
+                    class="reference-style-222"
+                    src="./asset/images/image-166-14776.png"
+                    title="image" />
+                </view>
+              </view>
+              <p
+                data-node-id="166:14756"
+                data-name="-￥12.00"
+                class="reference-style-223">
+                -￥12.00
+              </p>
+              <text
+                data-node-id="166:14748"
+                data-name="-￥12.00"
+                class="reference-style-224">
+                -￥12.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:14777"
+              data-name="容器 50403"
+              class="reference-style-225">
+              <p
+                data-node-id="166:14778"
+                data-name="这是一段备注文本"
+                class="reference-style-226">
+                这是一段备注文本
+              </p>
+            </view>
+          </view>
+        </view>
+        <view
+          data-node-id="166:15005"
+          data-name="容器 50466"
+          class="reference-style-227">
+          <view
+            data-node-id="166:15006"
+            data-name="容器 50456"
+            class="reference-style-228">
+            <view
+              data-node-id="166:15013"
+              data-name="容器 50455"
+              class="reference-style-229">
+              <text
+                data-node-id="166:15019"
+                data-name="门票"
+                class="reference-style-230">
+                门票
+              </text>
+              <view
+                data-node-id="166:15014"
+                data-name="容器 50476"
+                class="reference-style-231">
+                <text
+                  data-node-id="166:15015"
+                  data-name="景点活动"
+                  class="reference-style-232">
+                  景点活动
+                </text>
+              </view>
+            </view>
+            <p
+              data-node-id="166:15023"
+              data-name="31"
+              class="reference-style-233">
+              31
+            </p>
+            <view
+              data-node-id="166:15007"
+              data-name="容器 50454"
+              class="reference-style-234">
+              <image
+                src="./asset/icons/svg_4adde697.svg"
+                data-node-id="166:15008"
+                data-name="容器"
+                class="reference-style-235" />
+            </view>
+          </view>
+          <p
+            data-node-id="166:15063"
+            data-name="2026-10-11"
+            class="reference-style-236">
+            2026-10-11
+          </p>
+          <view
+            data-node-id="166:15027"
+            data-name="容器 50485"
+            class="reference-style-237">
+            <view
+              data-node-id="166:15028"
+              data-name="容器 50484"
+              class="reference-style-238">
+              <view
+                data-node-id="166:15041"
+                data-name="容器 50483"
+                class="reference-style-239">
+                <view
+                  data-node-id="166:15045"
+                  data-name="容器 50359"
+                  class="reference-style-240">
+                  <view
+                    data-node-id="166:15046"
+                    data-name="容器 50456"
+                    class="reference-style-241">
+                    <image
+                      data-node-id="166:15047"
+                      data-name="image"
+                      class="reference-style-242"
+                      src="./asset/images/image-166-15047.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:15049"
+                      data-name="image"
+                      class="reference-style-243"
+                      src="./asset/images/image-166-15049.png"
+                      title="image" />
+                    <image
+                      data-node-id="166:15048"
+                      data-name="image"
+                      class="reference-style-244"
+                      src="./asset/images/image-166-15048.png"
+                      title="image" />
+                  </view>
+                  <text
+                    data-node-id="166:15050"
+                    data-name="付款"
+                    class="reference-style-245">
+                    付款
+                  </text>
+                </view>
+                <view
+                  data-node-id="166:15042"
+                  data-name="容器 50456"
+                  class="reference-style-246">
+                  <image
+                    data-node-id="166:15044"
+                    data-name="image"
+                    class="reference-style-247"
+                    src="./asset/images/image-166-15044.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:15043"
+                    data-name="image"
+                    class="reference-style-248"
+                    src="./asset/images/image-166-15043.png"
+                    title="image" />
+                </view>
+                <view
+                  data-node-id="166:15054"
+                  data-name="容器 50457"
+                  class="reference-style-249">
+                  <image
+                    data-node-id="166:15056"
+                    data-name="image"
+                    class="reference-style-250"
+                    src="./asset/images/image-166-15056.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:15057"
+                    data-name="image"
+                    class="reference-style-251"
+                    src="./asset/images/image-166-15057.png"
+                    title="image" />
+                  <image
+                    data-node-id="166:15055"
+                    data-name="image"
+                    class="reference-style-252"
+                    src="./asset/images/image-166-15055.png"
+                    title="image" />
+                </view>
+              </view>
+              <p
+                data-node-id="166:15033"
+                data-name="-￥12.00"
+                class="reference-style-253">
+                -￥12.00
+              </p>
+              <text
+                data-node-id="166:15029"
+                data-name="-￥12.00"
+                class="reference-style-254">
+                -￥12.00
+              </text>
+            </view>
+            <view
+              data-node-id="166:15058"
+              data-name="容器 50403"
+              class="reference-style-255">
+              <p
+                data-node-id="166:15059"
+                data-name="这是一段备注文本"
+                class="reference-style-256">
+                这是一段备注文本
+              </p>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:15188"
+    data-name="容器 50375"
+    class="reference-style-257">
+    <view
+      data-node-id="166:15261"
+      data-name="容器 50365"
+      class="reference-style-258">
+      <view
+        data-node-id="166:15262"
+        data-name="容器 50370"
+        class="reference-style-259">
+        <text
+          data-node-id="166:15271"
+          data-name="周日"
+          class="reference-style-260">
+          周日
+        </text>
+        <text
+          data-node-id="166:15263"
+          data-name="10"
+          class="reference-style-261">
+          10
+        </text>
+        <text
+          data-node-id="166:15267"
+          data-name="10月"
+          class="reference-style-262">
+          10月
+        </text>
+      </view>
+      <image
+        src="./asset/icons/svg_4d8e5e68.svg"
+        data-node-id="166:15275"
+        data-name="容器 50372"
+        class="reference-style-263" />
+    </view>
+    <view
+      data-node-id="166:15279"
+      data-name="容器 50364"
+      class="reference-style-264">
+      <view
+        data-node-id="166:15280"
+        data-name="容器 50370"
+        class="reference-style-265">
+        <text
+          data-node-id="166:15285"
+          data-name="周日"
+          class="reference-style-266">
+          周日
+        </text>
+        <text
+          data-node-id="166:15289"
+          data-name="11"
+          class="reference-style-267">
+          11
+        </text>
+        <text
+          data-node-id="166:15281"
+          data-name="10月"
+          class="reference-style-268">
+          10月
+        </text>
+      </view>
+      <image
+        src="./asset/icons/svg_2f21ae5a.svg"
+        data-node-id="166:15293"
+        data-name="容器 50373"
+        class="reference-style-269" />
+    </view>
+    <view
+      data-node-id="166:15207"
+      data-name="容器 50366"
+      class="reference-style-270">
+      <view
+        data-node-id="166:15208"
+        data-name="容器 50370"
+        class="reference-style-271">
+        <text
+          data-node-id="166:15213"
+          data-name="周日"
+          class="reference-style-272">
+          周日
+        </text>
+        <text
+          data-node-id="166:15217"
+          data-name="12"
+          class="reference-style-273">
+          12
+        </text>
+        <text
+          data-node-id="166:15209"
+          data-name="10月"
+          class="reference-style-274">
+          10月
+        </text>
+      </view>
+      <image
+        src="./asset/icons/svg_3927f0ba.svg"
+        data-node-id="166:15221"
+        data-name="容器 50374"
+        class="reference-style-275" />
+    </view>
+    <view
+      data-node-id="166:15225"
+      data-name="容器 50367"
+      class="reference-style-276">
+      <view
+        data-node-id="166:15230"
+        data-name="容器 50370"
+        class="reference-style-277">
+        <text
+          data-node-id="166:15235"
+          data-name="周日"
+          class="reference-style-278">
+          周日
+        </text>
+        <text
+          data-node-id="166:15239"
+          data-name="13"
+          class="reference-style-279">
+          13
+        </text>
+        <text
+          data-node-id="166:15231"
+          data-name="10月"
+          class="reference-style-280">
+          10月
+        </text>
+      </view>
+      <image
+        src="./asset/icons/svg_3927f0ba.svg"
+        data-node-id="166:15226"
+        data-name="容器 50374"
+        class="reference-style-281" />
+    </view>
+    <view
+      data-node-id="166:15243"
+      data-name="容器 50368"
+      class="reference-style-282">
+      <view
+        data-node-id="166:15244"
+        data-name="容器 50370"
+        class="reference-style-283">
+        <text
+          data-node-id="166:15249"
+          data-name="周日"
+          class="reference-style-284">
+          周日
+        </text>
+        <text
+          data-node-id="166:15253"
+          data-name="14"
+          class="reference-style-285">
+          14
+        </text>
+        <text
+          data-node-id="166:15245"
+          data-name="10月"
+          class="reference-style-286">
+          10月
+        </text>
+      </view>
+      <image
+        src="./asset/icons/svg_3927f0ba.svg"
+        data-node-id="166:15257"
+        data-name="容器 50374"
+        class="reference-style-287" />
+    </view>
+    <view
+      data-node-id="166:15189"
+      data-name="容器 50369"
+      class="reference-style-288">
+      <view
+        data-node-id="166:15194"
+        data-name="容器 50370"
+        class="reference-style-289">
+        <text
+          data-node-id="166:15195"
+          data-name="周日"
+          class="reference-style-290">
+          周日
+        </text>
+        <text
+          data-node-id="166:15203"
+          data-name="15"
+          class="reference-style-291">
+          15
+        </text>
+        <text
+          data-node-id="166:15199"
+          data-name="10月"
+          class="reference-style-292">
+          10月
+        </text>
+      </view>
+      <image
+        src="./asset/icons/svg_129a3eb6.svg"
+        data-node-id="166:15190"
+        data-name="容器 50374"
+        class="reference-style-293" />
+    </view>
+  </view>
+  <view
+    data-node-id="166:15349"
+    data-name="容器 50443"
+    class="reference-style-294">
+    <image
+      src="./asset/icons/svg_bd31ecd9.svg"
+      data-node-id="166:15350"
+      data-name="容器"
+      class="reference-style-295" />
+  </view>
+  <view
+    data-node-id="166:15137"
+    data-name="容器 50314"
+    class="reference-style-296">
+    <view
+      data-node-id="166:15161"
+      data-name="容器 50308"
+      class="reference-style-297">
+      <view
+        data-node-id="166:15162"
+        data-name="容器 50305"
+        class="reference-style-298">
+        <image src="./asset/icons/svg_f5c0d9d1.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:15170"
+      data-name="容器 50339"
+      class="reference-style-299">
+      <view
+        data-node-id="166:15171"
+        data-name="容器"
+        class="reference-style-300">
+        <image src="./asset/icons/svg_7bb647bd.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:15148"
+      data-name="容器 50338"
+      class="reference-style-301">
+      <view
+        data-node-id="166:15149"
+        data-name="组 51041"
+        class="reference-style-302">
+        <image src="./asset/icons/svg_5c27039c.svg" />
+      </view>
+      <view
+        data-node-id="166:15159"
+        data-name="容器"
+        class="reference-style-303">
+        <image src="./asset/icons/svg_2735d2ad.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:15141"
+      data-name="容器 50310"
+      class="reference-style-304">
+      <view
+        data-node-id="166:15142"
+        data-name="容器 50318"
+        class="reference-style-305">
+        <image src="./asset/icons/svg_988bdf11.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:15138"
+      data-name="容器 50309"
+      class="reference-style-306">
+      <view
+        data-node-id="166:15139"
+        data-name="容器"
+        class="reference-style-307">
+        <image src="./asset/icons/svg_1d8be48b.svg" />
+      </view>
+    </view>
+  </view>
+</view>

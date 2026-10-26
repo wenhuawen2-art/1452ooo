@@ -1,0 +1,51 @@
+/* Empty and signed-out landings fit above the shared tab bar. */
+.page.is-no-trip{padding:0!important;height:100vh;min-height:100vh;overflow:hidden;background:radial-gradient(ellipse 120% 55% at 35% 60%,rgba(255,255,255,.96) 0%,rgba(255,255,255,.85) 42%,rgba(255,255,255,0) 100%),linear-gradient(180deg,#007bff 0%,rgba(6,126,255,.98) 13%,rgba(54,158,255,.65) 35%,rgba(255,255,255,0) 100%),#edf1f5}
+.onboarding{position:relative;isolation:isolate;display:flex;flex-direction:column;height:100vh;min-height:0;overflow:hidden;box-sizing:border-box;padding-top:calc(96px + var(--onboarding-inset,0px));padding-bottom:calc(124px + var(--safe-bottom,0px));color:#001126;font-family:'Alibaba PuHuiTi 2.0',sans-serif}
+.onboarding view,.onboarding text,.onboarding button{box-sizing:border-box}
+.onboarding-atmosphere{position:absolute;left:-550px;top:22px;width:1190px;height:1145px;max-width:none;z-index:-1;pointer-events:none;mix-blend-mode:lighten}
+.onboarding-intro{position:relative;height:100px;min-height:100px;padding:0 16px;flex:none}
+.onboarding-title{display:block;color:#001126;font-size:30px;font-weight:800;line-height:42px}
+.onboarding-subtitle{display:block;margin-top:10px;color:#001126;font-size:20px;line-height:28px}
+.onboarding-accent{position:absolute;left:60px;top:53px;width:163px;height:39px;pointer-events:none}
+.onboarding-camera{position:absolute;left:69%;top:9px;width:36px;height:39px}
+.onboarding-mountain{position:absolute;right:16px;top:75px;width:48px;height:52px}
+.onboarding-panel{position:relative;display:flex;flex:1;min-height:0;flex-direction:column;justify-content:flex-end;padding:16px 17px 0;border:1px solid rgba(255,255,255,.8);border-bottom:0;border-radius:20px 20px 0 0;background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.86) 48%,rgba(255,255,255,.65) 100%)}
+.onboarding-login-summary{display:flex;flex-direction:column;align-items:center;text-align:center;flex:none}
+.onboarding-logo{width:52px;height:52px;flex:none}
+.onboarding-login-title{margin-top:14px;font-size:20px;font-weight:800;line-height:28px}
+.onboarding-copy{margin-top:6px;font-size:14px;line-height:20px;color:rgba(0,17,38,.5);max-width:357px}
+.onboarding-features{display:flex;flex-direction:column;gap:12px;margin-top:16px;flex:none}
+.onboarding-feature{display:flex;align-items:center;gap:16px;height:40px;flex:none;font-size:16px;line-height:22px}
+.onboarding-icon{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;flex:none}
+.onboarding-icon image{width:24px;height:24px;min-width:24px;max-width:none;flex:none}
+.onboarding-icon.route{background:rgba(14,155,255,.12)}
+.onboarding-icon.lodging{background:rgba(255,134,14,.12)}
+.onboarding-icon.items{background:rgba(155,96,255,.12)}
+.onboarding .onboarding-primary{display:flex;align-items:center;justify-content:center;flex:none;gap:8px;width:100%;height:48px;min-height:48px;margin:20px 0 0;padding:12px;border:0;border-radius:12px;background:#001126;color:rgba(255,255,255,.9);font-size:16px;font-weight:600;line-height:22px}
+.onboarding-primary image{width:20px;height:20px;flex:none}
+.is-empty-account .onboarding-panel{padding:0 16px;background:none;border:0}
+.is-empty-account .onboarding-features{gap:24px;margin-top:0}
+.is-empty-account .onboarding-primary{margin-top:40px}
+.is-no-trip .system-header .mg-top{height:40px}
+.is-no-trip .system-header .profile-entry{width:40px;height:40px;margin-left:0}
+.is-no-trip .system-header .mg-brand{gap:12px}
+.is-no-trip .system-header .mg-brand image{width:40px;height:40px}
+.is-no-trip .system-header .mg-brand text{font-size:16px}
+.is-no-trip .system-header .mg-theme{margin-left:auto}
+.is-no-trip .bottom-haze{display:none}
+.is-logged-out .onboarding-mountain{top:40px}
+.is-logged-out .onboarding-panel{isolation:isolate;background:none;border-color:transparent}
+.is-logged-out .onboarding-login-summary{margin-top:auto;margin-bottom:auto}
+.is-logged-out .onboarding-panel::before{content:"";position:absolute;z-index:-1;top:-1px;left:-1px;right:-1px;bottom:calc(-124px - var(--safe-bottom,0px));border:1px solid rgba(255,255,255,.8);border-bottom:0;border-radius:20px 20px 0 0;background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.86) 48%,rgba(255,255,255,.65) 100%);pointer-events:none}
+@media(max-height:800px){
+ .onboarding-intro{height:80px;min-height:80px}
+ .is-logged-out .onboarding-panel{padding-top:12px}
+ .is-logged-out .onboarding-mountain{top:20px}
+ .is-logged-out .onboarding-logo{width:44px;height:44px}
+ .is-logged-out .onboarding-login-title{margin-top:10px;font-size:18px;line-height:24px}
+ .is-logged-out .onboarding-copy{margin-top:4px;font-size:12px;line-height:18px}
+ .is-logged-out .onboarding-features{gap:10px;margin-top:12px}
+ .is-logged-out .onboarding-feature{height:32px;font-size:14px}
+ .is-logged-out .onboarding-icon{width:32px;height:32px;border-radius:10px}
+ .is-logged-out .onboarding-primary{margin-top:16px;height:44px;min-height:44px}
+}

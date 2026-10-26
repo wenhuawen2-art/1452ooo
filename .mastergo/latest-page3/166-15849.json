@@ -1,0 +1,2032 @@
+{
+  "id": "166:15849",
+  "name": "我的",
+  "style": {
+    "width": "393px",
+    "height": "1061px",
+    "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 15%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+    "overflow": "hidden",
+    "position": "relative"
+  },
+  "reference": "C:\\Users\\wenhu\\.mgmcp\\resources\\screenshots\\200425698503069\\166-15849\\我的_166-15849.png",
+  "nodes": [
+    {
+      "id": "166:15849",
+      "name": "我的",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "393px",
+        "height": "1061px",
+        "background": "linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 15%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%)",
+        "overflow": "hidden",
+        "position": "relative"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16111",
+      "name": "蒙版组 5",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "583px",
+        "height": "413px",
+        "position": "absolute",
+        "left": "86px",
+        "top": "-109px",
+        "z-index": "0"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16112",
+      "name": "白云 - 搜索结果 - 花瓣",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "0px",
+        "top": "0px",
+        "z-index": "2",
+        "width": "574px",
+        "height": "374px",
+        "object-fit": "cover"
+      },
+      "src": "./asset/images/白云-搜索结果-花瓣-166-16112.png"
+    },
+    {
+      "id": "166:16141",
+      "name": "蒙版组 6",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "583px",
+        "height": "413px",
+        "position": "absolute",
+        "left": "-314px",
+        "top": "-79px",
+        "z-index": "1"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16143",
+      "name": "白云 - 搜索结果 - 花瓣",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "0px",
+        "top": "0px",
+        "z-index": "1",
+        "width": "574px",
+        "height": "374px",
+        "object-fit": "cover"
+      },
+      "src": "./asset/images/白云-搜索结果-花瓣-166-16143.png"
+    },
+    {
+      "id": "166:16115",
+      "name": "蒙版组 8",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "422px",
+        "height": "268px",
+        "position": "absolute",
+        "left": "4px",
+        "top": "173px",
+        "z-index": "2"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16117",
+      "name": "白云 - 搜索结果 - 花瓣",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "-4px",
+        "top": "-106px",
+        "z-index": "1",
+        "width": "574px",
+        "height": "374px",
+        "object-fit": "cover"
+      },
+      "src": "./asset/images/白云-搜索结果-花瓣-166-16117.png"
+    },
+    {
+      "id": "166:16075",
+      "name": "容器 50313",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "361px",
+        "height": "40px",
+        "display": "flex",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "16px",
+        "position": "absolute",
+        "left": "16px",
+        "top": "16px",
+        "z-index": "3"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16108",
+      "name": "容器 50316",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "40px",
+        "height": "40px",
+        "flex": "none",
+        "background": "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 100%), linear-gradient(0deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.16) 100%)",
+        "border-radius": "220px",
+        "overflow": "hidden",
+        "position": "relative"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16109",
+      "name": "容器",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "calc(100% - 40px + 30px)",
+        "top": "calc(100% - 40px + 10px)",
+        "z-index": "0"
+      },
+      "src": null
+    },
+    {
+      "id": null,
+      "name": null,
+      "tag": "img",
+      "text": "",
+      "style": {
+        "color": "#FFFFFF"
+      },
+      "src": "./asset/icons/svg_28f66596.svg"
+    },
+    {
+      "id": "166:16086",
+      "name": "容器 50306",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "flex": "1",
+        "justify-content": "center",
+        "align-items": "center",
+        "gap": "12px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16101",
+      "name": "我的",
+      "tag": "span",
+      "text": "我的",
+      "style": {
+        "flex-shrink": "0",
+        "color": "#FFFFFF",
+        "font-size": "20px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "600",
+        "line-height": "28px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16105",
+      "name": "容器 50317",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "40px",
+        "height": "40px",
+        "flex": "none",
+        "border-radius": "220px",
+        "overflow": "hidden",
+        "position": "relative"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16106",
+      "name": "容器",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "calc(100% - 40px + 30px)",
+        "top": "calc(100% - 40px + 10px)",
+        "z-index": "0"
+      },
+      "src": null
+    },
+    {
+      "id": null,
+      "name": null,
+      "tag": "img",
+      "text": "",
+      "style": {},
+      "src": "./asset/icons/svg_95534126.svg"
+    },
+    {
+      "id": "166:16157",
+      "name": "容器 50666",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "100px",
+        "height": "100px",
+        "border-style": "solid",
+        "border-color": "#FFFFFF",
+        "border-width": "1px",
+        "border-radius": "224px",
+        "box-shadow": "0px 10px 20px 0px rgba(0,37,88,0.2)",
+        "position": "absolute",
+        "left": "calc(100% - 393px + 147px)",
+        "top": "126px",
+        "z-index": "4",
+        "overflow": "hidden"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16158",
+      "name": "搜索结果页面",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "0px",
+        "top": "0px",
+        "z-index": "0",
+        "width": "100px",
+        "height": "134px",
+        "object-fit": "cover"
+      },
+      "src": "./asset/images/搜索结果页面-166-16158.png"
+    },
+    {
+      "id": "166:16137",
+      "name": "容器",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "11px",
+        "top": "111px",
+        "z-index": "5"
+      },
+      "src": null
+    },
+    {
+      "id": null,
+      "name": null,
+      "tag": "img",
+      "text": "",
+      "style": {},
+      "src": "./asset/icons/svg_e6fdad95.svg"
+    },
+    {
+      "id": "166:16159",
+      "name": "组 51048",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "42px",
+        "height": "47px",
+        "position": "absolute",
+        "left": "65px",
+        "top": "189px",
+        "z-index": "6"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16160",
+      "name": "🏕",
+      "tag": "span",
+      "text": "🏕",
+      "style": {
+        "color": "#9E9E9E",
+        "font-size": "33.08px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "600",
+        "line-height": "46px",
+        "position": "absolute",
+        "left": "0px",
+        "top": "0px",
+        "z-index": "0"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16164",
+      "name": "路径 52907",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "0.81px",
+        "top": "7.27px",
+        "z-index": "1"
+      },
+      "src": null
+    },
+    {
+      "id": null,
+      "name": null,
+      "tag": "img",
+      "text": "",
+      "style": {
+        "color": "#FFFFFF"
+      },
+      "src": "./asset/icons/svg_a72cefd5.svg"
+    },
+    {
+      "id": "166:16131",
+      "name": "组 51049",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "37.85px",
+        "height": "42px",
+        "position": "absolute",
+        "left": "245px",
+        "top": "74px",
+        "z-index": "7"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16133",
+      "name": "🚲",
+      "tag": "span",
+      "text": "🚲",
+      "style": {
+        "color": "#9E9E9E",
+        "font-size": "30.02px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "600",
+        "line-height": "42px",
+        "position": "absolute",
+        "left": "0px",
+        "top": "0px",
+        "z-index": "0"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16132",
+      "name": "路径 52910",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "0.99px",
+        "top": "13.27px",
+        "z-index": "1"
+      },
+      "src": null
+    },
+    {
+      "id": null,
+      "name": null,
+      "tag": "img",
+      "text": "",
+      "style": {
+        "color": "#FFFFFF"
+      },
+      "src": "./asset/icons/svg_37e117d2.svg"
+    },
+    {
+      "id": "166:16118",
+      "name": "组 51051",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "27.63px",
+        "height": "28px",
+        "position": "absolute",
+        "left": "273px",
+        "top": "182px",
+        "z-index": "8"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16120",
+      "name": "🚗",
+      "tag": "span",
+      "text": "🚗",
+      "style": {
+        "color": "#9E9E9E",
+        "font-size": "19.85px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "600",
+        "line-height": "28px",
+        "position": "absolute",
+        "left": "1.43px",
+        "top": "0px",
+        "z-index": "0"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16119",
+      "name": "路径 52914",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "0px",
+        "top": "6.09px",
+        "z-index": "1"
+      },
+      "src": null
+    },
+    {
+      "id": null,
+      "name": null,
+      "tag": "img",
+      "text": "",
+      "style": {
+        "color": "#FFFFFF"
+      },
+      "src": "./asset/icons/svg_d05da17e.svg"
+    },
+    {
+      "id": "166:16064",
+      "name": "容器 50327",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "123px",
+        "height": "36px",
+        "display": "flex",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "16px",
+        "position": "absolute",
+        "left": "calc(100% - 393px + 135px)",
+        "top": "250px",
+        "z-index": "9"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16065",
+      "name": "啦啦啦",
+      "tag": "span",
+      "text": "啦啦啦",
+      "style": {
+        "color": "#001126",
+        "font-size": "24px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "700",
+        "line-height": "34px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16072",
+      "name": "容器 50316",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "36px",
+        "height": "36px",
+        "display": "flex",
+        "flex": "none",
+        "justify-content": "center",
+        "align-items": "center",
+        "gap": "12px",
+        "padding": "4px",
+        "background": "rgba(0,17,38,0.2)",
+        "border-radius": "447px",
+        "overflow": "hidden"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16073",
+      "name": "容器",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "width": "24px",
+        "height": "24px",
+        "color": "#FFFFFF"
+      },
+      "src": "./asset/icons/svg_09d1fa5a.svg"
+    },
+    {
+      "id": "166:15854",
+      "name": "容器 50488",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "361px",
+        "height": "661px",
+        "display": "flex",
+        "justify-content": "flex-start",
+        "align-items": "flex-start",
+        "flex-direction": "column",
+        "gap": "12px",
+        "position": "absolute",
+        "left": "16px",
+        "top": "400px",
+        "z-index": "10"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16002",
+      "name": "容器 50382",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "361px",
+        "display": "flex",
+        "flex": "none",
+        "justify-content": "flex-start",
+        "align-items": "flex-start",
+        "flex-direction": "column",
+        "gap": "16px",
+        "padding": "12px",
+        "background": "#FFFFFF",
+        "border-style": "solid",
+        "border-color": "rgba(255,255,255,0.8)",
+        "border-width": "1px",
+        "border-radius": "16px",
+        "backdrop-filter": "blur(10px)",
+        "overflow": "hidden"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16015",
+      "name": "容器 50456",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "337px",
+        "display": "flex",
+        "flex": "none",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "12px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16023",
+      "name": "容器 50672",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "12px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16024",
+      "name": "川西秋日自驾",
+      "tag": "span",
+      "text": "川西秋日自驾",
+      "style": {
+        "color": "#001126",
+        "font-size": "18px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "500",
+        "line-height": "25px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16028",
+      "name": "容器 50476",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "justify-content": "center",
+        "align-items": "center",
+        "flex-direction": "column",
+        "padding-top": "4px",
+        "padding-bottom": "4px",
+        "padding-right": "8px",
+        "padding-left": "8px",
+        "background": "rgba(125,173,255,0.2)",
+        "border-radius": "8px",
+        "backdrop-filter": "blur(10px)",
+        "overflow": "hidden"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16029",
+      "name": "自驾游",
+      "tag": "span",
+      "text": "自驾游",
+      "style": {
+        "color": "#0072FF",
+        "font-size": "14px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "text-align": "center",
+        "font-weight": "500",
+        "line-height": "20px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16016",
+      "name": "容器 50477",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "flex": "1",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "16px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16017",
+      "name": "川西",
+      "tag": "p",
+      "text": "川西",
+      "style": {
+        "flex": "1",
+        "flex-shrink": "0",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "700",
+        "line-height": "25px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16021",
+      "name": "容器",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "width": "30px",
+        "height": "30px",
+        "color": "rgba(51,51,51,0.65)"
+      },
+      "src": "./asset/icons/svg_c8fcc180.svg"
+    },
+    {
+      "id": "166:16003",
+      "name": "容器 50672",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "align-self": "stretch",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "12px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16011",
+      "name": "2026-10-10 08:00",
+      "tag": "p",
+      "text": "2026-10-10 08:00",
+      "style": {
+        "flex": "1",
+        "flex-shrink": "0",
+        "color": "#001126",
+        "font-size": "16px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "line-height": "22px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16004",
+      "name": "容器",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "width": "20px",
+        "height": "20px",
+        "color": "rgba(0,17,38,0.4)"
+      },
+      "src": "./asset/icons/svg_18e28d3c.svg"
+    },
+    {
+      "id": "166:16007",
+      "name": "2026-10-10 08:00",
+      "tag": "p",
+      "text": "2026-10-10 08:00",
+      "style": {
+        "flex": "1",
+        "flex-shrink": "0",
+        "color": "#001126",
+        "font-size": "16px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "line-height": "22px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15855",
+      "name": "容器 50419",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "361px",
+        "display": "flex",
+        "flex": "none",
+        "justify-content": "flex-start",
+        "align-items": "flex-start",
+        "flex-direction": "column",
+        "gap": "16px",
+        "padding": "12px",
+        "background": "#FFFFFF",
+        "border-radius": "16px",
+        "backdrop-filter": "blur(10px)",
+        "overflow": "hidden"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15974",
+      "name": "容器 50456",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "337px",
+        "display": "flex",
+        "flex": "none",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "12px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15977",
+      "name": "容器 50672",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "12px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15978",
+      "name": "川西秋日自驾",
+      "tag": "span",
+      "text": "川西秋日自驾",
+      "style": {
+        "color": "#001126",
+        "font-size": "18px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "700",
+        "line-height": "25px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15982",
+      "name": "容器 50476",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "justify-content": "center",
+        "align-items": "center",
+        "flex-direction": "column",
+        "padding-top": "4px",
+        "padding-bottom": "4px",
+        "padding-right": "8px",
+        "padding-left": "8px",
+        "background": "rgba(125,173,255,0.2)",
+        "border-radius": "8px",
+        "backdrop-filter": "blur(10px)",
+        "overflow": "hidden"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15987",
+      "name": "自驾游",
+      "tag": "span",
+      "text": "自驾游",
+      "style": {
+        "color": "#0072FF",
+        "font-size": "14px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "text-align": "center",
+        "font-weight": "500",
+        "line-height": "20px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15991",
+      "name": "容器 51446",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "4px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15996",
+      "name": "圆形 1108",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "width": "8px",
+        "height": "8px",
+        "color": "#14CB00"
+      },
+      "src": "./asset/icons/svg_4e82b769.svg"
+    },
+    {
+      "id": "166:15992",
+      "name": "当前旅行",
+      "tag": "span",
+      "text": "当前旅行",
+      "style": {
+        "color": "#14CB00",
+        "font-size": "14px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "text-align": "center",
+        "font-weight": "500",
+        "line-height": "20px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15997",
+      "name": "容器 50477",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "flex": "1",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "16px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15998",
+      "name": "川西",
+      "tag": "p",
+      "text": "川西",
+      "style": {
+        "flex": "1",
+        "flex-shrink": "0",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "700",
+        "line-height": "25px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15975",
+      "name": "容器",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "width": "30px",
+        "height": "30px",
+        "color": "rgba(51,51,51,0.65)"
+      },
+      "src": "./asset/icons/svg_04b0a7d7.svg"
+    },
+    {
+      "id": "166:15870",
+      "name": "容器 50672",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "align-self": "stretch",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "12px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15878",
+      "name": "2026-10-10 08:00",
+      "tag": "p",
+      "text": "2026-10-10 08:00",
+      "style": {
+        "flex": "1",
+        "flex-shrink": "0",
+        "color": "#001126",
+        "font-size": "16px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "line-height": "22px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15875",
+      "name": "容器",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "width": "20px",
+        "height": "20px",
+        "color": "rgba(0,17,38,0.4)"
+      },
+      "src": "./asset/icons/svg_18e28d3c.svg"
+    },
+    {
+      "id": "166:15871",
+      "name": "2026-10-10 08:00",
+      "tag": "p",
+      "text": "2026-10-10 08:00",
+      "style": {
+        "flex": "1",
+        "flex-shrink": "0",
+        "color": "#001126",
+        "font-size": "16px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "line-height": "22px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15882",
+      "name": "容器 50458",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "align-self": "stretch",
+        "justify-content": "center",
+        "align-items": "flex-start",
+        "flex-direction": "column",
+        "gap": "16px",
+        "padding": "12px",
+        "background": "rgba(63,90,135,0.06)",
+        "border-radius": "12px",
+        "overflow": "hidden"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15887",
+      "name": "容器 50675",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "align-self": "stretch",
+        "flex-shrink": "0",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "12px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15892",
+      "name": "同行成员",
+      "tag": "p",
+      "text": "同行成员",
+      "style": {
+        "flex": "1",
+        "flex-shrink": "0",
+        "color": "#001126",
+        "font-size": "18px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "600",
+        "line-height": "25px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15888",
+      "name": "2人",
+      "tag": "span",
+      "text": "2人",
+      "style": {
+        "flex-shrink": "0",
+        "color": "#001126",
+        "font-size": "18px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "600",
+        "line-height": "25px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15896",
+      "name": "容器 50485",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "flex-shrink": "0",
+        "justify-content": "flex-start",
+        "align-items": "flex-start",
+        "flex-direction": "column",
+        "gap": "16px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15897",
+      "name": "容器 50484",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "313px",
+        "display": "flex",
+        "flex": "none",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "8px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15910",
+      "name": "容器 50483",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "8px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15911",
+      "name": "容器 50456",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "40px",
+        "height": "40px",
+        "flex": "none",
+        "background": "#FFFFFF",
+        "border-style": "solid",
+        "border-color": "#FFFFFF",
+        "border-width": "1.33px",
+        "border-radius": "365.33px",
+        "overflow": "hidden",
+        "position": "relative"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15913",
+      "name": "image",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "-9.33px",
+        "top": "-2.66px",
+        "z-index": "0",
+        "width": "53.33px",
+        "height": "52px",
+        "object-fit": "cover"
+      },
+      "src": "./asset/images/image-166-15913.png"
+    },
+    {
+      "id": "166:15912",
+      "name": "image",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "-6.67px",
+        "top": "-5.34px",
+        "z-index": "1",
+        "width": "53.33px",
+        "height": "57.33px",
+        "object-fit": "cover"
+      },
+      "src": "./asset/images/image-166-15912.png"
+    },
+    {
+      "id": "166:15914",
+      "name": "image",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "-24px",
+        "top": "-28px",
+        "z-index": "2",
+        "width": "89px",
+        "height": "103px",
+        "object-fit": "cover"
+      },
+      "src": "./asset/images/image-166-15914.png"
+    },
+    {
+      "id": "166:15915",
+      "name": "用户昵称",
+      "tag": "span",
+      "text": "用户昵称",
+      "style": {
+        "color": "#001126",
+        "font-size": "16px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "500",
+        "line-height": "22px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15902",
+      "name": "-￥12.00",
+      "tag": "p",
+      "text": "-￥12.00",
+      "style": {
+        "flex": "1",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "text-align": "right",
+        "font-weight": "700",
+        "line-height": "25px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15898",
+      "name": "创建者",
+      "tag": "span",
+      "text": "创建者",
+      "style": {
+        "color": "#0072FF",
+        "font-size": "16px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "text-align": "right",
+        "font-weight": "700",
+        "line-height": "22px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15941",
+      "name": "容器 50488",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "313px",
+        "display": "flex",
+        "flex": "none",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "8px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15942",
+      "name": "容器 50483",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "8px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15947",
+      "name": "容器 50456",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "40px",
+        "height": "40px",
+        "flex": "none",
+        "background": "#FFFFFF",
+        "border-style": "solid",
+        "border-color": "#FFFFFF",
+        "border-width": "1.33px",
+        "border-radius": "365.33px",
+        "overflow": "hidden",
+        "position": "relative"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15948",
+      "name": "image",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "-9.33px",
+        "top": "-2.66px",
+        "z-index": "0",
+        "width": "53.33px",
+        "height": "52px",
+        "object-fit": "cover"
+      },
+      "src": "./asset/images/image-166-15948.png"
+    },
+    {
+      "id": "166:15950",
+      "name": "image",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "-6.67px",
+        "top": "-5.34px",
+        "z-index": "1",
+        "width": "53.33px",
+        "height": "57.33px",
+        "object-fit": "cover"
+      },
+      "src": "./asset/images/image-166-15950.png"
+    },
+    {
+      "id": "166:15949",
+      "name": "image",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "-24px",
+        "top": "-28px",
+        "z-index": "2",
+        "width": "89px",
+        "height": "103px",
+        "object-fit": "cover"
+      },
+      "src": "./asset/images/image-166-15949.png"
+    },
+    {
+      "id": "166:15943",
+      "name": "用户昵称",
+      "tag": "span",
+      "text": "用户昵称",
+      "style": {
+        "color": "#001126",
+        "font-size": "16px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "500",
+        "line-height": "22px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15955",
+      "name": "-￥12.00",
+      "tag": "p",
+      "text": "-￥12.00",
+      "style": {
+        "flex": "1",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "text-align": "right",
+        "font-weight": "700",
+        "line-height": "25px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15951",
+      "name": "移除",
+      "tag": "span",
+      "text": "移除",
+      "style": {
+        "color": "#FF1E00",
+        "font-size": "16px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "text-align": "right",
+        "font-weight": "700",
+        "line-height": "22px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15919",
+      "name": "容器 50489",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "313px",
+        "display": "flex",
+        "flex": "none",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "8px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15932",
+      "name": "容器 50483",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "8px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15937",
+      "name": "容器 50456",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "40px",
+        "height": "40px",
+        "flex": "none",
+        "background": "#FFFFFF",
+        "border-style": "solid",
+        "border-color": "#FFFFFF",
+        "border-width": "1.33px",
+        "border-radius": "365.33px",
+        "overflow": "hidden",
+        "position": "relative"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15938",
+      "name": "image",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "-9.33px",
+        "top": "-2.66px",
+        "z-index": "0",
+        "width": "53.33px",
+        "height": "52px",
+        "object-fit": "cover"
+      },
+      "src": "./asset/images/image-166-15938.png"
+    },
+    {
+      "id": "166:15940",
+      "name": "image",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "-6.67px",
+        "top": "-5.34px",
+        "z-index": "1",
+        "width": "53.33px",
+        "height": "57.33px",
+        "object-fit": "cover"
+      },
+      "src": "./asset/images/image-166-15940.png"
+    },
+    {
+      "id": "166:15939",
+      "name": "image",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "-24px",
+        "top": "-28px",
+        "z-index": "2",
+        "width": "89px",
+        "height": "103px",
+        "object-fit": "cover"
+      },
+      "src": "./asset/images/image-166-15939.png"
+    },
+    {
+      "id": "166:15933",
+      "name": "用户昵称",
+      "tag": "span",
+      "text": "用户昵称",
+      "style": {
+        "color": "#001126",
+        "font-size": "16px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "500",
+        "line-height": "22px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15924",
+      "name": "-￥12.00",
+      "tag": "p",
+      "text": "-￥12.00",
+      "style": {
+        "flex": "1",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "text-align": "right",
+        "font-weight": "700",
+        "line-height": "25px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15928",
+      "name": "移除",
+      "tag": "span",
+      "text": "移除",
+      "style": {
+        "color": "#FF1E00",
+        "font-size": "16px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "text-align": "right",
+        "font-weight": "700",
+        "line-height": "22px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15963",
+      "name": "容器 50329",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "313px",
+        "height": "36px",
+        "display": "flex",
+        "flex": "none",
+        "justify-content": "center",
+        "align-items": "center",
+        "flex-direction": "column",
+        "gap": "8px",
+        "padding": "12px",
+        "background": "rgba(255,255,255,0.7)",
+        "border-radius": "12px",
+        "backdrop-filter": "blur(10px)"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15964",
+      "name": "容器 50334",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "8px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15969",
+      "name": "容器",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "width": "24px",
+        "height": "24px"
+      },
+      "src": "./asset/icons/svg_7e4204e4.svg"
+    },
+    {
+      "id": "166:15965",
+      "name": "邀请同行人",
+      "tag": "span",
+      "text": "邀请同行人",
+      "style": {
+        "color": "rgba(51,51,51,0.9)",
+        "font-size": "14px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "text-align": "center",
+        "line-height": "20px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15859",
+      "name": "容器 50487",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "337px",
+        "display": "flex",
+        "flex": "none",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "16px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15860",
+      "name": "容器 50331",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "height": "40px",
+        "display": "flex",
+        "flex": "1",
+        "justify-content": "center",
+        "align-items": "center",
+        "flex-direction": "column",
+        "gap": "8px",
+        "padding-top": "10px",
+        "padding-bottom": "10px",
+        "padding-right": "16px",
+        "padding-left": "16px",
+        "background": "rgba(255,255,255,0.5)",
+        "border-style": "solid",
+        "border-color": "rgba(0,17,38,0.1)",
+        "border-width": "1px",
+        "border-radius": "237px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15861",
+      "name": "容器",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "width": "20px",
+        "height": "20px",
+        "color": "#000000"
+      },
+      "src": "./asset/icons/svg_f6798b13.svg"
+    },
+    {
+      "id": "166:15867",
+      "name": "容器 50332",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "height": "40px",
+        "display": "flex",
+        "flex": "1",
+        "justify-content": "center",
+        "align-items": "center",
+        "flex-direction": "column",
+        "gap": "8px",
+        "padding-top": "10px",
+        "padding-bottom": "10px",
+        "padding-right": "16px",
+        "padding-left": "16px",
+        "background": "rgba(255,255,255,0.5)",
+        "border-style": "solid",
+        "border-color": "rgba(0,17,38,0.1)",
+        "border-width": "1px",
+        "border-radius": "237px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15868",
+      "name": "容器",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "width": "24px",
+        "height": "24px",
+        "color": "#001126"
+      },
+      "src": "./asset/icons/svg_d8593e3e.svg"
+    },
+    {
+      "id": "166:15864",
+      "name": "容器 50333",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "height": "40px",
+        "display": "flex",
+        "flex": "1",
+        "justify-content": "center",
+        "align-items": "center",
+        "flex-direction": "column",
+        "gap": "8px",
+        "padding-top": "10px",
+        "padding-bottom": "10px",
+        "padding-right": "16px",
+        "padding-left": "16px",
+        "background": "rgba(255,255,255,0.5)",
+        "border-style": "solid",
+        "border-color": "rgba(0,17,38,0.1)",
+        "border-width": "1px",
+        "border-radius": "237px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:15865",
+      "name": "容器",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "width": "20px",
+        "height": "20px",
+        "color": "#000000"
+      },
+      "src": "./asset/icons/svg_e6691c47.svg"
+    },
+    {
+      "id": "166:16033",
+      "name": "容器 50420",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "361px",
+        "display": "flex",
+        "flex": "none",
+        "justify-content": "flex-start",
+        "align-items": "flex-start",
+        "flex-direction": "column",
+        "gap": "16px",
+        "padding": "12px",
+        "background": "#FFFFFF",
+        "border-style": "solid",
+        "border-color": "rgba(255,255,255,0.8)",
+        "border-width": "1px",
+        "border-radius": "16px",
+        "backdrop-filter": "blur(10px)",
+        "overflow": "hidden"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16046",
+      "name": "容器 50456",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "337px",
+        "display": "flex",
+        "flex": "none",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "12px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16052",
+      "name": "容器 50672",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "12px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16058",
+      "name": "川西秋日自驾",
+      "tag": "span",
+      "text": "川西秋日自驾",
+      "style": {
+        "color": "#001126",
+        "font-size": "18px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "500",
+        "line-height": "25px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16053",
+      "name": "容器 50476",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "justify-content": "center",
+        "align-items": "center",
+        "flex-direction": "column",
+        "padding-top": "4px",
+        "padding-bottom": "4px",
+        "padding-right": "8px",
+        "padding-left": "8px",
+        "background": "rgba(125,173,255,0.2)",
+        "border-radius": "8px",
+        "backdrop-filter": "blur(10px)",
+        "overflow": "hidden"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16054",
+      "name": "露营",
+      "tag": "span",
+      "text": "露营",
+      "style": {
+        "color": "#0072FF",
+        "font-size": "14px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "text-align": "center",
+        "font-weight": "500",
+        "line-height": "20px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16047",
+      "name": "容器 50477",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "flex": "1",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "16px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16048",
+      "name": "川西",
+      "tag": "p",
+      "text": "川西",
+      "style": {
+        "flex": "1",
+        "flex-shrink": "0",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "700",
+        "line-height": "25px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16062",
+      "name": "容器",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "width": "30px",
+        "height": "30px",
+        "color": "rgba(51,51,51,0.65)"
+      },
+      "src": "./asset/icons/svg_c8fcc180.svg"
+    },
+    {
+      "id": "166:16034",
+      "name": "容器 50672",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "align-self": "stretch",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "12px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16039",
+      "name": "2026-10-10 08:00",
+      "tag": "p",
+      "text": "2026-10-10 08:00",
+      "style": {
+        "flex": "1",
+        "flex-shrink": "0",
+        "color": "#001126",
+        "font-size": "16px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "line-height": "22px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16043",
+      "name": "容器",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "width": "20px",
+        "height": "20px",
+        "color": "rgba(0,17,38,0.4)"
+      },
+      "src": "./asset/icons/svg_18e28d3c.svg"
+    },
+    {
+      "id": "166:16035",
+      "name": "2026-10-10 08:00",
+      "tag": "p",
+      "text": "2026-10-10 08:00",
+      "style": {
+        "flex": "1",
+        "flex-shrink": "0",
+        "color": "#001126",
+        "font-size": "16px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "line-height": "22px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16124",
+      "name": "组 51052",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "34px",
+        "height": "37px",
+        "position": "absolute",
+        "left": "323px",
+        "top": "128px",
+        "z-index": "11"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16125",
+      "name": "组 51050",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "34px",
+        "height": "37px",
+        "position": "absolute",
+        "left": "0px",
+        "top": "0px",
+        "z-index": "0"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16126",
+      "name": "🌳",
+      "tag": "span",
+      "text": "🌳",
+      "style": {
+        "color": "#9E9E9E",
+        "font-size": "26.45px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "600",
+        "line-height": "37px",
+        "position": "absolute",
+        "left": "0px",
+        "top": "0px",
+        "z-index": "0"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16130",
+      "name": "路径 52915",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "position": "absolute",
+        "left": "0.99px",
+        "top": "1.84px",
+        "z-index": "1"
+      },
+      "src": null
+    },
+    {
+      "id": null,
+      "name": null,
+      "tag": "img",
+      "text": "",
+      "style": {
+        "color": "#FFFFFF"
+      },
+      "src": "./asset/icons/svg_e1ee6e24.svg"
+    },
+    {
+      "id": "166:16144",
+      "name": "容器 50671",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "width": "361px",
+        "height": "36px",
+        "display": "flex",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "100px",
+        "position": "absolute",
+        "left": "16px",
+        "top": "348px",
+        "z-index": "12"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16153",
+      "name": "旅行与同行人管理",
+      "tag": "span",
+      "text": "旅行与同行人管理",
+      "style": {
+        "color": "#001126",
+        "font-size": "18px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "font-weight": "600",
+        "line-height": "25px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16145",
+      "name": "容器 50331",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "height": "36px",
+        "display": "flex",
+        "justify-content": "center",
+        "align-items": "center",
+        "flex-direction": "column",
+        "gap": "8px",
+        "padding-top": "10px",
+        "padding-bottom": "10px",
+        "padding-right": "16px",
+        "padding-left": "16px",
+        "background": "rgba(255,255,255,0.5)",
+        "border-style": "solid",
+        "border-color": "rgba(0,17,38,0.1)",
+        "border-width": "1px",
+        "border-radius": "237px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16146",
+      "name": "容器 50447",
+      "tag": "div",
+      "text": "",
+      "style": {
+        "display": "flex",
+        "justify-content": "flex-start",
+        "align-items": "center",
+        "gap": "4px"
+      },
+      "src": null
+    },
+    {
+      "id": "166:16151",
+      "name": "容器",
+      "tag": "img",
+      "text": "",
+      "style": {
+        "width": "20px",
+        "height": "20px",
+        "color": "#001126"
+      },
+      "src": "./asset/icons/svg_116003db.svg"
+    },
+    {
+      "id": "166:16147",
+      "name": "新建旅行",
+      "tag": "span",
+      "text": "新建旅行",
+      "style": {
+        "color": "#001126",
+        "font-size": "16px",
+        "font-family": "Alibaba PuHuiTi 2.0",
+        "text-align": "center",
+        "line-height": "22px"
+      },
+      "src": null
+    }
+  ]
+}

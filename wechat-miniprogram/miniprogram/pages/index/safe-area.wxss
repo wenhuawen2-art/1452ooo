@@ -1,0 +1,4 @@
+/* Business UI starts 16px below the WeChat capsule; backgrounds remain full bleed. */
+.page .modal{max-height:calc(100vh - var(--content-top,74px) - 16px)}
+.page .editor-fallback .modal{height:100vh;max-height:100vh;padding-top:var(--content-top,74px)}
+.page .editor-fallback .modal-body{max-height:calc(100vh - var(--content-top,74px) - 150px)}

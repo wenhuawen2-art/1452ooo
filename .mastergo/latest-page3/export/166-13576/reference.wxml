@@ -1,0 +1,721 @@
+<view
+  data-node-id="166:13576"
+  data-name="首页-亮色"
+  class="reference-style-1">
+  <view
+    data-node-id="166:13673"
+    data-name="圆形 2"
+    class="reference-style-2">
+    <image src="./asset/icons/svg_a7d2aa9f.svg" />
+  </view>
+  <view
+    data-node-id="166:13928"
+    data-name="容器 50313"
+    class="reference-style-3">
+    <view
+      data-node-id="166:13937"
+      data-name="容器 50306"
+      class="reference-style-4">
+      <image
+        src="./asset/icons/svg_848a4e25.svg"
+        data-node-id="166:13942"
+        data-name="容器 50305"
+        class="reference-style-5" />
+      <text
+        data-node-id="166:13938"
+        data-name="向野清单"
+        class="reference-style-6">
+        向野清单
+      </text>
+    </view>
+    <view
+      data-node-id="166:13956"
+      data-name="容器 50315"
+      class="reference-style-7">
+      <view
+        data-node-id="166:13963"
+        data-name="容器 50316"
+        class="reference-style-8">
+        <view
+          data-node-id="166:13964"
+          data-name="容器"
+          class="reference-style-9">
+          <image src="./asset/icons/svg_a4153cd7.svg" />
+        </view>
+      </view>
+      <view
+        data-node-id="166:13957"
+        data-name="容器 50317"
+        class="reference-style-10">
+        <view
+          data-node-id="166:13958"
+          data-name="容器"
+          class="reference-style-11">
+          <image src="./asset/icons/svg_242f662f.svg" />
+        </view>
+      </view>
+    </view>
+    <view
+      data-node-id="166:13929"
+      data-name="容器 50312"
+      class="reference-style-12">
+      <image
+        data-node-id="166:13934"
+        data-name="ui pet app design"
+        class="reference-style-13"
+        src="./asset/images/ui-pet-app-design-166-13934.png"
+        title="ui pet app design" />
+    </view>
+  </view>
+  <view
+    data-node-id="166:13966"
+    data-name="组 51045"
+    class="reference-style-14">
+    <view
+      data-node-id="166:13967"
+      data-name="组 51039"
+      class="reference-style-15">
+      <text
+        data-node-id="166:13968"
+        data-name="12"
+        class="reference-style-16">
+        12
+      </text>
+      <text
+        data-node-id="166:13972"
+        data-name="/天"
+        class="reference-style-17">
+        /天
+      </text>
+    </view>
+    <view
+      data-node-id="166:13976"
+      data-name="组 51040"
+      class="reference-style-18">
+      <text
+        data-node-id="166:13983"
+        data-name="12"
+        class="reference-style-19">
+        12
+      </text>
+      <text
+        data-node-id="166:13977"
+        data-name="/天"
+        class="reference-style-20">
+        /天
+      </text>
+    </view>
+  </view>
+  <view
+    data-node-id="166:13638"
+    data-name="容器 50321"
+    class="reference-style-21">
+    <view
+      data-node-id="166:13639"
+      data-name="容器 50327"
+      class="reference-style-22">
+      <p
+        data-node-id="166:13643"
+        data-name="川西秋日自驾"
+        class="reference-style-23">
+        川西秋日自驾
+      </p>
+      <view
+        data-node-id="166:13640"
+        data-name="容器 50315"
+        class="reference-style-24">
+        <image
+          src="./asset/icons/svg_aa12c6ee.svg"
+          data-node-id="166:13641"
+          data-name="容器"
+          class="reference-style-25" />
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:13581"
+    data-name="容器 50323"
+    class="reference-style-26">
+    <image
+      src="./asset/icons/svg_09acd1ff.svg"
+      data-node-id="166:13586"
+      data-name="容器 50322"
+      class="reference-style-27" />
+    <text
+      data-node-id="166:13582"
+      data-name="距离出发"
+      class="reference-style-28">
+      距离出发
+    </text>
+  </view>
+  <view
+    data-node-id="166:13674"
+    data-name="容器 50319"
+    class="reference-style-29">
+    <text
+      data-node-id="166:13677"
+      data-name="出发准备"
+      class="reference-style-30">
+      出发准备
+    </text>
+    <text
+      data-node-id="166:13735"
+      data-name="天气"
+      class="reference-style-31">
+      天气
+    </text>
+    <view
+      data-node-id="166:13681"
+      data-name="容器 50340"
+      class="reference-style-32">
+      <view
+        data-node-id="166:13716"
+        data-name="容器 50329"
+        class="reference-style-33">
+        <view
+          data-node-id="166:13730"
+          data-name="容器 50334"
+          class="reference-style-34">
+          <text
+            data-node-id="166:13731"
+            data-name="团队准备"
+            class="reference-style-35">
+            团队准备
+          </text>
+        </view>
+        <view
+          data-node-id="166:13717"
+          data-name="容器 50343"
+          class="reference-style-36">
+          <text
+            data-node-id="166:13718"
+            data-name="31"
+            class="reference-style-37">
+            31
+          </text>
+          <text
+            data-node-id="166:13722"
+            data-name="/60项"
+            class="reference-style-38">
+            /60项
+          </text>
+        </view>
+        <image
+          src="./asset/icons/svg_098521f3.svg"
+          data-node-id="166:13726"
+          data-name="容器 50342"
+          class="reference-style-39" />
+      </view>
+      <view
+        data-node-id="166:13682"
+        data-name="容器 50331"
+        class="reference-style-40">
+        <view
+          data-node-id="166:13683"
+          data-name="容器 50334"
+          class="reference-style-41">
+          <text
+            data-node-id="166:13684"
+            data-name="我的准备"
+            class="reference-style-42">
+            我的准备
+          </text>
+        </view>
+        <view
+          data-node-id="166:13692"
+          data-name="容器 50343"
+          class="reference-style-43">
+          <text
+            data-node-id="166:13693"
+            data-name="12"
+            class="reference-style-44">
+            12
+          </text>
+          <text
+            data-node-id="166:13697"
+            data-name="/24项"
+            class="reference-style-45">
+            /24项
+          </text>
+        </view>
+        <image
+          src="./asset/icons/svg_60f935cc.svg"
+          data-node-id="166:13688"
+          data-name="容器 50342"
+          class="reference-style-46" />
+      </view>
+      <view
+        data-node-id="166:13701"
+        data-name="容器 50329"
+        class="reference-style-47">
+        <view
+          data-node-id="166:13702"
+          data-name="容器 50334"
+          class="reference-style-48">
+          <text
+            data-node-id="166:13703"
+            data-name="穿搭"
+            class="reference-style-49">
+            穿搭
+          </text>
+        </view>
+        <view
+          data-node-id="166:13707"
+          data-name="容器 50343"
+          class="reference-style-50">
+          <text
+            data-node-id="166:13708"
+            data-name="16"
+            class="reference-style-51">
+            16
+          </text>
+          <text
+            data-node-id="166:13712"
+            data-name="套"
+            class="reference-style-52">
+            套
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:13751"
+    data-name="容器 50339"
+    class="reference-style-53">
+    <view
+      data-node-id="166:13779"
+      data-name="容器 50331"
+      class="reference-style-54">
+      <view
+        data-node-id="166:13780"
+        data-name="容器 50334"
+        class="reference-style-55">
+        <text
+          data-node-id="166:13781"
+          data-name="旅程共计"
+          class="reference-style-56">
+          旅程共计
+        </text>
+      </view>
+      <text
+        data-node-id="166:13785"
+        data-name="10天"
+        class="reference-style-57">
+        10天
+      </text>
+    </view>
+    <view
+      data-node-id="166:13752"
+      data-name="容器 50340"
+      class="reference-style-58">
+      <view
+        data-node-id="166:13765"
+        data-name="容器 50329"
+        class="reference-style-59">
+        <view
+          data-node-id="166:13770"
+          data-name="容器 50334"
+          class="reference-style-60">
+          <image
+            src="./asset/icons/svg_9f1a75b2.svg"
+            data-node-id="166:13771"
+            data-name="容器"
+            class="reference-style-61" />
+          <text
+            data-node-id="166:13775"
+            data-name="出发日期"
+            class="reference-style-62">
+            出发日期
+          </text>
+        </view>
+        <text
+          data-node-id="166:13766"
+          data-name="2026-10-10 08:30"
+          class="reference-style-63">
+          2026-10-10 08:30
+        </text>
+      </view>
+      <view
+        data-node-id="166:13753"
+        data-name="容器 50330"
+        class="reference-style-64">
+        <view
+          data-node-id="166:13758"
+          data-name="容器 50334"
+          class="reference-style-65">
+          <image
+            src="./asset/icons/svg_50b43fff.svg"
+            data-node-id="166:13763"
+            data-name="容器"
+            class="reference-style-66" />
+          <text
+            data-node-id="166:13759"
+            data-name="归来日期"
+            class="reference-style-67">
+            归来日期
+          </text>
+        </view>
+        <text
+          data-node-id="166:13754"
+          data-name="2026-10-20 08:30"
+          class="reference-style-68">
+          2026-10-20 08:30
+        </text>
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:13789"
+    data-name="容器 50344"
+    class="reference-style-69">
+    <image
+      data-node-id="166:13846"
+      data-name="白云 - 搜索结果 - 花瓣"
+      class="reference-style-70"
+      src="./asset/images/白云-搜索结果-花瓣-166-13846.png"
+      title="白云 - 搜索结果 - 花瓣" />
+    <view
+      data-node-id="166:13849"
+      data-name="容器 50347"
+      class="reference-style-71">
+      <image
+        src="./asset/icons/svg_993bd343.svg"
+        data-node-id="166:13904"
+        data-name="容器 50339"
+        class="reference-style-72" />
+      <view
+        data-node-id="166:13850"
+        data-name="容器 50345"
+        class="reference-style-73">
+        <view
+          data-node-id="166:13851"
+          data-name="容器 50358"
+          class="reference-style-74">
+          <text
+            data-node-id="166:13859"
+            data-name="四姑娘山"
+            class="reference-style-75">
+            四姑娘山
+          </text>
+          <text
+            data-node-id="166:13852"
+            data-name="28°"
+            class="reference-style-76">
+            28°
+          </text>
+        </view>
+        <view
+          data-node-id="166:13865"
+          data-name="容器 50346"
+          class="reference-style-77">
+          <view
+            data-node-id="166:13879"
+            data-name="容器 50349"
+            class="reference-style-78">
+            <image
+              src="./asset/icons/svg_cebf5055.svg"
+              data-node-id="166:13884"
+              data-name="容器"
+              class="reference-style-79" />
+            <text
+              data-node-id="166:13880"
+              data-name="晴天"
+              class="reference-style-80">
+              晴天
+            </text>
+          </view>
+          <view
+            data-node-id="166:13866"
+            data-name="容器 50350"
+            class="reference-style-81">
+            <image
+              src="./asset/icons/svg_fd2d52e1.svg"
+              data-node-id="166:13867"
+              data-name="容器"
+              class="reference-style-82" />
+            <text
+              data-node-id="166:13875"
+              data-name="最高 32°"
+              class="reference-style-83">
+              最高 32°
+            </text>
+          </view>
+          <view
+            data-node-id="166:13895"
+            data-name="容器 50351"
+            class="reference-style-84">
+            <image
+              src="./asset/icons/svg_b0341b4b.svg"
+              data-node-id="166:13900"
+              data-name="容器"
+              class="reference-style-85" />
+            <text
+              data-node-id="166:13896"
+              data-name="最低 24°"
+              class="reference-style-86">
+              最低 24°
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view
+      data-node-id="166:13794"
+      data-name="容器 50354"
+      class="reference-style-87">
+      <view
+        data-node-id="166:13814"
+        data-name="容器 50329"
+        class="reference-style-88">
+        <view
+          data-node-id="166:13815"
+          data-name="容器 50355"
+          class="reference-style-89">
+          <text
+            data-node-id="166:13816"
+            data-name="紫外线"
+            class="reference-style-90">
+            紫外线
+          </text>
+          <view
+            data-node-id="166:13820"
+            data-name="容器 50343"
+            class="reference-style-91">
+            <text
+              data-node-id="166:13829"
+              data-name="中等"
+              class="reference-style-92">
+              中等
+            </text>
+            <text
+              data-node-id="166:13825"
+              data-name="UV 4"
+              class="reference-style-93">
+              UV 4
+            </text>
+          </view>
+        </view>
+        <image
+          src="./asset/icons/svg_57415958.svg"
+          data-node-id="166:13833"
+          data-name="容器 50342"
+          class="reference-style-94" />
+      </view>
+      <view
+        data-node-id="166:13795"
+        data-name="容器 50353"
+        class="reference-style-95">
+        <view
+          data-node-id="166:13799"
+          data-name="容器 50355"
+          class="reference-style-96">
+          <text
+            data-node-id="166:13810"
+            data-name="湿度"
+            class="reference-style-97">
+            湿度
+          </text>
+          <view
+            data-node-id="166:13800"
+            data-name="容器 50343"
+            class="reference-style-98">
+            <text
+              data-node-id="166:13801"
+              data-name="62%"
+              class="reference-style-99">
+              62%
+            </text>
+          </view>
+        </view>
+        <image
+          src="./asset/icons/svg_402ab925.svg"
+          data-node-id="166:13796"
+          data-name="容器 50342"
+          class="reference-style-100" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:13838"
+      data-name="容器 50312"
+      class="reference-style-101">
+      <view
+        data-node-id="166:13842"
+        data-name="容器"
+        class="reference-style-102">
+        <image src="./asset/icons/svg_4e94fef7.svg" />
+      </view>
+    </view>
+  </view>
+  <text
+    data-node-id="166:13634"
+    data-name="天气"
+    class="reference-style-103">
+    天气
+  </text>
+  <text
+    data-node-id="166:13590"
+    data-name="全程路线"
+    class="reference-style-104">
+    全程路线
+  </text>
+  <view
+    data-node-id="166:13740"
+    data-name="容器 50356"
+    class="reference-style-105">
+    <image
+      data-node-id="166:13748"
+      data-name="收藏到 MOBILE"
+      class="reference-style-106"
+      src="./asset/images/收藏到-MOBILE-166-13748.jpg"
+      title="收藏到 MOBILE" />
+    <view
+      data-node-id="166:13741"
+      data-name="容器 50312"
+      class="reference-style-107">
+      <view
+        data-node-id="166:13745"
+        data-name="容器"
+        class="reference-style-108">
+        <image src="./asset/icons/svg_0cfdc61e.svg" />
+      </view>
+    </view>
+  </view>
+  <view
+    data-node-id="166:13648"
+    data-name="容器 50665"
+    class="reference-style-109">
+    <view
+      data-node-id="166:13653"
+      data-name="容器 50362"
+      class="reference-style-110">
+      <view
+        data-node-id="166:13666"
+        data-name="容器 50359"
+        class="reference-style-111">
+        <image
+          data-node-id="166:13667"
+          data-name="image"
+          class="reference-style-112"
+          src="./asset/images/image-166-13667.png"
+          title="image" />
+      </view>
+      <view
+        data-node-id="166:13654"
+        data-name="容器 50360"
+        class="reference-style-113">
+        <image
+          data-node-id="166:13655"
+          data-name="image"
+          class="reference-style-114"
+          src="./asset/images/image-166-13655.png"
+          title="image" />
+      </view>
+      <view
+        data-node-id="166:13664"
+        data-name="容器 50362"
+        class="reference-style-115">
+        <image
+          data-node-id="166:13665"
+          data-name="image"
+          class="reference-style-116"
+          src="./asset/images/image-166-13665.png"
+          title="image" />
+      </view>
+      <view
+        data-node-id="166:13656"
+        data-name="容器 50361"
+        class="reference-style-117">
+        <view
+          data-node-id="166:13659"
+          data-name="容器"
+          class="reference-style-118">
+          <image src="./asset/icons/svg_92e9a6a5.svg" />
+        </view>
+      </view>
+    </view>
+    <p
+      data-node-id="166:13649"
+      data-name="川"
+      class="reference-style-119">
+      川
+    </p>
+    <view
+      data-node-id="166:13668"
+      data-name="容器 50320"
+      class="reference-style-120">
+      <text
+        data-node-id="166:13669"
+        data-name="自驾游"
+        class="reference-style-121">
+        自驾游
+      </text>
+    </view>
+  </view>
+  <view
+    data-node-id="166:13594"
+    data-name="容器 50314"
+    class="reference-style-122">
+    <view
+      data-node-id="166:13622"
+      data-name="容器 50308"
+      class="reference-style-123">
+      <view
+        data-node-id="166:13623"
+        data-name="容器 50305"
+        class="reference-style-124">
+        <image src="./asset/icons/svg_060e4427.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:13631"
+      data-name="容器 50309"
+      class="reference-style-125">
+      <view
+        data-node-id="166:13632"
+        data-name="容器"
+        class="reference-style-126">
+        <image src="./asset/icons/svg_7bb647bd.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:13605"
+      data-name="容器 50338"
+      class="reference-style-127">
+      <view
+        data-node-id="166:13612"
+        data-name="组 51041"
+        class="reference-style-128">
+        <image src="./asset/icons/svg_a9ac895e.svg" />
+      </view>
+      <view
+        data-node-id="166:13610"
+        data-name="容器"
+        class="reference-style-129">
+        <image src="./asset/icons/svg_9be063e4.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:13595"
+      data-name="容器 50310"
+      class="reference-style-130">
+      <view
+        data-node-id="166:13596"
+        data-name="容器 50318"
+        class="reference-style-131">
+        <image src="./asset/icons/svg_988bdf11.svg" />
+      </view>
+    </view>
+    <view
+      data-node-id="166:13602"
+      data-name="容器 50312"
+      class="reference-style-132">
+      <view
+        data-node-id="166:13603"
+        data-name="容器"
+        class="reference-style-133">
+        <image src="./asset/icons/svg_0634b27b.svg" />
+      </view>
+    </view>
+  </view>
+</view>

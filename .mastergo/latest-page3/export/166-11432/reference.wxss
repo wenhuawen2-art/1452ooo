@@ -1,0 +1,119 @@
+page{margin:0;padding:0}
+.reference-style-1{box-sizing:border-box;width: 393px; height: 1184px; background: linear-gradient(180deg, #007BFF 0%, rgba(6,126,255,0.98) 13%, rgba(54,158,255,0.65) 35%, rgba(255,255,255,0) 100%), linear-gradient(0deg, #EDF1F5 0%, #EDF1F5 100%); overflow: hidden; position: relative}
+.reference-style-2{box-sizing:border-box;width: 361px; height: 40px; display: flex; justify-content: flex-start; align-items: center; gap: 16px; position: absolute; left: 16px; top: 16px; z-index: 0}
+.reference-style-3{box-sizing:border-box;display: flex; flex: 1; justify-content: flex-start; align-items: center; gap: 12px}
+.reference-style-4{box-sizing:border-box;flex-shrink: 0; color: #FFFFFF; font-size: 20px; font-family: Alibaba PuHuiTi 2.0; font-weight: 600; line-height: 28px}
+.reference-style-5{box-sizing:border-box;display: flex; justify-content: center; align-items: center; gap: 12px; padding: 4px; background: rgba(63,90,135,0.24); border-radius: 230px; backdrop-filter: blur(10px); overflow: hidden}
+.reference-style-6{box-sizing:border-box;width: 30px; height: 30px; flex: none; background: rgba(255,255,255,0.2); border-radius: 447px; overflow: hidden; position: relative}
+.reference-style-7{box-sizing:border-box;position: absolute; left: calc(100% - 30px + 7px); top: calc(100% - 30px + 7px); z-index: 0}
+.reference-style-8{box-sizing:border-box;width: 30px; height: 30px; flex: none; border-radius: 447px; overflow: hidden; position: relative}
+.reference-style-9{box-sizing:border-box;position: absolute; left: calc(100% - 30px + 23px); top: calc(100% - 30px + 7px); z-index: 0}
+.reference-style-10{box-sizing:border-box;width: 40px; height: 40px; flex: none; background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 100%), linear-gradient(0deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.16) 100%); border-radius: 220px; box-shadow: inset 0px 0px 8px 0px rgba(117,193,255,0.6), 0px 8px 20px 0px rgba(0,0,0,0.2); overflow: hidden; position: relative}
+.reference-style-11{box-sizing:border-box;position: absolute; left: 10px; top: 10px; z-index: 0}
+.reference-style-12{box-sizing:border-box;position: absolute; left: -346px; top: 226px; z-index: 1}
+.reference-style-13{box-sizing:border-box;width: 199px; height: 64px; position: absolute; left: 16px; top: 217px; z-index: 2}
+.reference-style-14{box-sizing:border-box;width: 199px; height: 64px; position: absolute; left: 0px; top: 0px; z-index: 0}
+.reference-style-15{box-sizing:border-box;color: #001126; font-size: 64px; font-family: Konkhmer Sleokchher; line-height: 64px; position: absolute; left: 0px; top: 0px; z-index: 0}
+.reference-style-16{box-sizing:border-box;color: rgba(0,17,38,0.5); font-size: 24px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 500; line-height: 34px; position: absolute; left: 175px; top: 22.5px; z-index: 1}
+.reference-style-17{box-sizing:border-box;width: 361px; height: 36px; display: flex; justify-content: flex-start; align-items: center; gap: 16px; position: absolute; left: 16px; top: 96px; z-index: 3}
+.reference-style-18{box-sizing:border-box;color: #FFFFFF; font-size: 24px; font-family: Alibaba PuHuiTi 2.0; font-weight: 500; line-height: 34px}
+.reference-style-19{box-sizing:border-box;width: 36px; height: 36px; display: flex; flex: none; justify-content: center; align-items: center; gap: 12px; padding: 4px; background: rgba(255,255,255,0.2); border-radius: 447px; overflow: hidden}
+.reference-style-20{box-sizing:border-box;width: 24px; height: 24px}
+.reference-style-21{box-sizing:border-box;width: 93px; height: 20px; display: flex; justify-content: flex-start; align-items: center; gap: 8px; position: absolute; left: 16px; top: 184px; z-index: 5}
+.reference-style-22{box-sizing:border-box;width: 16px; height: 16px}
+.reference-style-23{box-sizing:border-box;color: rgba(0,17,38,0.75); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px}
+.reference-style-24{box-sizing:border-box;position: absolute; left: 16px; top: 297px; z-index: 6}
+.reference-style-25{box-sizing:border-box;color: rgba(0,17,38,0.5); font-size: 20px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 500; line-height: 28px; position: absolute; left: 218px; top: 243.5px; z-index: 7}
+.reference-style-26{box-sizing:border-box;width: 361px; height: 52px; display: flex; justify-content: flex-start; align-items: flex-start; flex-direction: column; padding: 6px; background: rgba(0,34,88,0.2); border-radius: 224px; backdrop-filter: blur(10px); position: absolute; left: 16px; top: 341px; z-index: 8; overflow: hidden}
+.reference-style-27{box-sizing:border-box;display: flex; align-self: stretch; justify-content: flex-start; align-items: flex-start; gap: 12px}
+.reference-style-28{box-sizing:border-box;height: 40px; flex: 1; border-radius: 196px; overflow: hidden; position: relative}
+.reference-style-29{box-sizing:border-box;color: #FFFFFF; font-size: 16px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 500; line-height: 22px; position: absolute; left: calc(100% - 108.33px + 38.17px); top: calc(100% - 40px + 9px); z-index: 0}
+.reference-style-30{box-sizing:border-box;height: 40px; flex: 1; background: rgba(255,255,255,0.85); border-style: solid; border-color: rgba(255,255,255,0.3); border-width: 1px; border-radius: 224px; backdrop-filter: blur(10px); overflow: hidden; position: relative}
+.reference-style-31{box-sizing:border-box;color: #001126; font-size: 16px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 500; line-height: 22px; position: absolute; left: calc(100% - 108.33px + 37.5px); top: calc(100% - 40px + 9px); z-index: 0}
+.reference-style-32{box-sizing:border-box;height: 40px; flex: 1; border-radius: 196px; overflow: hidden; position: relative}
+.reference-style-33{box-sizing:border-box;color: #FFFFFF; font-size: 16px; font-family: Alibaba PuHuiTi 2.0; text-align: center; font-weight: 500; line-height: 22px; position: absolute; left: calc(100% - 108.33px + 37.83px); top: calc(100% - 40px + 9px); z-index: 0}
+.reference-style-34{box-sizing:border-box;width: 361px; height: 88px; display: flex; justify-content: flex-start; align-items: flex-start; flex-direction: column; gap: 12px; position: absolute; left: 16px; top: 429px; z-index: 9}
+.reference-style-35{box-sizing:border-box;display: flex; align-self: stretch; justify-content: flex-start; align-items: flex-start; gap: 12px}
+.reference-style-36{box-sizing:border-box;display: flex; flex: 1; flex-shrink: 0; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255,255,255,0.9); border-radius: 12px; backdrop-filter: blur(10px)}
+.reference-style-37{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 8px}
+.reference-style-38{box-sizing:border-box;width: 20px; height: 20px}
+.reference-style-39{box-sizing:border-box;color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px}
+.reference-style-40{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 2px}
+.reference-style-41{box-sizing:border-box;color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px}
+.reference-style-42{box-sizing:border-box;color: #001126; font-size: 20px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 36px}
+.reference-style-43{box-sizing:border-box;display: flex; flex: 1; flex-shrink: 0; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255,255,255,0.9); border-radius: 12px; backdrop-filter: blur(10px)}
+.reference-style-44{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 8px}
+.reference-style-45{box-sizing:border-box;width: 20px; height: 20px}
+.reference-style-46{box-sizing:border-box;color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px}
+.reference-style-47{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 2px}
+.reference-style-48{box-sizing:border-box;color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px}
+.reference-style-49{box-sizing:border-box;color: #001126; font-size: 20px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 36px}
+.reference-style-50{box-sizing:border-box;color: #001126; font-size: 18px; font-family: Alibaba PuHuiTi 2.0; font-weight: 600; line-height: 25px; position: absolute; left: 16px; top: 557px; z-index: 10}
+.reference-style-51{box-sizing:border-box;width: 361px; height: 390px; display: flex; justify-content: flex-start; align-items: flex-start; flex-direction: column; gap: 12px; position: absolute; left: 16px; top: 596px; z-index: 11}
+.reference-style-52{box-sizing:border-box;width: 361px; display: flex; flex: none; justify-content: flex-start; align-items: flex-start; flex-direction: column; gap: 16px; padding: 12px; background: rgba(255,255,255,0.9); border-style: solid; border-color: rgba(255,255,255,0.8); border-width: 1px; border-radius: 16px; backdrop-filter: blur(10px); overflow: hidden}
+.reference-style-53{box-sizing:border-box;display: flex; align-self: stretch; justify-content: center; align-items: flex-start; flex-direction: column; gap: 12px; padding: 12px; background: rgba(63,90,135,0.06); border-radius: 12px; overflow: hidden}
+.reference-style-54{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: flex-start; flex-direction: column; gap: 20px}
+.reference-style-55{box-sizing:border-box;width: 313px; display: flex; flex: none; justify-content: flex-start; align-items: center; gap: 8px}
+.reference-style-56{box-sizing:border-box;display: flex; justify-content: flex-start; align-items: center; gap: 8px}
+.reference-style-57{box-sizing:border-box;width: 40px; height: 40px; flex: none; background: #FFFFFF; border-style: solid; border-color: #FFFFFF; border-width: 1.33px; border-radius: 365.33px; overflow: hidden; position: relative}
+.reference-style-58{box-sizing:border-box;position: absolute; left: -9.33px; top: -2.67px; z-index: 0; width: 53.33px; height: 52px; object-fit: cover}
+.reference-style-59{box-sizing:border-box;position: absolute; left: -6.67px; top: -5.33px; z-index: 1; width: 53.33px; height: 57.33px; object-fit: cover}
+.reference-style-60{box-sizing:border-box;color: #001126; font-size: 16px; font-family: Alibaba PuHuiTi 2.0; font-weight: 500; line-height: 22px}
+.reference-style-61{box-sizing:border-box;flex: 1; font-family: Alibaba PuHuiTi 2.0; text-align: right; font-weight: 700; line-height: 25px}
+.reference-style-62{box-sizing:border-box;color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px}
+.reference-style-63{box-sizing:border-box;color: #00A53A; font-size: 18px; font-family: Alibaba PuHuiTi 2.0; text-align: right; font-weight: 700; line-height: 25px}
+.reference-style-64{box-sizing:border-box;display: flex; align-self: stretch; justify-content: flex-start; align-items: center; gap: 6px}
+.reference-style-65{box-sizing:border-box;display: flex; flex: 1; flex-shrink: 0; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255,255,255,0.7); border-radius: 12px; backdrop-filter: blur(10px)}
+.reference-style-66{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 8px}
+.reference-style-67{box-sizing:border-box;width: 20px; height: 20px}
+.reference-style-68{box-sizing:border-box;color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px}
+.reference-style-69{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 2px}
+.reference-style-70{box-sizing:border-box;color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px}
+.reference-style-71{box-sizing:border-box;color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px}
+.reference-style-72{box-sizing:border-box;display: flex; flex: 1; flex-shrink: 0; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255,255,255,0.7); border-radius: 12px; backdrop-filter: blur(10px)}
+.reference-style-73{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 8px}
+.reference-style-74{box-sizing:border-box;width: 20px; height: 20px}
+.reference-style-75{box-sizing:border-box;color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px}
+.reference-style-76{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 2px}
+.reference-style-77{box-sizing:border-box;color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px}
+.reference-style-78{box-sizing:border-box;color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px}
+.reference-style-79{box-sizing:border-box;width: 361px; display: flex; flex: none; justify-content: flex-start; align-items: flex-start; flex-direction: column; gap: 16px; padding: 12px; background: rgba(255,255,255,0.9); border-style: solid; border-color: rgba(255,255,255,0.8); border-width: 1px; border-radius: 16px; backdrop-filter: blur(10px); overflow: hidden}
+.reference-style-80{box-sizing:border-box;display: flex; align-self: stretch; justify-content: center; align-items: flex-start; flex-direction: column; gap: 12px; padding: 12px; background: rgba(63,90,135,0.06); border-radius: 12px; overflow: hidden}
+.reference-style-81{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: flex-start; flex-direction: column; gap: 20px}
+.reference-style-82{box-sizing:border-box;width: 313px; display: flex; flex: none; justify-content: flex-start; align-items: center; gap: 8px}
+.reference-style-83{box-sizing:border-box;display: flex; justify-content: flex-start; align-items: center; gap: 8px}
+.reference-style-84{box-sizing:border-box;width: 40px; height: 40px; flex: none; background: #FFFFFF; border-style: solid; border-color: #FFFFFF; border-width: 1.33px; border-radius: 365.33px; overflow: hidden; position: relative}
+.reference-style-85{box-sizing:border-box;position: absolute; left: -9.33px; top: -2.67px; z-index: 0; width: 53.33px; height: 52px; object-fit: cover}
+.reference-style-86{box-sizing:border-box;position: absolute; left: -6.67px; top: -5.33px; z-index: 1; width: 53.33px; height: 57.33px; object-fit: cover}
+.reference-style-87{box-sizing:border-box;position: absolute; left: -24px; top: -28px; z-index: 2; width: 89px; height: 103px; object-fit: cover}
+.reference-style-88{box-sizing:border-box;color: #001126; font-size: 16px; font-family: Alibaba PuHuiTi 2.0; font-weight: 500; line-height: 22px}
+.reference-style-89{box-sizing:border-box;flex: 1; font-family: Alibaba PuHuiTi 2.0; text-align: right; font-weight: 700; line-height: 25px}
+.reference-style-90{box-sizing:border-box;color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px}
+.reference-style-91{box-sizing:border-box;color: #00A53A; font-size: 18px; font-family: Alibaba PuHuiTi 2.0; text-align: right; font-weight: 700; line-height: 25px}
+.reference-style-92{box-sizing:border-box;display: flex; align-self: stretch; justify-content: flex-start; align-items: center; gap: 6px}
+.reference-style-93{box-sizing:border-box;display: flex; flex: 1; flex-shrink: 0; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255,255,255,0.7); border-radius: 12px; backdrop-filter: blur(10px)}
+.reference-style-94{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 8px}
+.reference-style-95{box-sizing:border-box;width: 20px; height: 20px}
+.reference-style-96{box-sizing:border-box;color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px}
+.reference-style-97{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 2px}
+.reference-style-98{box-sizing:border-box;color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px}
+.reference-style-99{box-sizing:border-box;color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px}
+.reference-style-100{box-sizing:border-box;display: flex; flex: 1; flex-shrink: 0; justify-content: flex-start; align-items: center; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255,255,255,0.7); border-radius: 12px; backdrop-filter: blur(10px)}
+.reference-style-101{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 8px}
+.reference-style-102{box-sizing:border-box;width: 20px; height: 20px}
+.reference-style-103{box-sizing:border-box;color: rgba(51,51,51,0.9); font-size: 14px; font-family: Alibaba PuHuiTi 2.0; text-align: center; line-height: 20px}
+.reference-style-104{box-sizing:border-box;display: flex; flex-shrink: 0; justify-content: flex-start; align-items: center; gap: 2px}
+.reference-style-105{box-sizing:border-box;color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px}
+.reference-style-106{box-sizing:border-box;color: #001126; font-size: 16px; font-family: Konkhmer Sleokchher; text-align: center; line-height: 29px}
+.reference-style-107{box-sizing:border-box;width: 361px; height: 68px; display: flex; justify-content: space-between; align-items: center; padding: 8px; background: rgba(255,255,255,0.7); border-radius: 220px; box-shadow: 0px 16px 26px 0px rgba(12,30,56,0.06); position: absolute; left: 16px; bottom: 16px; z-index: 12; overflow: hidden}
+.reference-style-108{box-sizing:border-box;width: 52px; height: 52px; flex: none; border-radius: 114px; overflow: hidden; position: relative}
+.reference-style-109{box-sizing:border-box;position: absolute; left: calc(100% - 52px + 10px); top: calc(100% - 52px + 10px); z-index: 0}
+.reference-style-110{box-sizing:border-box;width: 52px; height: 52px; flex: none; border-radius: 114px; overflow: hidden; position: relative}
+.reference-style-111{box-sizing:border-box;position: absolute; left: calc(100% - 52px + 10.25px); top: calc(100% - 52px + 10px); z-index: 0}
+.reference-style-112{box-sizing:border-box;width: 52px; height: 52px; flex: none; background: linear-gradient(180deg, rgba(0,109,197,0) 0%, #68B1FF 100%), linear-gradient(12deg, #0559BF 0%, #000C23 100%); border-style: solid; border-image: radial-gradient(50.17% 35.83% at 50% 50%, #FFFFFF 0,rgba(255,255,255,0) 100%) 1 1 1 1, radial-gradient(55.63% 56.42% at 50% 50%, #C8E2FF 0,rgba(0,11,27,0) 100%) 1 1 1 1; border-width: 1px; border-radius: 20px; box-shadow: inset 0px -6px 6px 0px rgba(235,248,255,0.2), 0px 4px 10px 0px rgba(0,100,193,0.3); overflow: hidden; position: relative}
+.reference-style-113{box-sizing:border-box;position: absolute; left: -23.55px; top: -85.99px; z-index: 0}
+.reference-style-114{box-sizing:border-box;position: absolute; left: calc(100% - 52px + 12px); top: calc(100% - 52px + 12px); z-index: 1}
+.reference-style-115{box-sizing:border-box;width: 52px; height: 52px; flex: none; border-radius: 114px; overflow: hidden; position: relative}
+.reference-style-116{box-sizing:border-box;position: absolute; left: calc(100% - 52px + 9.5px); top: calc(100% - 52px + 10px); z-index: 0}
+.reference-style-117{box-sizing:border-box;width: 52px; height: 52px; flex: none; background: rgba(255,255,255,0.65); border-radius: 114px; overflow: hidden; position: relative}
+.reference-style-118{box-sizing:border-box;position: absolute; left: calc(100% - 52px + 10.6px); top: calc(100% - 52px + 10px); z-index: 0}

@@ -1,0 +1,9 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+const module={exports:{}};vm.runInNewContext(readFileSync('wechat-miniprogram/miniprogram/utils/expense-presentation.js','utf8'),{module});
+const build=module.exports.buildExpensePresentation;
+test('expense empty projection has no invented categories, expenses or ring caps',()=>{const v=build({});assert.equal(v.totalNumber,'0');assert.equal(v.budgetNumber,'未设置预算');assert.equal(v.rankings.length,0);assert.equal(v.caps.length,0);assert.ok(!v.ringBackground.includes('NaN'));});
+test('expense projection filters selected day and retains currencies and participants',()=>{const entries=[{id:'a',date:'2026-10-11',baseAmountMinor:1200,payerMemberId:'a',participants:[{memberId:'a'},{memberId:'b'}],displayAmount:'$2.00'},{id:'b',date:'2026-10-12',baseAmountMinor:800,participants:[]}];const v=build({expenses:entries,groups:entries.map(e=>({date:e.date,categoryGroups:[{entries:[e]}]})),selectedDate:'2026-10-11',members:[{id:'b',avatarSrc:'b.png'}],settings:{baseCurrency:'USD'},dates:[{value:'2026-10-11'},{value:'2026-10-13'}]});assert.equal(v.symbol,'$');assert.equal(v.groups.length,1);assert.equal(v.groups[0].entries[0].displayAmount,'$2.00');assert.equal(v.groups[0].entries[0].participantAvatars[0].src,'b.png');assert.equal(v.dates[1].hasContent,false);});
+test('expense ring uses real proportions and ranking sorts converted base amounts',()=>{const v=build({summary:{totalMinor:4000,categoryStats:[{category:'住宿',amountMinor:3000},{category:'餐饮',amountMinor:1000}]},expenses:[{id:'small',baseAmountMinor:1000},{id:'large',baseAmountMinor:3000}]});assert.ok(v.ringBackground.includes('266deg'));assert.equal(v.rankings[0].id,'large');assert.equal(v.caps.length,4);});
