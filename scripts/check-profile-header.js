@@ -6,6 +6,8 @@ async page => {
     await page.locator('.pp-header').waitFor();await page.waitForTimeout(350);
     const state=()=>page.locator('.pp-header').evaluate(e=>({top:e.getBoundingClientRect().top,navTop:e.querySelector('.pp-nav').getBoundingClientRect().top,opacity:Number(getComputedStyle(e.querySelector('.pp-header-blur')).opacity),z:Number(getComputedStyle(e).zIndex)}));
     const top=await state();if(top.opacity!==0)throw Error('Header blurred at rest');
+    const coverage=await page.locator('.pp-header').evaluate(e=>{const header=e.getBoundingClientRect(),blur=e.querySelector('.pp-header-blur').getBoundingClientRect();return blur.top===header.top&&blur.bottom>=header.bottom+19.5&&blur.bottom<=header.bottom+20.5});
+    if(!coverage)throw Error('Profile blur exposes status bar or extends too far');
     await page.evaluate(()=>scrollTo(0,16));await page.waitForTimeout(80);const partial=await state();
     await page.evaluate(()=>scrollTo(0,120));await page.waitForTimeout(80);const scrolled=await state();
     if(Math.abs(top.navTop-scrolled.navTop)>1||scrolled.top!==0)throw Error('Header moved while scrolling');

@@ -12,3 +12,12 @@
 /* User supplied bg.png, displayed uncropped at the shared central action bounds. */
 .page .master-nav .nav-create{background:transparent;border:0;box-shadow:0 4px 10px #0064c126}.page .master-nav .nav-create .nav-create-background{inset:0;width:100%;height:100%;object-fit:contain}
 .page .master-nav .nav-item.active image{filter:none}
+/* A narrow travelling highlight follows the outline without rotating the icon. */
+.page .rg-add-event,.page .xy-list-fixed-add{overflow:hidden;isolation:isolate}
+.page .rg-add-event .xy-add-flow,.page .xy-list-fixed-add .xy-add-flow{position:absolute;inset:-2px;display:block;border-radius:16px;overflow:hidden;pointer-events:none;z-index:0}
+.page .xy-add-flow-ring{position:absolute;left:-45%;top:-45%;width:190%;height:190%;background:conic-gradient(from 0deg,transparent 0deg,transparent 220deg,rgba(131,178,255,.1) 242deg,#6c9dff 260deg,#fff 280deg,#d7baff 301deg,#7befaa 325deg,transparent 355deg);animation:xy-add-outline-flow 3.6s linear infinite;transform-origin:center}
+.page .xy-add-flow-core{position:absolute;inset:2px;border-radius:13px;background:linear-gradient(145deg,#fff,#f9fbff)}
+.page .rg-add-event image,.page .xy-list-fixed-add image{position:relative;z-index:1}
+@keyframes xy-add-outline-flow{to{transform:rotate(360deg)}}
+.page.motion-paused .xy-add-flow-ring,.page.reduced-motion .xy-add-flow-ring{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){.page .xy-add-flow-ring{animation:none}}

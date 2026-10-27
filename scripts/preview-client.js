@@ -15,6 +15,9 @@ const positions = {};
 let headerScrollFrame;
 function updateProfileHeader(){document.querySelectorAll('.pp-header,.system-header').forEach(header=>header.style.setProperty('--header-progress',Math.min(1,Math.max(0,scrollY)/64)));}
 addEventListener('scroll',()=>{if(!headerScrollFrame)headerScrollFrame=requestAnimationFrame(()=>{headerScrollFrame=null;updateProfileHeader();});},{passive:true});
+// Refresh the open preview after returning from editing without resetting its tab or scroll.
+addEventListener('focus',()=>{if(sid&&!document.querySelector('.modal-mask'))request({});});
+addEventListener('pageshow',()=>requestAnimationFrame(updateProfileHeader));
 let sheetState, sheetObserver, sheetGesture, sheetSkipClick=0;
 function fitFormSheet(target){
   const sheet=document.querySelector('.form-sheet');if(!sheet||!sheetState)return;
@@ -70,6 +73,7 @@ function request(data) {
       document.body.classList.toggle('overlay-open', !!document.querySelector('.modal-mask'));
       setupFormSheet();
       updateProfileHeader();
+      requestAnimationFrame(updateProfileHeader);
       motionPlay(motionBefore);
       if(pressRelease&&!matchMedia('(prefers-reduced-motion:reduce)').matches&&!document.querySelector('.reduced-motion')){
         const control=[...document.querySelectorAll('[data-press][data-binding]')].find(e=>e.dataset.binding===pressRelease);

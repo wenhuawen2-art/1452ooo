@@ -4,6 +4,8 @@ async page => {
   await page.goto(`http://127.0.0.1:4193/app?mode=${mode}&device=iphone`);await page.locator('.system-header').waitFor();await page.waitForTimeout(320);
   const read=()=>page.locator('.system-header').evaluate(e=>({y:e.getBoundingClientRect().top,row:e.querySelector('.mg-top,.rg-header').getBoundingClientRect().top,opacity:Number(getComputedStyle(e.querySelector('.system-header-blur')).opacity),insideContent:!!e.closest('.content')}));
   const top=await read();if(top.opacity!==0||top.insideContent)throw Error('Incorrect header initial state '+mode);
+  const coverage=await page.locator('.system-header').evaluate(e=>{const header=e.getBoundingClientRect(),blur=e.querySelector('.system-header-blur').getBoundingClientRect();return blur.top===header.top&&blur.bottom>=header.bottom+19.5&&blur.bottom<=header.bottom+20.5});
+  if(!coverage)throw Error('Header blur exposes status bar or extends too far '+mode);
   await page.evaluate(()=>scrollTo(0,16));await page.waitForFunction(()=>Number(getComputedStyle(document.querySelector('.system-header-blur')).opacity)>0);const partial=await read();
   await page.evaluate(()=>scrollTo(0,160));await page.waitForFunction(()=>Number(getComputedStyle(document.querySelector('.system-header-blur')).opacity)===1);const scrolled=await read();
   if(scrolled.y!==0||Math.abs(scrolled.row-top.row)>1||scrolled.opacity!==1||partial.opacity<=0||partial.opacity>=1)throw Error(JSON.stringify({mode,top,partial,scrolled}));

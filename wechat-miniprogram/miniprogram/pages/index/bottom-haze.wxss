@@ -1,5 +1,5 @@
 /* Transparent at the top, progressively diffused toward the home indicator. */
-.bottom-haze{position:fixed;left:0;right:0;bottom:0;height:calc(176px + var(--safe-bottom,0px));z-index:28;pointer-events:none;overflow:hidden;background:linear-gradient(180deg,rgba(237,241,245,0) 0%,rgba(237,241,245,.08) 22%,rgba(237,241,245,.42) 52%,rgba(237,241,245,.82) 82%,rgba(237,241,245,.96) 100%)}
+.bottom-haze{position:fixed;left:0;right:0;bottom:0;height:calc(112px + var(--safe-bottom,0px));z-index:28;pointer-events:none;overflow:hidden;background:linear-gradient(180deg,rgba(237,241,245,0) 0%,rgba(237,241,245,.08) 22%,rgba(237,241,245,.42) 52%,rgba(237,241,245,.82) 82%,rgba(237,241,245,.96) 100%)}
 .bottom-haze>view{position:absolute;inset:0;pointer-events:none}
 .bottom-haze .haze-soft{backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);mask-image:linear-gradient(transparent,#000 24%,#000 48%,transparent 74%);-webkit-mask-image:linear-gradient(transparent,#000 24%,#000 48%,transparent 74%)}
 .bottom-haze .haze-mid{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);mask-image:linear-gradient(transparent 18%,#000 44%,#000 70%,transparent);-webkit-mask-image:linear-gradient(transparent 18%,#000 44%,#000 70%,transparent)}
