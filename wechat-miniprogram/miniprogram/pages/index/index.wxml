@@ -1,7 +1,7 @@
-<view class="page motion-nav-{{motionNav}} motion-section-{{motionSection}} {{!trip && !loading && !error ? 'is-no-trip' : ''}} theme-{{tab}} {{tab === 'route' ? 'route-' + routeSection : ''}} {{trip && tab === 'today' ? 'mastergo-home' : ''}} {{pageHidden ? 'motion-paused' : ''}} {{reducedMotion ? 'reduced-motion' : ''}}" style="--design-height:{{tab === 'today' ? 1559 : tab === 'route' ? (routeSection === 'planning' ? 1785 : 1220) : tab === 'expenses' ? (expenseSegment === 'stats' ? 2633 : expenseSegment === 'split' ? 1184 : 1785) : 1573}}px;--content-top:{{systemContentTop}}px;--safe-bottom:{{safeBottomInset}}px;padding-top:{{trip && (tab === 'today' || tab === 'route' || tab === 'list' || tab === 'expenses') ? 0 : systemHeaderHeight}}px">
-  <view wx:if="{{trip && tab !== 'today' && tab !== 'route' && tab !== 'list' && tab !== 'expenses'}}" class="custom-header" style="height:{{systemHeaderHeight}}px;padding-top:{{systemContentTop}}px"><text class="custom-brand">向野</text><text class="custom-tagline">让下一程，从容发生。</text><include src="views/account-entry.wxml" /></view>
+<view class="page motion-nav-{{motionNav}} motion-section-{{motionSection}} {{!trip && !loading && !error ? 'is-no-trip' : ''}} theme-{{tab === 'outfit' ? 'list' : tab}} {{tab === 'route' ? 'route-' + routeSection : ''}} {{trip && tab === 'today' ? 'mastergo-home' : ''}} {{pageHidden ? 'motion-paused' : ''}} {{reducedMotion ? 'reduced-motion' : ''}}" style="--design-height:{{tab === 'today' ? 1559 : tab === 'route' ? (routeSection === 'planning' ? 1785 : 1220) : tab === 'expenses' ? (expenseSegment === 'stats' ? 2633 : expenseSegment === 'split' ? 1184 : 1785) : 1573}}px;--content-top:{{systemContentTop}}px;--safe-bottom:{{safeBottomInset}}px;padding-top:{{trip && (tab === 'today' || tab === 'route' || tab === 'list' || tab === 'outfit' || tab === 'expenses') ? 0 : systemHeaderHeight}}px">
+  <view wx:if="{{trip && tab !== 'today' && tab !== 'route' && tab !== 'list' && tab !== 'outfit' && tab !== 'expenses'}}" class="custom-header" style="height:{{systemHeaderHeight}}px;padding-top:{{systemContentTop}}px"><text class="custom-brand">向野</text><text class="custom-tagline">让下一程，从容发生。</text><include src="views/account-entry.wxml" /></view>
   <include src="views/module-header.wxml" />
-  <view wx:if="{{loading}}" class="journey-loading" role="status" aria-label="正在加载旅行"><block wx:if="{{loadingVersion === 'v1'}}"><include src="./views/loading-v1.wxml" /></block><block wx:elif="{{loadingVersion === 'v2'}}"><include src="./views/loading-v2.wxml" /></block><block wx:else><include src="./views/loading.wxml" /></block></view>
+  <view wx:if="{{loading}}" class="journey-loading" role="status" aria-label="正在加载旅行"><block wx:if="{{loadingVersion === 'v1'}}"><include src="./views/loading-v1.wxml" /></block><block wx:elif="{{loadingVersion === 'v2'}}"><include src="./views/loading-v2.wxml" /></block><block wx:elif="{{loadingVersion === 'v3'}}"><include src="./views/loading-previous.wxml" /></block><block wx:else><include src="./views/loading.wxml" /></block></view>
   <view wx:elif="{{error}}" class="state-screen"><text class="state-title">暂时无法登录</text><text class="muted">{{error}}</text><button class="primary small" bindtap="retry">重新尝试</button></view>
   <block wx:else>
 
@@ -10,7 +10,7 @@
     <include src="views/onboarding.wxml" />
     </block>
     <block wx:else>
-      <view class="module-hero" wx:if="{{tab !== 'today' && tab !== 'route' && tab !== 'list' && tab !== 'expenses'}}">
+      <view class="module-hero" wx:if="{{tab !== 'today' && tab !== 'route' && tab !== 'list' && tab !== 'outfit' && tab !== 'expenses'}}">
         <text class="hero-kicker">{{tab === 'route' ? '把沿途，安排从容' : tab === 'list' ? '准备好，就出发' : '一起出发，清楚记账'}}</text>
         <text class="hero-heading">{{tab === 'route' ? '沿途计划' : tab === 'list' ? '行囊准备' : '旅行账本'}}</text>
         <view wx:if="{{tab === 'list'}}" class="hero-metric"><text class="hero-number">{{visualProgress}}</text><text class="hero-unit">%</text></view>
@@ -21,7 +21,7 @@
       </view>
 
 
-      <view class="content {{tab === 'list' ? 'list-content' : tab === 'expenses' ? 'expense-content' : ''}}">
+      <view class="content {{(tab === 'list' || tab === 'outfit') ? 'list-content' : tab === 'expenses' ? 'expense-content' : ''}}">
         <view wx:if="{{guestMode}}" class="guest-banner"><view><text class="guest-badge">游客体验</text><text>当前为演示旅行，浏览不会产生或保存真实数据</text></view><button data-intent="login" bindtap="startLogin">登录</button></view>
         <view wx:if="{{trip.archived}}" class="notice">这趟旅行已归档，内容仅供查看。</view>
 
@@ -33,7 +33,7 @@
           <include src="views/route.wxml" />
         </block>
 
-        <block wx:elif="{{tab === 'list'}}">
+        <block wx:elif="{{tab === 'list' || tab === 'outfit'}}">
           <include src="views/list.wxml" />
         </block>
 
@@ -47,8 +47,8 @@
       <view class="bottom-nav master-nav">
         <view class="nav-item {{tab === 'today' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="首页" data-tab="today" bindtap="setTab"><image src="{{tab === 'today' ? '/assets/mastergo-route/nav-today-active.svg' : '/assets/mastergo-route/planning/svg_bfe74286.svg'}}" mode="aspectFit" /><text class="small">首页</text></view>
         <view class="nav-item {{tab === 'route' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="行程" data-tab="route" bindtap="setTab"><image src="{{tab === 'route' ? '/assets/mastergo-route/nav-route-active.svg' : '/assets/mastergo/svg_7bb647bd.svg'}}" mode="aspectFit" /><text class="small">行程</text></view>
-        <view class="nav-item nav-create" hover-class="nav-pressed" role="button" aria-label="新建旅行" bindtap="openCreateTrip"><image class="nav-create-background" src="/assets/mastergo-route/create-background.png" mode="scaleToFill"/><image class="nav-create-plus" src="/assets/mastergo-route/create-icon.svg" mode="aspectFit" /><text class="small">新建</text></view>
         <view class="nav-item {{tab === 'list' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="清单" data-tab="list" bindtap="setTab"><image src="{{tab === 'list' ? '/assets/mastergo-route/nav-list-active.svg' : '/assets/mastergo/svg_988bdf11.svg'}}" mode="aspectFit" /><text class="small">清单</text></view>
+        <view class="nav-item {{tab === 'outfit' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="穿搭" data-tab="outfit" bindtap="setTab"><image src="/assets/mastergo-route/nav-outfit-{{tab === 'outfit' ? 'active' : 'default'}}.svg" mode="aspectFit"/><text class="small">穿搭</text></view>
         <view class="nav-item {{tab === 'expenses' ? 'active' : ''}}" hover-class="nav-pressed" role="button" aria-label="记账" data-tab="expenses" bindtap="setTab"><image src="{{tab === 'expenses' ? '/assets/mastergo-route/nav-expenses-active.svg' : '/assets/mastergo-route/planning/svg_0634b27b.svg'}}" mode="aspectFit" /><text class="small">记账</text></view>
       </view>
   </block>

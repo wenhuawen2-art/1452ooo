@@ -1,1 +1,5 @@
 .system-header{position:fixed;top:0;left:0;right:0;z-index:40;padding:0 16px 12px;pointer-events:none;box-sizing:border-box;font-family:'Alibaba PuHuiTi 2.0',sans-serif}.system-header>.mg-top,.system-header>.rg-header{position:relative;pointer-events:auto;z-index:1}.system-header button{margin:0;line-height:normal}.system-header-space{height:40px}.pp-header-blur,.system-header-blur{position:absolute;inset:0 0 -20px;pointer-events:none;opacity:var(--header-progress,0);background:linear-gradient(180deg,rgba(58,126,231,.78),rgba(91,150,236,.45) 70%,rgba(146,184,239,0));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);mask-image:linear-gradient(#000 0%,#000 65%,transparent 100%);-webkit-mask-image:linear-gradient(#000 0%,#000 65%,transparent 100%)}
+.rg-module-title{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.rg-module-title .rg-greeting{flex:none;font-size:26px;font-weight:600;line-height:36px}
+.rg-title-accent{width:10px;height:10px;flex:none;border-radius:2px;background:rgba(255,255,255,.26)}
+@media(max-width:374px){.rg-module-title .rg-greeting{font-size:24px}}

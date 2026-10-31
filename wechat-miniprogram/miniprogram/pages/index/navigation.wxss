@@ -21,3 +21,12 @@
 @keyframes xy-add-outline-flow{to{transform:rotate(360deg)}}
 .page.motion-paused .xy-add-flow-ring,.page.reduced-motion .xy-add-flow-ring{animation-play-state:paused}
 @media(prefers-reduced-motion:reduce){.page .xy-add-flow-ring{animation:none}}
+
+/* Selected icons share the checklist gradient and shadow, without a circular plate. */
+.page .master-nav .nav-item.active{background:transparent}
+
+/* Contextual create action reuses the former central tab action. */
+.page .master-nav{justify-content:space-around}
+.page .rg-add-event,.page .xy-list-fixed-add{border:0;background:transparent;overflow:hidden;box-shadow:0 4px 10px #0064c126;border-radius:18px}
+.page .rg-add-event .floating-create-background,.page .xy-list-fixed-add .floating-create-background{position:absolute;inset:0;width:100%;height:100%;max-width:none}
+.page .rg-add-event .floating-create-plus,.page .xy-list-fixed-add .floating-create-plus{position:absolute;left:50%;top:50%;width:74.105px;height:73.828px;max-width:none;transform:translate(-50%,-50%) translateY(6px)}

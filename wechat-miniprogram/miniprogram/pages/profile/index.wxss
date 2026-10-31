@@ -25,3 +25,7 @@ page{margin:0;padding:0;background:#edf1f5;color:#001126}
 .pp-header{position:fixed;top:0;left:0;right:0;z-index:40;padding:0 16px 12px;pointer-events:none}.pp-header .pp-nav{pointer-events:auto}.pp-nav-space{height:40px}
 
 @import "../index/sticky-header.wxss";
+
+.pp-trip-head .pp-switch-trip{flex:none;margin-left:auto;padding:0 12px;min-width:52px;height:32px;min-height:32px;border:1px solid #0011261a;border-radius:999px;background:#ffffff80;color:#001126;font-size:14px;line-height:32px;display:flex;align-items:center;justify-content:center;position:relative}.pp-switch-trip:before{content:"";position:absolute;inset:-6px 0}.pp-switch-trip+image{margin-left:0}.pp-trip-name{min-width:0;flex-shrink:1}
+
+.pp-trip-head .pp-switch-trip image{width:20px;height:20px;flex:none}

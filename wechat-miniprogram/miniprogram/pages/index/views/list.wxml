@@ -1,10 +1,6 @@
 <view class="xy-list-page {{listSection !== 'outfit' ? 'is-checklist' : ''}}" id="list-{{listSection}}" style="padding-top:{{16 + listSafeInset}}px" bindtap="closeListMenus">
   <image class="xy-list-atmosphere" src="/assets/mastergo-route/planning/svg_a7d2aa9f.svg" mode="scaleToFill"/>
   <view class="system-header-space"></view>
-  <view class="xy-list-mode">
-    <button class="{{listSection !== 'outfit' ? 'selected' : ''}}" data-section="public" bindtap="setListSection"><image class="xy-mode-art" src="/assets/mastergo-list/public/svg_e748a776.svg" mode="aspectFit"/><image class="xy-mode-icon" src="/assets/mastergo-list/public/svg_f4581768.svg" mode="aspectFit"/><text>物品清单</text></button>
-    <button class="{{listSection === 'outfit' ? 'selected' : ''}}" data-section="outfit" bindtap="setListSection"><image class="xy-mode-art" src="/assets/mastergo-list/shared/svg_f34b0e05.svg" mode="aspectFit"/><image class="xy-mode-icon" src="/assets/mastergo-list/outfit/svg_11a55262.svg" mode="aspectFit"/><text>每日穿搭</text></button>
-  </view>
   <block wx:if="{{listSection !== 'outfit'}}">
     <view class="xy-list-segment"><button class="{{listSection === 'public' ? 'selected' : ''}}" data-section="public" bindtap="setListSection">团队准备</button><button class="{{listSection === 'personal' ? 'selected' : ''}}" data-section="personal" bindtap="setListSection">我的准备</button></view>
     <view class="xy-list-summary">
@@ -26,7 +22,7 @@
           <view wx:if="{{!trip.archived && listItemMenuId === entry.id}}" class="xy-pop-menu xy-item-menu" catchtap="stopBubble"><button data-id="{{entry.id}}" bindtap="openItem">编辑</button><button wx:if="{{entry.done && entry.key}}" data-action="review" data-id="{{entry.id}}" bindtap="mutateAction">{{entry.reviewed ? '已复核' : '复核'}}</button><button data-action="deleteItem" data-id="{{entry.id}}" bindtap="confirmDelete">删除</button></view>
         </view>
       </view>
-      <view wx:if="{{!checklistGroups.length}}" class="xy-list-no-groups"><text>还没有准备分类</text><button wx:if="{{!trip.archived}}" bindtap="openCategory">＋ 新建分类</button></view>
+      <view wx:if="{{!checklistGroups.length}}" class="xy-list-no-groups"><image src="/assets/icons/empty-list-beads-v1.png" mode="aspectFit" aria-label="像素拼豆勾选清单"/><text>还没有准备分类</text></view>
     </view>
   </block>
   <block wx:else><include src="outfit.wxml"/></block>

@@ -116,4 +116,6 @@ document.addEventListener('change', event => {
 });
 addEventListener('message', event => { if (event.origin === location.origin) request({ mode: event.data.mode, fail: event.data.fail, reset: !!event.data.mode }); });
 const initial = new URLSearchParams(location.search);
-request({ mode: initial.get('mode') || 'member', tab: initial.get('tab') || (initial.get('mode')?.startsWith('route-design') ? 'route' : /^(list|outfit|expense)-design/.test(initial.get('mode') || '') ? (initial.get('mode')?.startsWith('expense-design') ? 'expenses' : 'list') : 'today'), preset: initial.get('preset') || '' });
+const initialMode = initial.get('mode') || 'member';
+const initialTab = initial.get('tab') || (initialMode.startsWith('route-design') ? 'route' : initialMode.startsWith('outfit-design') ? 'outfit' : initialMode.startsWith('expense-design') ? 'expenses' : initialMode.startsWith('list-design') ? 'list' : 'today');
+request({ mode: initialMode, tab: initialTab, preset: initial.get('preset') || '' });

@@ -3,6 +3,7 @@
 @import "./loading.wxss";
 @import "./loading-photo.wxss";
 @import "./loading-welcome.wxss";
+@import "./loading-new.wxss";
 /* MasterGo 5:201 首页-亮色：导出骨架已自动优化为可伸缩微信布局。 */
 .header-avatar{margin-left:auto;width:72rpx;height:72rpx;padding:0;border-radius:50%;overflow:hidden;background:#fff}.header-avatar image{width:100%;height:100%}.master-nav .nav-item{width:52px;height:52px;flex:none;padding:10px;border-radius:50%;box-sizing:border-box;background:transparent}.master-nav .nav-item image{width:32px;height:32px}.master-nav .nav-item .small{display:none}.master-nav .nav-item.active{background:rgba(255,255,255,.65)}.master-nav .nav-create{padding:12px;border-radius:20px;background:linear-gradient(12deg,#0559bf,#000c23);box-shadow:inset 0 -6px 6px rgba(235,248,255,.2),0 4px 10px rgba(0,100,193,.3)}.master-nav .nav-create image{width:28px;height:28px}.list-segment{grid-template-columns:repeat(3,minmax(0,1fr))}
 

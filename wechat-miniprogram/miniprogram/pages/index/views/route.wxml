@@ -20,7 +20,7 @@
           </view>
         </view>
       </view>
-      <view wx:if="{{!routePeriods.length}}" class="rg-empty">这一天还没有行程</view>
+      <view wx:if="{{!routePeriods.length}}" class="rg-empty rg-empty-state"><image src="/assets/icons/empty-route-beads-v1.png" mode="aspectFit" aria-label="像素拼豆路线图"/><text>这一天还没有行程</text></view>
     </block>
     <block wx:else>
       <view class="rg-section-head"><image src="/assets/mastergo-route/lodging/svg_86ca381c.svg"/><text>住宿</text></view>

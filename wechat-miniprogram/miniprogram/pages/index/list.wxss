@@ -16,14 +16,14 @@
 .xy-list-mode text{position:relative;z-index:1;line-height:24px}
 .xy-list-mode .xy-mode-art{position:absolute;right:-7px;top:9px;width:69px;height:69px;max-width:none;pointer-events:none}
 .xy-list-mode button:first-child .xy-mode-art{top:12px}
-.xy-list-segment{display:flex;gap:12px;height:52px;padding:6px;margin-top:28px;border-radius:224px;background:rgba(63,90,135,.16);backdrop-filter:blur(10px)}
-.xy-list-segment button{display:flex;align-items:center;justify-content:center;flex:1;min-width:0;min-height:0;height:40px;padding:0;border:1px solid transparent;border-radius:224px;background:transparent;color:#fff;font-size:16px;font-weight:500;line-height:22px}
+.xy-list-segment{display:flex;gap:12px;height:48px;padding:6px;margin-top:24px;border-radius:224px;background:rgba(63,90,135,.16);backdrop-filter:blur(10px)}
+.xy-list-segment button{display:flex;align-items:center;justify-content:center;flex:1;min-width:0;min-height:0;height:36px;padding:0;border:1px solid transparent;border-radius:224px;background:transparent;color:#fff;font-size:16px;font-weight:500;line-height:22px}
 .xy-list-segment button.selected{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.6);color:#001126}
-.xy-list-summary{margin-top:36px}
+.xy-list-summary{margin-top:28px}
 .xy-list-title{display:block;font-size:24px;line-height:34px;font-weight:400}
-.xy-progress-label{display:flex;align-items:center;gap:8px;margin-top:36px;color:rgba(4,9,17,.75);font-size:14px;height:20px}
+.xy-progress-label{display:flex;align-items:center;gap:8px;margin-top:28px;color:rgba(4,9,17,.75);font-size:14px;height:20px}
 .xy-progress-label image{width:16px;height:16px}
-.xy-progress-numbers{display:flex;align-items:center;justify-content:space-between;height:64px;margin-top:13px}
+.xy-progress-numbers{display:flex;align-items:center;justify-content:space-between;height:64px;margin-top:12px}
 .xy-progress-numbers>view:first-child{display:flex;align-items:baseline;gap:8px}
 .xy-list-page .xy-progress-big{font-family:'Konkhmer Sleokchher',Arial,sans-serif;font-weight:400;font-size:64px;line-height:64px;letter-spacing:0}
 .xy-progress-unit{color:rgba(4,9,17,.5);font-size:24px;line-height:34px;font-weight:500}
@@ -32,8 +32,8 @@
 .xy-progress-fraction text:last-child{font-size:20px;line-height:28px;color:rgba(4,9,17,.5);font-weight:500}
 .xy-progress-track{position:relative;height:16px;margin-top:16px;padding:0;border-radius:32px;background:#fff}
 .xy-progress-track>view{position:absolute;left:4px;top:3px;height:10px;max-width:calc(100% - 8px);border-radius:12px;background:linear-gradient(90deg,#c5e9ff,#0798ff);transition:width .4s ease}
-.xy-list-groups{margin:32px -16px 0;padding:15px 15px 16px;min-height:0;border:1px solid rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.7);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.3));backdrop-filter:blur(10px)}
-.xy-list-group{position:relative;margin-bottom:36px}
+.xy-list-groups{margin:28px -16px 0;padding:15px 15px 16px;min-height:0;border:1px solid rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.7);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.3));backdrop-filter:blur(10px)}
+.xy-list-group{position:relative;margin-bottom:28px}
 .xy-list-group:last-of-type{margin-bottom:0}
 .xy-category-head{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;height:36px;margin-bottom:20px}
 .xy-category-label{display:flex;align-items:center;gap:16px;min-width:0;flex:1;min-height:44px;padding:0;text-align:left;background:transparent;color:#001126}
@@ -61,15 +61,12 @@
 .xy-pop-menu button:last-child{color:#fa4545}
 .xy-list-group.menu-open,.xy-outfit-group.menu-open,.xy-outfit-piece.menu-open{position:relative;z-index:20}
 .xy-item-menu{right:0;top:42px}
-.xy-list-no-groups{padding:60px 20px;text-align:center;color:#405371}.xy-list-no-groups text{display:block}.xy-list-no-groups button{display:block;margin:24px auto 0;padding:10px 18px;border-radius:14px;background:#fff}
+.xy-list-no-groups{padding:60px 20px;text-align:center;color:#405371}.xy-list-no-groups text{display:block}
+.xy-list-no-groups{padding:24px 20px 32px}
+.xy-list-no-groups image{display:block;width:132px;height:108px;max-width:60%;margin:0 auto 8px}
 .xy-list-fixed-add{position:fixed;left:50%;bottom:calc(112px + var(--safe-bottom,env(safe-area-inset-bottom)));z-index:29;display:flex;align-items:center;justify-content:center;gap:8px;transform:translateX(-50%);width:160px;height:52px;padding:0;border:1.5px solid transparent;border-radius:16px;background:linear-gradient(298deg,#e7fff0,#e6f1ff) padding-box,linear-gradient(110deg,#6daeff,#d9b3ff,#baff71,#5affbd) border-box;box-shadow:0 12px 20px rgba(39,51,64,.16);font-size:16px;font-weight:500;color:#001126}
 .xy-list-fixed-add image{width:20px;height:20px}
 .xy-list-fixed-add:active{transform:translateX(-50%) scale(.97)}
-.xy-outfit-dates{margin-top:28px}
-.xy-outfit-date-title{margin-top:32px}
-.xy-list-page .rg-date .rg-day{font-family:'Konkhmer Sleokchher',Arial,sans-serif;font-size:24px;font-weight:400}
-.xy-list-page .rg-date-title{line-height:24px}
-.xy-list-page .rg-date-title image{left:calc(100% - 246.5px);width:264px;height:64px;top:-10.5px;max-width:none}
 .xy-outfit-weather{display:flex;align-items:center;gap:8px;height:52px;margin-top:24px;padding:8px;border:1px solid rgba(255,255,255,.2);border-radius:16px;background:rgba(255,255,255,.6);backdrop-filter:blur(10px);font-size:14px;white-space:nowrap}
 .xy-weather-place{display:flex;align-items:center;justify-content:center;gap:8px;flex:none;min-width:0;height:48px;padding:6px 12px 6px 6px;border-radius:12px;background:radial-gradient(58.57% 54.57% at 50% 50%,#fffdce 0,rgba(255,243,210,0) 100%),linear-gradient(180deg,#008bf4,rgba(5,147,255,.98) 29%,rgba(5,147,255,.2));color:#fff;overflow:hidden;font-weight:800}
 .xy-weather-place text{max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -92,13 +89,15 @@
 .xy-piece-placeholder{display:flex;align-items:center;justify-content:center;background:linear-gradient(140deg,#dae8f8,#eff5fc)}
 .xy-piece-placeholder image{width:80px;height:80px;opacity:.5}
 .xy-piece-type{position:absolute;top:8px;left:8px;height:28px;padding:4px 8px;border-radius:8px;background:rgba(255,255,255,.3);backdrop-filter:blur(10px);color:#fff;font-size:14px;line-height:20px}
-.xy-piece-bottom{display:flex;align-items:center;justify-content:space-between;height:38px;gap:8px;padding:0 12px;border-top:1px solid rgba(0,0,0,.2);border-radius:0 0 12px 12px;background:#fff;font-size:14px;line-height:20px}
+.xy-piece-bottom{display:flex;align-items:center;justify-content:space-between;height:38px;gap:8px;padding:0 12px;border-top:1px solid rgba(0,0,0,.2);border-radius:0 0 12px 12px;background:#EBEEF0;font-size:14px;line-height:20px}
 .xy-piece-bottom>text{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .xy-piece-bottom button{position:relative;display:flex;align-items:center;justify-content:center;height:36px;min-height:36px!important;width:30px;min-width:30px;padding:0;background:transparent}
 .xy-piece-bottom button:before{content:'';position:absolute;inset:-4px -7px}
 .xy-piece-bottom button image{width:30px;height:30px}
 .xy-piece-menu{top:auto;bottom:38px;right:0}
-.xy-outfit-empty{display:flex;align-items:center;justify-content:center;height:280px;margin-top:24px;border:1px solid rgba(255,255,255,.2);border-radius:16px;background:rgba(255,255,255,.3);backdrop-filter:blur(10px);font-size:16px;color:#001126}
+.xy-outfit-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;height:280px;margin-top:24px;border:1px solid rgba(255,255,255,.2);border-radius:16px;background:rgba(255,255,255,.3);backdrop-filter:blur(10px);font-size:16px;color:#001126}
+.xy-outfit-empty image{display:block;width:132px;height:108px;max-width:60%;flex:none}
+.xy-outfit-empty text{font-size:15px;line-height:22px;color:#526684}
 .theme-list .guest-banner,.theme-list .notice{position:relative;z-index:2;margin:12px 16px 0}
 @media(max-width:374px){.xy-list-header{gap:10px}.xy-list-mode{gap:12px}.xy-weather-place{gap:4px;padding-right:6px}.xy-weather-place text{max-width:58px}.xy-weather-reading{font-size:12px;gap:2px;padding:0}.xy-weather-reading image{width:16px;height:16px}.xy-category-label{gap:10px}}
 @media(prefers-reduced-motion:reduce){.xy-progress-track>view{transition:none}}
@@ -116,3 +115,6 @@
 .xy-weather-place text:first-child{max-width:86px}.xy-outfit-weather .xy-weather-place{overflow:visible}
 
 .xy-outfit-group:last-child{margin-bottom:0}
+
+/* Standalone checklist and outfit begin 32px below the shared header. */
+.xy-list-segment,.xy-list-page .xy-outfit-dates{margin-top:32px}

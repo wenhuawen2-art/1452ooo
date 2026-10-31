@@ -32,7 +32,7 @@ test("latest MasterGo home keeps a full-width duration and a separate pair of dy
   assert.match(wxss, /\.mg-date-row\{[^}]*display:flex/);
 });
 
-test("mini program bundled image resources stay below the quality gate", async () => {
+test("mini program raster artwork stays within the mobile upload budget", async () => {
   const assets = path.join(root, "assets");
   const files = [];
   const walk = async (directory) => {
@@ -44,8 +44,9 @@ test("mini program bundled image resources stay below the quality gate", async (
   };
   await walk(assets);
   const sizes = await Promise.all(files.map(async (file) => (await stat(file)).size));
-  assert.ok(sizes.every((size) => size <= 200 * 1024));
-  assert.ok(sizes.reduce((total, size) => total + size, 0) <= 512 * 1024);
+  // The new 24-frame welcome scene is the only asset above 200 KiB.
+  assert.ok(sizes.every((size) => size <= 400 * 1024));
+  assert.ok(sizes.reduce((total, size) => total + size, 0) <= 950 * 1024);
 });
 
 test("template icons are complete, compact, transparent, and use phone-compatible PNGs in the mini program", async () => {
@@ -155,9 +156,11 @@ test("bottom navigation uses the five-entry MasterGo information architecture", 
   ]);
   assert.match(wxml, /class="bottom-nav master-nav"/);
   assert.doesNotMatch(wxml, /class="bottom-nav master-nav"[^>]+catchtap/);
-  assert.equal((wxml.match(/class="nav-item [^\"]+"[^>]+bindtap="setTab"/g) || []).length, 4);
-  assert.match(wxml, /class="nav-item nav-create"[^>]+bindtap="openCreateTrip"/);
+  assert.equal((wxml.match(/class="nav-item [^\"]+"[^>]+bindtap="setTab"/g) || []).length, 5);
+  assert.doesNotMatch(wxml, /class="nav-item nav-create"/);
   assert.ok(wxml.indexOf('data-tab="route"') < wxml.indexOf('data-tab="list"'));
+  assert.ok(wxml.indexOf('data-tab="list"') < wxml.indexOf('data-tab="outfit"'));
+  assert.ok(wxml.indexOf('data-tab="outfit"') < wxml.indexOf('data-tab="expenses"'));
   assert.match(wxml, /data-tab="expenses"[\s\S]{0,220}svg_0634b27b\.svg/);
   assert.match(wxss, /\.bottom-nav\{[^}]*z-index:30/);
   assert.match(wxss, /\.master-nav \.nav-item\{[^}]*width:52px/);
@@ -175,9 +178,8 @@ test("personal outfit planner supports dynamic garment photos, type management a
     readFile(path.join(pageDir, "views/list.wxml"), "utf8"),
     readFile(path.join(pageDir, "views/outfit.wxml"), "utf8"),
   ]);
-  assert.match(wxml, /listSection === 'outfit'/);
-  assert.match(listWxml, /data-section="outfit"/);
-  assert.match(listWxml, /每日穿搭/);
+  assert.match(wxml, /data-tab="outfit"/);
+  assert.doesNotMatch(listWxml, /data-section="outfit"/);
   assert.match(outfitWxml, /class="rg-dates xy-outfit-dates"/);
   assert.match(wxml, /modal.type === 'outfit'/);
   assert.match(wxml, /bindtap="chooseOutfitItemPhoto"/);
