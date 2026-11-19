@@ -1,5 +1,5 @@
 <view class="new-loading-surface" aria-label="向野正在加载">
-  <image class="new-loading-reference" src="/assets/loading-new/clean-background.webp" mode="scaleToFill" aria-hidden="true" />
-  <image wx:if="{{!reducedMotion}}" class="new-loading-landscape" src="/assets/loading-new/kite-landscape.webp" mode="scaleToFill" aria-hidden="true" />
-  <image wx:else class="new-loading-landscape" src="/assets/loading-new/kite-landscape-still.webp" mode="scaleToFill" aria-hidden="true" />
+  <view class="new-loading-fallback"><image src="/assets/brand/logo-144.png" mode="aspectFit" /><text>向野</text><text>正在开启旅程</text></view>
+  <image class="new-loading-reference" src="/assets/loading-new/clean-background.jpg" mode="scaleToFill" aria-hidden="true" />
+  <image class="new-loading-landscape" src="/assets/loading-new/kite-landscape-still.png" mode="scaleToFill" aria-hidden="true" />
 </view>

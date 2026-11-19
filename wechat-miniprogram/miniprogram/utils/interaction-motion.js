@@ -1,6 +1,6 @@
 // Presentation-only presence: data commits immediately; a noninteractive copy
 // stays mounted during exit. New content always cancels an older exit timer.
-const NAV = ['today', 'route', 'list', 'expenses'];
+const NAV = ['today', 'route', 'list', 'outfit', 'expenses'];
 const SECTION_KEYS = ['routeSection', 'listSection', 'expenseSegment', 'selectedDate'];
 const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 function installMotion(page, wx) {

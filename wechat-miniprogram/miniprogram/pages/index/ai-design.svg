@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="68" height="68" viewBox="0 0 68 68" fill="none">
+  <defs>
+    <radialGradient id="face" cx="0" cy="0" r="1" gradientTransform="translate(34 33) rotate(90) scale(27)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0B7BFF"/>
+      <stop offset=".43" stop-color="#3C95FF"/>
+      <stop offset=".72" stop-color="#8CC0FF" stop-opacity=".52"/>
+      <stop offset="1" stop-color="#B7D8FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mint" cx="0" cy="0" r="1" gradientTransform="translate(56 7) rotate(90) scale(34 39)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DCFFEA" stop-opacity=".65"/>
+      <stop offset="1" stop-color="#DCFFEA" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pink" cx="0" cy="0" r="1" gradientTransform="translate(19 68) rotate(90) scale(39 43)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFC4EB" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#FFC4EB" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="eyes" x1="32" y1="23" x2="43" y2="37" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E6FFFE"/>
+    </linearGradient>
+    <clipPath id="circle"><circle cx="34" cy="34" r="34"/></clipPath>
+  </defs>
+  <g clip-path="url(#circle)">
+    <circle cx="34" cy="34" r="34" fill="#FFFFFF"/>
+    <circle cx="34" cy="34" r="34" fill="url(#mint)"/>
+    <circle cx="34" cy="34" r="34" fill="url(#pink)"/>
+    <circle cx="34" cy="33" r="27" fill="url(#face)"/>
+    <path d="M31.4 25.5c3.6 2.9 5.3 6.3 5.6 10" stroke="url(#eyes)" stroke-width="4.8" stroke-linecap="round"/>
+    <path d="M42.3 22.5c3.6 2.9 5.4 6.3 5.7 10" stroke="url(#eyes)" stroke-width="4.8" stroke-linecap="round"/>
+    <circle cx="34" cy="34" r="33.5" stroke="#FFFFFF" stroke-opacity=".85"/>
+  </g>
+</svg>

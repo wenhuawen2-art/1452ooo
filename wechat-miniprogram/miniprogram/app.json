@@ -5,11 +5,12 @@
     "pages/weather/index",
     "pages/editor/index"
   ],
+  "subPackages": [{ "root": "subpackages/ai", "pages": ["pages/chat/index"] }],
   "window": {
     "navigationBarTitleText": "向野",
     "navigationBarBackgroundColor": "#e7f2fd",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#f8fafc",
+    "backgroundColor": "#eaf4ff",
     "navigationStyle": "custom"
   },
   "lazyCodeLoading": "requiredComponents",

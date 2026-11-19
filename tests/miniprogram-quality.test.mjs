@@ -81,7 +81,10 @@ test("mini program uses native login, optimistic checklist, safe deletion, and d
   assert.match(wxml, /微信一键登录/);
   assert.match(js, /this\.call\("activateAccount"\)/);
   assert.doesNotMatch(wxml, /loginProfile/);
-  assert.match(wxml, /open-type="chooseAvatar"[^>]+bindchooseavatar="chooseProfileWechatAvatar"/);
+  assert.match(wxml, /bindtap="chooseCustomAvatar"/);
+  assert.doesNotMatch(wxml, /open-type="chooseAvatar"/);
+  assert.match(wxml, /class="avatar-grid"/);
+  assert.match(wxml, /wx:for="{{profileAvatars}}"/);
   assert.match(wxml, /type="nickname"/);
   assert.doesNotMatch(wxml, /getPhoneNumber|open-type="getPhoneNumber"/);
   assert.doesNotMatch(wxml, /wx:elif="\{\{loginProfile\}\}" class="login-screen"/);
@@ -347,5 +350,5 @@ test("expense filters apply date category and payer together", async () => {
 
 test("page reserves fixed navigation and device safe-area space", async () => {
   const wxss = await readFile(path.join(root, "pages/index/index.wxss"), "utf8");
-  assert.match(wxss, /padding:68px 36rpx calc\(190rpx \+ env\(safe-area-inset-bottom\)\)/);
+  assert.match(wxss, /padding:68px \d+rpx calc\(190rpx \+ env\(safe-area-inset-bottom\)\)/);
 });

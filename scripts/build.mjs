@@ -18,7 +18,15 @@ await Promise.all([
   cp("shared/trip-types.cjs", "cloudfunctions/suixing-api/trip-types.cjs"),
   cp("shared/expenses.cjs", "cloudfunctions/suixing-api/expenses.cjs"),
   cp("shared/weather-cities.cjs", "cloudfunctions/suixing-api/weather-cities.cjs"),
+  cp("shared/weather-provider.cjs", "cloudfunctions/suixing-api/weather-provider.cjs"),
   cp("shared/weather-cities.cjs", "wechat-miniprogram/miniprogram/utils/weather-cities.js"),
+  cp("shared/ai-contract.cjs", "cloudfunctions/suixing-api/ai-contract.cjs"),
+  cp("shared/ai-service.cjs", "cloudfunctions/suixing-api/ai-service.cjs"),
+  cp("shared/ai-budget.cjs", "cloudfunctions/suixing-api/ai-budget.cjs"),
+  cp("shared/ai-lifecycle.cjs", "cloudfunctions/suixing-api/ai-lifecycle.cjs"),
+  cp("shared/ai-contract.cjs", "cloudfunctions/suixing-ai-worker/ai-contract.cjs"),
+  cp("shared/trip-types.cjs", "cloudfunctions/suixing-ai-worker/trip-types.cjs"),
+  cp("shared/ai-lifecycle.cjs", "cloudfunctions/suixing-backup/ai-lifecycle.cjs"),
 ]);
 await build({
   entryPoints: ["public/app.js"],

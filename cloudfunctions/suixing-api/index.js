@@ -7,6 +7,12 @@ const expensePackage = require("./expenses.cjs");
 const { DEFAULT_EXPENSE_CATEGORIES, normalizeExpense, buildExpenseSummary, buildSettlementPlan } = expensePackage;
 const { TRANSPORT_MODES, extractRoutePlan, routeInputSignature, validCoordinatePair, matchAdministrativePlace, hotelForRouteDate, hotelRouteCandidates } = require("./route-overview.cjs");
 const { cityIdentity } = require('./weather-cities.cjs');
+const { weatherCoordinates, fetchQweather } = require('./weather-provider.cjs');
+const { AI_COLLECTIONS } = require('./ai-contract.cjs');
+const { createAiService } = require('./ai-service.cjs');
+const { createDispatcher } = require('./ai-dispatch.cjs');
+const { createBudgetNotifier, runBudgetMaintenance } = require('./ai-budget-notify.cjs');
+const { cleanupTripAi } = require('./ai-lifecycle.cjs');
 
 const app = cloudbase.init({});
 const db = app.database();
@@ -29,7 +35,7 @@ const collections = {
 let collectionSetup;
 async function ensureCollections() {
   if (!collectionSetup) collectionSetup = Promise.all(
-    ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges", "weather_cache", "user_accounts", "web_login_sessions", "trip_expenses", "trip_settlements", "trip_expense_settings", "trip_route_overviews", "route_place_geocodes"].map(async (name) => {
+    ["trips", "trip_members", "trip_invites", "recovery_codes", "delete_challenges", "weather_cache", "user_accounts", "web_login_sessions", "trip_expenses", "trip_settlements", "trip_expense_settings", "trip_route_overviews", "route_place_geocodes", ...AI_COLLECTIONS].map(async (name) => {
       try { await db.createCollection(name); }
       catch (error) {
         if (!/exist|already|重复|存在/i.test(String(error?.message || error))) throw error;
@@ -71,18 +77,18 @@ async function tencentLbs(path, params = {}) {
       error.code = `TENCENT_LBS_${payload.status}`;
       throw error;
     }
-    return payload.result;
+    return payload.result ?? payload.data;
   } finally { clearTimeout(timeout); }
 }
-async function geocodeTencent(place) {
-  const result = await tencentLbs("/ws/geocoder/v1/", { address: place, policy: "1" });
+async function geocodeTencent(place, contextCity = '') {
+  const result = await tencentLbs("/ws/geocoder/v1/", { address: place, ...(contextCity ? {region:contextCity} : {}), policy: "1" });
   if (!result?.location) return null;
   return {
     name: result.title || place,
     latitude: Number(result.location.lat), longitude: Number(result.location.lng),
     poiId: result.id || "", adcode: String(result.ad_info?.adcode || ""),
     addressComponents: result.address_components || {}, geoLevel: result.level || "",
-    geoSource: "腾讯位置服务",
+    geoSource: "腾讯位置服务", coordinateSystem: 'gcj02',
   };
 }
 const routePlaceKey = (value) => String(value || "").trim().toLowerCase().replace(/[\s·,，。;；、_\-]+/g, "");
@@ -97,7 +103,7 @@ const fallbackResultMatches = (query, displayName, contextCity = "") => {
 };
 async function geocodePlace(place, contextCity = "") {
   if (tencentLbsKey() && Date.now() >= tencentLbsLimitedUntil) {
-    const tencent = await geocodeTencent(place).catch(() => null);
+    const tencent = await geocodeTencent(place, contextCity).catch(() => null);
     if (tencent) return tencent;
   }
   const openUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(place)}&count=1&language=zh&format=json`;
@@ -109,7 +115,7 @@ async function geocodePlace(place, contextCity = "") {
         const addressComponents = { province: result.admin1 || "", city: result.admin2 || result.admin1 || "", district: result.admin3 || "" };
         if (routePlaceKey(result.name) === routePlaceKey(place) || matchAdministrativePlace(place, addressComponents)) return {
           name: result.name || place, latitude: Number(result.latitude), longitude: Number(result.longitude),
-          addressComponents, geoSource: "Open-Meteo",
+          addressComponents, geoSource: "Open-Meteo", coordinateSystem: 'wgs84',
         };
       }
     }
@@ -128,7 +134,7 @@ async function geocodePlace(place, contextCity = "") {
         name: result.name || result.display_name?.split(",")[0] || place,
         latitude: Number(result.lat), longitude: Number(result.lon), poiId: `osm:${result.osm_type || ""}:${result.osm_id || ""}`,
         addressComponents: { province: address.state || address.province || "", city: address.city || address.prefecture || address.state_district || "", district: address.county || address.district || address.city_district || "" },
-        geoSource: "OpenStreetMap",
+        geoSource: "OpenStreetMap", coordinateSystem: 'wgs84',
       };
     } catch {}
   }
@@ -138,10 +144,11 @@ async function geocodePlace(place, contextCity = "") {
 async function geocodeRoutePlace(place, contextCity = "") {
   const query = String(place || "").trim().slice(0, 300);
   if (!query) return null;
-  const cacheId = hash(`${routePlaceKey(query)}|${routePlaceKey(contextCity)}`).slice(0, 48);
+  const cacheId = hash(`gcj02-v2|${routePlaceKey(query)}|${routePlaceKey(contextCity)}`).slice(0, 48);
   const cached = await first(collections.routeGeocodes.doc(cacheId)).catch(() => null);
   if (cached && validCoordinatePair(cached.latitude, cached.longitude)) return cleanDocument(cached);
-  const location = await geocodePlace(query, contextCity);
+  // Routes and native maps must use GCJ-02; GPS fallbacks must never be plotted as GCJ-02.
+  const location = await geocodeTencent(query, contextCity);
   if (!location || !validCoordinatePair(location.latitude, location.longitude)) return null;
   const record = { ...location, query, updatedAt: Date.now() };
   await collections.routeGeocodes.doc(cacheId).set(record).catch(() => {});
@@ -172,16 +179,13 @@ async function resolveRoutePoint(trip, point, configured) {
     originalAddress: point.originalAddress || point.address,
   };
   if (validCoordinatePair(point.latitude, point.longitude)) return {
-    ...point, ...original, resolutionLevel: "poi", resolutionSource: "manual", resolutionSourceLabel: "手动修正",
+    ...point, ...original, coordinateSystem:'gcj02', resolutionLevel: "poi", resolutionSource: "manual", resolutionSourceLabel: "手动修正",
   };
   let location = null;
   const contextCity = hotelForRouteDate(trip, point.date)?.city || "";
   try { location = await geocodeRoutePlace(point.address || point.label, contextCity); } catch {}
   const admin = location ? matchAdministrativePlace(point.address || point.label, location.addressComponents) : null;
-  if (!location || admin) {
-    const lodgingPoint = await resolveHotelRoutePoint(trip, point);
-    if (lodgingPoint) return lodgingPoint;
-  }
+  // A city or unresolved attraction must not silently turn into that night's hotel.
   if (!location) return { ...point, ...original, unresolved: true, resolutionLevel: "unresolved", resolutionSource: "unresolved", resolutionSourceLabel: "待修正" };
   if (admin) return {
     ...point, ...location, ...original,
@@ -255,7 +259,7 @@ async function buildRouteOverview(trip) {
   }
   const includePoints = resolved.filter((point) => !point.unresolved).map(({ latitude, longitude }) => ({ latitude, longitude }));
   return {
-    tripId: trip.id, configured, available: includePoints.length >= 2, inputHash: hash(routeInputSignature(trip)),
+    tripId: trip.id, schemaVersion: 2, configured, available: includePoints.length >= 1, inputHash: hash(routeInputSignature(trip)),
     points: resolved, allPoints: plan.points, segments, includePoints,
     unresolved: resolved.filter((point) => point.unresolved).map((point) => ({ id: point.id, label: point.label, address: point.address })),
     distanceMeters: segments.reduce((sum, segment) => sum + Number(segment.distance || 0), 0),
@@ -270,7 +274,7 @@ async function getRouteOverview(accountId, input) {
   const hasLbsKey = Boolean(tencentLbsKey());
   if (!input.force) {
     const cached = await first(collections.routeOverviews.doc(trip.id)).catch(() => null);
-    if (cached?.inputHash === inputHash && (cached.configured || !hasLbsKey)) return cached;
+    if (cached?.schemaVersion === 2 && cached?.inputHash === inputHash && (cached.configured || !hasLbsKey)) return cached;
   }
   const overview = await buildRouteOverview(trip);
   await collections.routeOverviews.doc(trip.id).set(overview).catch(() => {});
@@ -291,19 +295,28 @@ async function getWeather(uid, input) {
   const link = await membership(db, uid, input.tripId);
   const trip = await loadTrip(db, input.tripId);
   if (input.date < String(trip.start).slice(0, 10) || input.date > String(trip.end).slice(0, 10)) fail(400, "天气日期不在旅行范围内");
-  const date = input.current === true ? new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10) : input.date;
+  const date = input.date;
   const hotel = (trip.hotels || []).find((entry) => entry.checkin <= date && date < entry.checkout);
-  const event = (trip.events || []).filter((entry) => entry.date === date && (entry.address || "")).sort((a, b) => (a.startTime || "").localeCompare(b.startTime || ""))[0];
-  const place = String(input.place || hotel?.city || event?.address || "").trim().slice(0, 120);
+  const event = (trip.events || []).filter((entry) => entry.date === date && (entry.endPlace || entry.address || entry.startPlace)).sort((a, b) => (a.startTime || "").localeCompare(b.startTime || ""))[0];
+  const place = String(input.place || event?.endPlace || event?.address || event?.startPlace || hotel?.address || hotel?.city || "").trim().slice(0, 120);
   if (!place) return { available: false, reason: "missing_place", date };
-  const key = weatherKey(place, date);
+  const provider = process.env.WEATHER_PROVIDER === 'qweather' ? 'qweather' : 'open-meteo';
+  const contextCity = String(input.contextCity || hotel?.city || '').slice(0,80);
+  const override = (trip.routeConfig?.points||[]).find(point=>point.id===input.pointId&&validCoordinatePair(point.latitude,point.longitude));
+  const key = weatherKey('dated-v2|'+provider+'|'+place+'|'+contextCity+'|'+String(input.pointId||'')+'|'+(override?[override.latitude,override.longitude].join(','):''), date);
   let cached;
   try { cached = await first(collections.weather.doc(key)); } catch { cached = undefined; }
   if (cached && cached.expiresAt > Date.now() && Object.prototype.hasOwnProperty.call(cached.weather || {}, "humidity") && Object.prototype.hasOwnProperty.call(cached.weather || {}, "uvIndex") && cached.weather?.cityName) return cached.weather;
-  const location = await geocodePlace(place);
+  const location = override ? {...override,name:override.label||place,coordinateSystem:'gcj02'} : await geocodePlace(place,contextCity);
   if (!location) return { available: false, reason: "place_not_found", date, place };
   const identity = cityIdentity(place, location);
-  const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(location.latitude)}&longitude=${encodeURIComponent(location.longitude)}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max&timezone=auto&forecast_days=16`;
+  if(provider==='qweather'){
+    const weather={...(await fetchQweather(location,date)),place,location:location.name||place,...identity,latitude:location.latitude,longitude:location.longitude};
+    await collections.weather.doc(key).set({id:key,place,date,weather,expiresAt:Date.now()+1800000,updatedAt:Date.now()}).catch(()=>{});
+    return weather;
+  }
+  const gps=weatherCoordinates(location);
+  const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(gps.latitude)}&longitude=${encodeURIComponent(gps.longitude)}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max&timezone=Asia%2FShanghai&forecast_days=16`;
   const forecastResponse = await fetch(forecastUrl, { signal: AbortSignal.timeout(10000) });
   if (!forecastResponse.ok) fail(502, "天气服务暂时不可用");
   const forecast = await forecastResponse.json();
@@ -317,11 +330,11 @@ async function getWeather(uid, input) {
     code: forecast.daily.weather_code[index],
     high: forecast.daily.temperature_2m_max[index], low: forecast.daily.temperature_2m_min[index],
     rainProbability: forecast.daily.precipitation_probability_max?.[index] ?? null,
-    current: forecast.current?.temperature_2m ?? null,
-    humidity: forecast.current?.relative_humidity_2m ?? null,
+    current: date===String(forecast.current?.time||'').slice(0,10)?forecast.current?.temperature_2m ?? null:null,
+    humidity: date===String(forecast.current?.time||'').slice(0,10)?forecast.current?.relative_humidity_2m ?? null:null,
     uvIndex,
     uvLevel: uvLevelText(uvIndex),
-    wind: forecast.current?.wind_speed_10m ?? null,
+    wind: date===String(forecast.current?.time||'').slice(0,10)?forecast.current?.wind_speed_10m ?? null:null,
     updatedAt: new Date().toISOString(), source: "Open-Meteo",
   };
   await collections.weather.doc(key).set({ id: key, place, date, weather, expiresAt: Date.now() + 3600000, updatedAt: Date.now() }).catch(() => {});
@@ -424,14 +437,15 @@ async function hydrateTripProfiles(source, trip) {
   return trip;
 }
 const authContext = async (context) => app.auth().getAuthContext(context);
-const resolvePrincipal = async (context, event, { optional = false } = {}) => {
+const resolvePrincipal = async (context, _event, { optional = false } = {}) => {
   const auth = await authContext(context);
+  const runtime = cloudbase.getCloudbaseContext(context);
   const loginType = String(auth?.loginType || auth?.login_type || "").toUpperCase();
-  // wx.cloud.callFunction injects userInfo server-side. It is trusted runtime
-  // context and cannot be supplied or forged by the mini-program payload.
-  const miniUser = event?.userInfo || {};
-  const openId = miniUser.openId || miniUser.openid || auth?.openId || auth?.openid;
-  const appId = miniUser.appId || miniUser.appid || auth?.appId || auth?.appid || "";
+  // The API also accepts Web SDK invocations. Payload userInfo is not an
+  // identity boundary there: only invocation context or SDK auth may identify
+  // an account, regardless of fields a caller adds to event/data.
+  const openId = runtime.WX_OPENID || auth?.openId || auth?.openid;
+  const appId = runtime.WX_APPID || auth?.appId || auth?.appid || "";
   if (openId) {
     return {
       accountId: accountKeyForOpenId(appId, openId),
@@ -440,7 +454,7 @@ const resolvePrincipal = async (context, event, { optional = false } = {}) => {
       appId,
     };
   }
-  if (auth?.uid && loginType !== "ANONYMOUS") return { accountId: auth.uid, provider: "custom" };
+  if (auth?.uid && loginType !== "ANONYMOUS" && runtime.TCB_ISANONYMOUS_USER !== "true") return { accountId: auth.uid, provider: "custom" };
   if (optional) return null;
   throw Object.assign(new Error("未取得微信身份，请检查小程序 AppID 与云开发环境关联"), {
     status: 401,
@@ -602,11 +616,15 @@ async function exchangeWebLogin(input) {
 
 async function resolveLocation(accountId, input) {
   await membership(db, accountId, input.tripId);
+  const trip = await loadTrip(db,input.tripId);
   const place = String(input.place || "").trim().slice(0, 120);
   if (!place) fail(400, "缺少地址");
-  const location = await geocodePlace(place);
-  if (!location) fail(404, "没有找到这个地址");
-  return { name: location.name || place, address: place, latitude: Number(location.latitude), longitude: Number(location.longitude) };
+  const point = extractRoutePlan(trip).visiblePoints.find(entry=>entry.id===input.pointId);
+  const contextCity = hotelForRouteDate(trip,String(input.date||point?.date||''))?.city||'';
+  const location = point && validCoordinatePair(point.latitude,point.longitude) ? {...point,name:point.label,coordinateSystem:'gcj02'} : await geocodeRoutePlace(place,contextCity);
+  if (!location) fail(404, "没有找到准确地点，请在全程路线中搜索替换为具体地点");
+  const administrative = matchAdministrativePlace(place,location.addressComponents||{});
+  return { name: location.name || place, address: location.address || place, latitude: Number(location.latitude), longitude: Number(location.longitude), coordinateSystem:'gcj02', approximate:!!administrative };
 }
 
 async function create(accountId, input) {
@@ -947,7 +965,7 @@ async function mutate(accountId, input) {
       await transaction.collection("delete_challenges").where({ tripId: trip.id }).remove();
       await transaction.collection("trip_route_overviews").where({ tripId: trip.id }).remove();
       await transaction.collection("trips").doc(trip.id).delete();
-      return { direct: { deleted: trip.id }, filesToDelete: ticketFiles };
+      return { direct: { deleted: trip.id }, filesToDelete: ticketFiles, deletedTripId: trip.id };
     }
     if (input.action === "exportTrip") {
       if (member.id !== trip.creator) fail(403, "只有创建者可以操作");
@@ -984,6 +1002,10 @@ async function mutate(accountId, input) {
     };
   });
   if (result.filesToDelete?.length) await app.deleteFile({ fileList: result.filesToDelete }).catch(() => {});
+  if (result.deletedTripId) {
+    try { await cleanupTripAi(db, result.deletedTripId); }
+    catch { console.error('[ai-cleanup]', { code: 'AI_TRIP_CLEANUP_PENDING' }); result.direct.aiCleanupPending = true; }
+  }
   if (result.direct) return result.direct;
   const member = result.trip.members.find((entry) => entry.id === result.memberId);
   return { trip: await ticketView(viewTrip(result.trip, member, result.invite)), ...result.extra };
@@ -995,18 +1017,31 @@ async function saveRouteOverviewConfig(accountId, input) {
   return { trip: result.trip, overview };
 }
 
+const aiDispatcher = createDispatcher({ getCredentials: (context) => cloudbase.getCloudbaseContext(context) });
+
 exports.main = async (event, context) => {
   const requestId = context?.requestId || context?.request_id || "unknown";
   try {
     await ensureCollections();
     const operation = event?.operation;
     const data = event?.data || {};
+    const notifyBudget = createBudgetNotifier();
+    if (operation === 'aiBudgetMaintenance') return await runBudgetMaintenance({db,input:data,notify:notifyBudget});
     if (operation === "createWebLoginSession") return { ok: true, data: await createWebLoginSession() };
     if (operation === "pollWebLogin") return { ok: true, data: await pollWebLogin(data) };
     if (operation === "exchangeWebLogin") return { ok: true, data: await exchangeWebLogin(data) };
     const principal = await resolvePrincipal(context, event);
     const accountId = principal.accountId;
+    const aiService = createAiService({ db, dispatch: (jobId) => aiDispatcher(jobId, context), notifyBudget,
+      toView: async (trip, member, invite) => ticketView(viewTrip(trip, member, invite)),
+    });
     const result = operation === "bootstrapAccount" ? await bootstrapAccount(principal)
+      : operation === "getAiCapabilities" ? await aiService.capabilities(accountId)
+      : operation === "submitAiMessage" ? await aiService.submit(accountId, data)
+      : operation === "getAiJob" ? await aiService.getJob(accountId, data)
+      : operation === "getAiConversation" ? await aiService.getConversation(accountId, data)
+      : operation === "applyAiDraft" ? await aiService.apply(accountId, data)
+      : operation === "deleteAiConversation" ? await aiService.removeConversation(accountId, data)
       : operation === "activateAccount" ? await activateAccount(principal)
       : operation === "updateAccountProfile" ? await updateAccountProfile(principal, data)
       : operation === "mutateOutfitType" ? await mutateOutfitType(principal, data)
@@ -1037,7 +1072,12 @@ exports.main = async (event, context) => {
     return { ok: true, data: result };
   } catch (error) {
     if (error.code === "WECHAT_IDENTITY_UNAVAILABLE") {
-      console.error("[wechat-auth] identity unavailable", { requestId, hasAppId: !!event?.userInfo?.appId, hasOpenId: !!event?.userInfo?.openId });
+      console.error("[wechat-auth] identity unavailable", { requestId });
+    } else if (!error.status && ["getAiCapabilities", "submitAiMessage", "getAiJob", "getAiConversation", "applyAiDraft", "deleteAiConversation"].includes(event?.operation)) {
+      // Database/transport exceptions can embed request bodies. Keep prompts,
+      // drafts and credentials out of API logs as well as worker logs.
+      const code = /^AI_[A-Z_]+$/.test(String(error?.code || "")) ? error.code : "AI_API_FAILED";
+      console.error("[ai-api]", { requestId, operation: event.operation, code });
     } else if (!error.status) console.error(error);
     const outfitMutation = event?.operation === "mutateTrip" && event?.data?.action === "outfit";
     const safeError = outfitMutation && !error.status

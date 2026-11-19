@@ -3,6 +3,8 @@
 const motionEase = 'cubic-bezier(.22,1,.36,1)';
 let motionAnimations = [];
 const motionQuery = selector => document.querySelector(selector);
+const progressSelector = '.xy-progress-track > div,.ee-budget-track > div,.mg-progress > div';
+const checkSelector = '.xy-item-check[data-binding]';
 function motionSnapshot() {
   const form = motionQuery('.form-mask'), detail = motionQuery('.modal-mask:not(.form-mask)');
   return {
@@ -16,8 +18,8 @@ function motionSnapshot() {
     detail: detail?.cloneNode(true),
     menu: [...document.querySelectorAll('.rg-menu,.xy-pop-menu')].map(element => ({ clone: element.cloneNode(true), box: element.getBoundingClientRect(), text: element.textContent, key: element.closest('[data-binding]')?.dataset.binding })),
     trips: [...document.querySelectorAll('.pp-trip')].map(e => e.getBoundingClientRect().height),
-    checks: [...document.querySelectorAll('.xy-item-check')].map(e => e.className),
-    progress: motionQuery('.xy-progress-track > div,.ee-budget-track > div')?.style.width
+    checks: new Map([...document.querySelectorAll(checkSelector)].map(e => [e.dataset.binding, e.classList.contains('done')])),
+    progress: [...document.querySelectorAll(progressSelector)].map(e => e.style.width)
   };
 }
 function motionAnimate(element, frames, duration = 240, delay = 0, easing = motionEase) {
@@ -52,18 +54,35 @@ function motionPlay(before) {
     [...document.querySelectorAll(selector)].filter(e => { const b=e.getBoundingClientRect();return b.bottom>0&&b.top<innerHeight; }).slice(0, 5).forEach((e,i) => motionAnimate(e, [{ opacity: .35, transform: `translate(${dx}px,${dy}px)` }, { opacity: 1, transform: 'none' }], duration, stagger?Math.min(i,2)*28:0));
   };
   if (!before.ready || before.profile !== after.profile || before.tab !== after.tab) {
-    const order=['首页','行程','清单','记账'];
-    const dx = before.profile !== after.profile ? (after.profile?22:-22) : order.indexOf(after.tab)>=order.indexOf(before.tab)?16:-16;
-    entering('.page > .content,.page > .welcome,.pp-hero,.pp-trips', dx, 0, 280, true);
+    const order=['首页','行程','清单','穿搭','记账'];
+    const dx = before.profile !== after.profile ? (after.profile?22:-22) : order.indexOf(after.tab)>=order.indexOf(before.tab)?20:-20;
+    entering('.page > .content,.page > .welcome,.pp-hero,.pp-trips', dx, 0, 300, true);
+    motionAnimate(motionQuery('.nav-item.active > img'), [
+      {transform:'translateY(2px) scale(.88)'},
+      {transform:'translateY(-2px) scale(1.07)', offset:.65},
+      {transform:'none'}
+    ], 300);
   } else if (before.section !== after.section) {
     entering('.rg-main,.xy-list-summary,.xy-list-groups,.xy-outfit-group,.xy-outfit-empty,.ee-segment-content',0,10,240);
-    const track=motionQuery('.xy-progress-track > div,.ee-budget-track > div');
-    if(track&&before.progress!==after.progress&&before.progress) motionAnimate(track,[{width:before.progress},{width:after.progress}],400);
+    const cards = document.querySelectorAll('.rg-period:nth-child(-n+3),.xy-list-group:nth-child(-n+3),.xy-outfit-piece:nth-child(-n+3),.ee-entry:nth-child(-n+3)');
+    [...cards].filter(card => {
+      const box = card.getBoundingClientRect();
+      return box.bottom > 0 && box.top < innerHeight;
+    }).slice(0, 3).forEach((card, i) => {
+      motionAnimate(card, [{opacity:.62, transform:'translateY(8px)'}, {opacity:1, transform:'none'}], 280, i * 34);
+    });
+  }
+  if (before.tab === after.tab) {
+    document.querySelectorAll(progressSelector).forEach((fill, i) => {
+      const oldWidth = before.progress[i];
+      const newWidth = after.progress[i];
+      if (oldWidth && newWidth && oldWidth !== newWidth) motionAnimate(fill, [{width:oldWidth}, {width:newWidth}], 400);
+    });
   }
   if (after.formKey && after.formKey !== before.formKey) {
     if (!before.form) {
       motionAnimate(motionQuery('.form-mask'),[{opacity:0},{opacity:1}],220);
-      motionAnimate(motionQuery('.form-sheet'),[{transform:'translateY(56px)',opacity:.5},{transform:'none',opacity:1}],320,0,'cubic-bezier(.32,.72,0,1)');
+      motionAnimate(motionQuery('.form-sheet'),[{transform:'translateY(64px)',opacity:.65},{transform:'none',opacity:1}],340,0,'cubic-bezier(.32,.72,0,1)');
     } else entering('.form-fields',14,0,240);
   } else if(before.form&&!after.form) motionExit(before.form);
   if(after.detail&&!before.detail){motionAnimate(motionQuery('.modal-mask:not(.form-mask)'),[{opacity:0},{opacity:1}],220);entering('.modal-mask:not(.form-mask) .modal',0,44,320);}
@@ -75,5 +94,9 @@ function motionPlay(before) {
   }
   if(!before.menu.length)entering('.rg-menu,.xy-pop-menu',0,-5,180);
   if(before.menu.length&&!after.menu.length)before.menu.forEach(m=>motionExit(m.clone,m.box));
-  document.querySelectorAll('.xy-item-check').forEach((e,i)=>{if(before.checks[i]&&before.checks[i]!==e.className)motionAnimate(e,[{scale:'.82'},{scale:'1.08',offset:.65},{scale:'1'}],180);});
+  document.querySelectorAll(checkSelector).forEach(e => {
+    if (before.checks.has(e.dataset.binding) && before.checks.get(e.dataset.binding) !== e.classList.contains('done')) {
+      motionAnimate(e, [{scale:'.82'}, {scale:'1.08', offset:.65}, {scale:'1'}], 180);
+    }
+  });
 }

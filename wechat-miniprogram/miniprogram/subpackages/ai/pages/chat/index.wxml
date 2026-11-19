@@ -1,0 +1,108 @@
+<view class="ai-page {{reducedMotion ? 'ai-reduced-motion' : ''}}" style="--content-top:{{contentTop}}px;--header-height:{{headerHeight}}px;--safe-bottom:{{safeBottom}}px;--keyboard:{{keyboardHeight}}px">
+  <view class="ai-header" style="--header-progress:{{chatHeaderProgress}}">
+    <view class="ai-header-blur" aria-hidden="true"><view class="ai-header-haze-tint"></view><view class="ai-header-haze ai-header-haze-deep"></view><view class="ai-header-haze ai-header-haze-mid"></view><view class="ai-header-haze ai-header-haze-soft"></view><view class="ai-header-haze ai-header-haze-edge"></view></view>
+    <button class="ai-icon-button ai-back" bindtap="back" aria-label="返回" hover-class="ai-pressed">‹</button>
+    <view class="ai-header-title"><text>向野AI旅行助手</text></view>
+  </view>
+  <scroll-view class="ai-chat-scroll" scroll-y scroll-into-view="{{scrollTarget}}" scroll-with-animation="{{!reducedMotion}}" bindscroll="onChatScroll">
+    <view class="ai-chat-body">
+      <view wx:if="{{!ready}}" class="ai-state"><view class="ai-pulse"></view><text>正在打开旅行助手…</text></view>
+      <view wx:elif="{{blocked}}" class="ai-state"><text class="ai-state-title">旅行助手内测中</text><text>{{blocked}}</text><button class="ai-secondary" bindtap="back">返回首页</button></view>
+      <block wx:else>
+        <view wx:if="{{!messages.length}}" class="ai-welcome">
+          <text class="ai-welcome-title">想去哪里，聊聊看。</text>
+          <text class="ai-welcome-copy">把目的地和出行想法告诉我，
+一起整理成每天的安排与随身清单。</text>
+          <view wx:if="{{currentTrip}}" class="ai-trip-context"><view class="ai-context-dot"></view><text class="ai-context-label">当前旅行</text><text>{{currentTrip.name}}</text></view>
+          <view class="ai-suggestions-heading"><text>从一个想法开始</text></view>
+          <view class="ai-suggestions"><button wx:for="{{suggestions}}" wx:key="*this" class="ai-suggestion ai-suggestion-{{index}}" data-index="{{index}}" bindtap="useSuggestion" hover-class="ai-pressed"><view class="ai-suggestion-top"><view class="ai-suggestion-icon ai-suggestion-icon-{{index}}"><view></view><view></view><view></view></view><text class="ai-suggestion-category">{{index === 0 ? '行程规划' : index === 1 ? '随身清单' : '调整安排'}}</text><text class="ai-suggestion-arrow">↗</text></view><text class="ai-suggestion-prompt">{{index === 0 ? '三天成都慢旅行' : index === 1 ? '自驾出行准备清单' : item}}</text><text wx:if="{{index !== 2}}" class="ai-suggestion-detail">{{index === 0 ? '按天整理游玩安排' : '整理衣物与随身用品'}}</text></button></view>
+        </view>
+        <view wx:for="{{messages}}" wx:key="id" class="ai-message ai-message-{{item.role}}">
+          <view wx:if="{{item.role !== 'user'}}" class="ai-speaker"><view class="ai-speaker-mark"><image src="/assets/ai/orb-mastergo-26-4254.png" mode="aspectFit"/></view><text>向野 AI</text><text class="ai-speaker-caption">为这一程，想多一点</text></view>
+          <view class="ai-bubble">
+            <text wx:if="{{item.role === 'user'}}" class="ai-user-copy" selectable>{{item.text}}</text>
+            <block wx:else>
+              <view wx:for="{{item.blocks}}" wx:for-item="block" wx:key="id" class="ai-text-block ai-text-{{block.kind}} ai-text-level-{{block.level}}"><text wx:if="{{block.marker}}" class="ai-list-marker">{{block.marker}}</text><text class="ai-text-copy" selectable><text wx:for="{{block.runs}}" wx:for-item="run" wx:key="index" class="{{run.bold ? 'ai-text-strong' : ''}}">{{run.text}}</text></text></view>
+            </block>
+          </view>
+          <view wx:if="{{item.hasDraft}}" class="ai-plan-card">
+            <view class="ai-plan-label"><view class="ai-plan-dot"></view><text>行程与清单 · 待你确认</text></view>
+            <text class="ai-plan-name">{{item.draft.trip.name || '行程与行囊准备'}}</text>
+            <view class="ai-plan-facts"><text>{{item.eventCount}} 项行程</text><text>{{item.itemCount}} 项清单</text><text wx:if="{{item.draft.appliedEntryIds.length}}">{{item.draft.appliedEntryIds.length}} 项已应用</text></view>
+            <button class="ai-plan-preview" data-id="{{item.id}}" bindtap="openPlan" hover-class="ai-pressed"><text>阅读方案，选择应用内容</text><text>↗</text></button>
+          </view>
+        </view>
+        <view wx:if="{{jobStatus === 'queued' || jobStatus === 'running'}}" id="generation-progress" class="ai-generation {{pollPaused ? 'ai-generation-paused' : ''}}">
+          <view class="ai-generation-head">
+            <text class="ai-generation-title" role="status">{{pollPaused ? '暂时无法获取进度' : loadingReply ? '正在读取回复' : jobStatus === 'queued' ? '已收到，等待生成' : (jobPhaseLabel || '正在生成旅行回复')}}</text>
+            <text wx:if="{{jobElapsed && !pollPaused}}" class="ai-generation-time">已等待 {{jobElapsed}}</text>
+          </view>
+          <view class="ai-generation-steps" aria-hidden="true">
+            <view class="ai-generation-step {{jobStatus === 'queued' && !loadingReply ? 'current' : 'done'}}"><view class="ai-generation-bar"></view><text>已收到</text></view>
+            <view class="ai-generation-step {{loadingReply ? 'done' : jobStatus === 'running' ? 'current' : ''}}"><view class="ai-generation-bar"></view><text>生成回复</text></view>
+            <view class="ai-generation-step {{loadingReply ? 'current' : ''}}"><view class="ai-generation-bar"></view><text>回复就绪</text></view>
+          </view>
+          <text wx:if="{{!pollPaused}}" class="ai-generation-hint">{{loadingReply ? '回复已生成，即将显示。' : '完成后会自动显示回复，也可以回来再看。'}}</text>
+        </view>
+        <view wx:if="{{error}}" class="ai-feedback ai-feedback-error"><text>{{error}}</text><button wx:if="{{requestPending || pollPaused || !allowed}}" bindtap="retry">{{requestPending ? '重试并恢复发送' : jobId ? '查询生成结果' : '重新连接'}}</button></view>
+        <view wx:if="{{result}}" class="ai-feedback ai-feedback-success"><text>方案已应用到「{{result.tripName}}」</text><text class="ai-caption">{{result.count}} 项内容已保存，原有安排会保留。</text><button bindtap="viewTrip">回到旅行查看 →</button></view>
+        <view wx:if="{{messages.length}}" class="ai-disclaimer">AI 生成的建议，请核对开放时间与实际路况。</view>
+      </block>
+      <view id="conversation-bottom" class="ai-scroll-bottom"></view>
+    </view>
+  </scroll-view>
+  <view wx:if="{{ready && allowed && !blocked}}" class="ai-composer">
+    <text wx:if="{{globalLimitReason}}" class="ai-budget-notice">{{globalLimitReason}}</text>
+    <view class="ai-composer-box"><textarea value="{{input}}" bindinput="inputMessage" placeholder="描述目的地、日期和你的想法…" placeholder-class="ai-placeholder" maxlength="2000" auto-height fixed adjust-position="{{false}}" cursor-spacing="20" disabled="{{submitting || requestPending}}"/><button class="ai-send" disabled="{{submitting || jobStatus === 'queued' || jobStatus === 'running' || (!input && !requestPending)}}" bindtap="send" hover-class="ai-pressed" aria-label="发送消息">{{submitting ? '…' : '↑'}}</button></view>
+    <view class="ai-composer-meta"><text>{{requestPending ? '正在等待上次发送结果' : '今日剩余 ' + remainingToday + ' / ' + dailyLimit + ' 次'}}</text><text>{{input.length}} / 2000</text></view>
+  </view>
+  <view wx:if="{{planOpen && !previewOpen}}" class="ai-plan-reader">
+    <view class="ai-preview-header" style="--header-progress:{{readerHeaderProgress}}"><view class="ai-header-blur" aria-hidden="true"><view class="ai-header-haze-tint"></view><view class="ai-header-haze ai-header-haze-deep"></view><view class="ai-header-haze ai-header-haze-mid"></view><view class="ai-header-haze ai-header-haze-soft"></view><view class="ai-header-haze ai-header-haze-edge"></view></view><button class="ai-icon-button ai-back" bindtap="closePlan" aria-label="返回对话">‹</button><view><text class="ai-preview-title">旅行方案</text><text class="ai-caption">先阅读建议，再决定是否应用</text></view></view>
+    <scroll-view class="ai-plan-reader-scroll" scroll-y bindscroll="onReaderScroll" scroll-top="{{readerScrollTop}}">
+      <view class="ai-plan-reader-body">
+        <text class="ai-plan-reader-name">{{planName}}</text>
+          <view class="ai-plan-reader-steps"><text class="active">1 阅读方案</text><text>→</text><text>2 选择内容</text><text>→</text><text>3 确认应用</text></view>
+          <view class="ai-plan-reader-content"><view wx:for="{{planBlocks}}" wx:for-item="block" wx:key="id" class="ai-text-block ai-text-{{block.kind}} ai-text-level-{{block.level}}"><text wx:if="{{block.marker}}" class="ai-list-marker">{{block.marker}}</text><text class="ai-text-copy" selectable><text wx:for="{{block.runs}}" wx:for-item="run" wx:key="index" class="{{run.bold ? 'ai-text-strong' : ''}}">{{run.text}}</text></text></view></view>
+        <text class="ai-disclaimer">内容由 AI 生成。出发前请核实开放时间、预约与实际路况。</text>
+      </view>
+    </scroll-view>
+    <view class="ai-apply-footer"><button class="ai-primary" bindtap="continueToPreview" hover-class="ai-pressed">选择内容并应用 →</button></view>
+  </view>
+  <view wx:if="{{previewOpen}}" class="ai-preview">
+    <view class="ai-preview-header" style="--header-progress:{{previewHeaderProgress}}"><view class="ai-header-blur" aria-hidden="true"><view class="ai-header-haze-tint"></view><view class="ai-header-haze ai-header-haze-deep"></view><view class="ai-header-haze ai-header-haze-mid"></view><view class="ai-header-haze ai-header-haze-soft"></view><view class="ai-header-haze ai-header-haze-edge"></view></view><button class="ai-icon-button ai-back" bindtap="closePreview" aria-label="返回方案" disabled="{{applying}}">‹</button><view><text class="ai-preview-title">确认旅行方案</text><text class="ai-caption">勾选需要的内容，也可以先修改</text></view></view>
+    <scroll-view class="ai-preview-scroll" scroll-y bindscroll="onPreviewScroll" scroll-top="{{previewScrollTop}}">
+      <view class="ai-preview-body">
+        <view class="ai-targets"><button class="{{target === 'current' ? 'selected' : ''}}" data-target="current" bindtap="setTarget" disabled="{{!currentTrip || currentTrip.archived || applying}}">追加到当前旅行</button><button class="{{target === 'new' ? 'selected' : ''}}" data-target="new" bindtap="setTarget" disabled="{{applying}}">创建新旅行</button></view>
+        <view wx:if="{{target === 'current'}}" class="ai-destination"><text>{{currentTrip.name}}</text><text class="ai-caption">只追加所选内容，不覆盖现有行程</text></view>
+        <view wx:else class="ai-form-card">
+          <label class="ai-field"><text>旅行名称</text><input value="{{newTrip.name}}" data-field="name" bindinput="bindTrip" maxlength="60" placeholder="给这趟旅行起个名字" disabled="{{applying}}"/></label>
+          <view class="ai-field"><text>出行类型</text><picker range="{{tripTypes}}" value="{{tripTypeIndex}}" data-field="type" bindchange="bindTrip" disabled="{{applying}}"><view class="ai-picker">{{newTrip.type}}<text>⌄</text></view></picker></view>
+          <view class="ai-field"><text>出发</text><view class="ai-date-pair"><picker mode="date" value="{{newStartDate}}" data-field="newStartDate" bindchange="bindTrip"><view class="ai-picker">{{newStartDate || '选择日期'}}</view></picker><picker mode="time" value="{{newStartTime}}" data-field="newStartTime" bindchange="bindTrip"><view class="ai-picker">{{newStartTime}}</view></picker></view></view>
+          <view class="ai-field"><text>归来</text><view class="ai-date-pair"><picker mode="date" value="{{newEndDate}}" data-field="newEndDate" bindchange="bindTrip"><view class="ai-picker">{{newEndDate || '选择日期'}}</view></picker><picker mode="time" value="{{newEndTime}}" data-field="newEndTime" bindchange="bindTrip"><view class="ai-picker">{{newEndTime}}</view></picker></view></view>
+        </view>
+        <view class="ai-scope"><text>清单添加至</text><view><button class="{{scope === '我的' ? 'selected' : ''}}" data-scope="我的" bindtap="setScope">我的清单</button><button class="{{scope === '公共' ? 'selected' : ''}}" data-scope="公共" bindtap="setScope">团队清单</button></view></view>
+        <text class="ai-selection-heading">已选 {{selectedEvents}} 项行程 · {{selectedItems}} 项清单</text>
+        <view wx:for="{{rows}}" wx:key="id" class="ai-entry {{item.applied ? 'ai-entry-applied' : ''}}">
+          <view class="ai-entry-top"><button class="ai-check {{item.selected || item.applied ? 'checked' : ''}}" data-id="{{item.id}}" bindtap="toggleEntry" disabled="{{item.applied || applying}}" aria-label="{{item.selected ? '取消选择' : '选择'}}{{item.title}}"><text>{{item.selected || item.applied ? '✓' : ''}}</text></button><view class="ai-entry-title"><text class="ai-entry-meta">{{item.kind === 'event' ? item.date + ' · ' + item.startTime + '—' + item.endTime : '清单 · ' + item.category}}</text><text>{{item.title}}</text></view><text wx:if="{{item.applied}}" class="ai-applied-badge">已应用</text><button wx:else class="ai-edit" data-id="{{item.id}}" bindtap="editEntry" disabled="{{applying}}">{{item.editing ? '收起' : '修改'}}</button></view>
+          <text wx:if="{{!item.editing && item.note}}" class="ai-entry-note">{{item.note}}</text>
+          <view wx:if="{{item.editing && !item.applied}}" class="ai-entry-fields">
+            <label class="ai-field"><text>名称</text><input value="{{item.title}}" data-id="{{item.id}}" data-field="title" bindinput="bindEntry" maxlength="100"/></label>
+            <block wx:if="{{item.kind === 'event'}}">
+              <view class="ai-field"><text>日期</text><picker mode="date" value="{{item.date}}" data-id="{{item.id}}" data-field="date" bindchange="bindEntry"><view class="ai-picker">{{item.date}}</view></picker></view>
+              <view class="ai-field"><text>时间</text><view class="ai-date-pair"><picker mode="time" value="{{item.startTime}}" data-id="{{item.id}}" data-field="startTime" bindchange="bindEntry"><view class="ai-picker">{{item.startTime}}</view></picker><picker mode="time" value="{{item.endTime}}" data-id="{{item.id}}" data-field="endTime" bindchange="bindEntry"><view class="ai-picker">{{item.endTime}}</view></picker></view></view>
+              <view class="ai-field"><text>交通</text><picker range="{{modes}}" range-key="label" value="{{item.modeIndex}}" data-id="{{item.id}}" data-field="modeIndex" bindchange="bindEntry"><view class="ai-picker">{{modes[item.modeIndex].label}}<text>⌄</text></view></picker></view>
+              <label class="ai-field"><text>地点</text><input value="{{item.address}}" data-id="{{item.id}}" data-field="address" bindinput="bindEntry" placeholder="可在行程中进一步校准地点" maxlength="200"/></label>
+              <label class="ai-field"><text>起点</text><input value="{{item.startPlace}}" data-id="{{item.id}}" data-field="startPlace" bindinput="bindEntry" maxlength="120"/></label>
+              <label class="ai-field"><text>终点</text><input value="{{item.endPlace}}" data-id="{{item.id}}" data-field="endPlace" bindinput="bindEntry" maxlength="120"/></label>
+              <label class="ai-field"><text>备注</text><textarea value="{{item.note}}" data-id="{{item.id}}" data-field="note" bindinput="bindEntry" auto-height maxlength="500"/></label>
+            </block>
+            <label wx:else class="ai-field"><text>分类</text><input value="{{item.category}}" data-id="{{item.id}}" data-field="category" bindinput="bindEntry" maxlength="40"/></label>
+          </view>
+        </view>
+        <view wx:if="{{applyError}}" class="ai-feedback ai-feedback-error"><text>{{applyError}}</text><button wx:if="{{conflict}}" bindtap="reviewConflict">复核最新旅行</button></view>
+        <text class="ai-disclaimer">内容由 AI 生成。应用前请核对日期、路线和清单是否适合本次旅行。</text>
+      </view>
+    </scroll-view>
+    <view class="ai-apply-footer"><button class="ai-primary" bindtap="apply" disabled="{{applying || (!selectedCount && !applicationPending) || conflict}}" loading="{{applying}}" hover-class="ai-pressed">{{applying ? '正在保存…' : applicationPending ? '确认上次应用结果' : '确认应用 ' + selectedCount + ' 项内容'}}</button></view>
+  </view>
+</view>

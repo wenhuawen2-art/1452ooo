@@ -25,13 +25,32 @@ function fixture() {
 }
 const event = dataset=>({currentTarget:{dataset}});
 
+test('place navigation preserves the selected point and waits for user confirmation',async()=>{
+ const f=fixture(),p=f.page,requests=[],opened=[];let choice;
+ p.call=async(operation,input)=>{requests.push({operation,input});return {latitude:34.2,longitude:108.9,name:'目的地',address:'详细地址'};};
+ f.wx.openLocation=input=>opened.push(input);f.wx.showActionSheet=input=>choice=input;
+ await p.openMap(event({place:'目的地',pointId:'event:end',date:'2026-10-01'}));
+ assert.equal(requests[0].input.pointId,'event:end');assert.equal(opened.length,0);
+ f.dialog.success({confirm:false});assert.equal(choice,undefined);
+ f.dialog.success({confirm:true});assert.equal(opened.length,0);
+ choice.success({tapIndex:0});assert.equal(opened[0].latitude,34.2);assert.equal(opened[0].longitude,108.9);
+});
+
+test('the Amap fallback copies a GCJ-02 deep link without pretending an app was opened',()=>{
+ const f=fixture(),p=f.page;let choice,copied,opened=false;
+ f.wx.showActionSheet=input=>choice=input;f.wx.setClipboardData=input=>copied=input.data;f.wx.openLocation=()=>opened=true;
+ p.askMapNavigation({name:'双桥沟',address:'小金县双桥沟',latitude:31.1,longitude:102.8});
+ f.dialog.success({confirm:true});choice.success({tapIndex:1});
+ const url=new URL(copied);assert.equal(url.hostname,'uri.amap.com');assert.equal(url.searchParams.get('coordinate'),'gaode');assert.equal(url.searchParams.get('position'),'102.8,31.1');assert.equal(url.searchParams.get('callnative'),'1');assert.equal(opened,false);
+});
+
 test('home weather stays on the first itinerary city without changing the selected route date',async()=>{
  const f=fixture(),p=f.page,requests=[];
  p.data.trip={...p.data.trip,id:'first-weather-native',start:'2026-10-01T08:00',end:'2026-10-07T18:00',hotels:[],events:[{id:'w2',date:'2026-10-07',startTime:'09:00',address:'西安市'},{id:'w1',date:'2026-10-01',startTime:'09:00',address:'咸阳市'}]};
  p.data.tab='today';p.data.selectedDate='2026-10-07';
  p.call=async(operation,input)=>{requests.push(input);return {available:true,cityName:'咸阳市',current:12};};
  await f.nativeWeather.call(p);
- assert.equal(requests[0].place,'咸阳市');assert.equal(requests[0].date,'2026-10-01');assert.equal(requests[0].current,true);
+ assert.equal(requests[0].place,'咸阳市');assert.equal(requests[0].date,'2026-10-01');assert.equal(requests[0].current,false);
  assert.equal(p.data.weather.location,'咸阳市');assert.equal(p.data.selectedDate,'2026-10-07');
  p.data.tab='list';p.data.listSection='outfit';await f.nativeWeather.call(p);
  assert.equal(requests[1].date,'2026-10-07');assert.equal(requests[1].current,false);

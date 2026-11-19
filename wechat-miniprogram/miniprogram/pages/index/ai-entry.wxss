@@ -1,0 +1,17 @@
+/* One shared dock keeps the assistant separate from the five travel modules. */
+.page .bottom-dock{position:fixed;left:16px;right:16px;bottom:calc(16px + var(--safe-bottom,env(safe-area-inset-bottom)));height:68px;max-width:430px;margin:0 auto;display:flex;align-items:center;gap:10px;z-index:30;pointer-events:none}
+.page .bottom-dock .ai-nav-entry{position:relative;flex:0 0 68px;width:68px;height:68px;min-width:68px;min-height:68px;margin:0;padding:0;display:flex;align-items:center;justify-content:center;box-sizing:border-box;border:0;border-radius:50%;background:transparent;box-shadow:0 12px 24px rgba(12,30,56,.08);pointer-events:auto;line-height:1;overflow:hidden}
+.page .bottom-dock .ai-nav-entry{overflow:visible;box-shadow:none}
+.page .bottom-dock .ai-nav-entry::after{border:0}
+.page .bottom-dock .ai-nav-entry image{display:block;width:68px;height:68px;flex:none}
+/* MasterGo 26:4254 at 2x: the 68px circle begins at (16,23) in the
+   123x115 export. Keep its original eyes, blur and outer shadow intact. */
+.page .bottom-dock .ai-nav-entry .ai-orb-shell{position:absolute;left:-16px;top:-23px;right:auto;bottom:auto;width:123px;max-width:none;height:115px;pointer-events:none}
+.page .bottom-dock .ai-orb-character{position:absolute;left:6px;top:6px;width:56px;height:56px;transform-origin:50% 50%;pointer-events:none}
+.page .bottom-dock .ai-nav-entry .ai-orb-glow{width:56px;height:56px}
+.page .bottom-dock .ai-orb-eyes{position:absolute;inset:0;transform-origin:50% 50%;pointer-events:none}
+.page .bottom-dock .ai-orb-eye{position:absolute;top:21px;left:22px;width:5px;height:12px;border-radius:5px;background:#fff;transform:rotate(-30deg);box-shadow:0 0 3px rgba(255,255,255,.45)}
+.page .bottom-dock .ai-orb-eye+ .ai-orb-eye{top:19px;left:34px}
+.page .bottom-dock .master-nav{position:relative;left:auto;right:auto;bottom:auto;flex:1;min-width:0;height:68px;max-width:none;margin:0;padding:8px;justify-content:space-between;pointer-events:auto}
+.page .bottom-dock .master-nav .nav-item{flex:1 1 0%;width:0;min-width:44px;max-width:none;height:52px;min-height:52px;max-height:52px;padding:10px 6px}
+.page .bottom-dock .master-nav .nav-item image{flex:none;width:32px;height:32px}

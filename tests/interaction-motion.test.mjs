@@ -43,6 +43,8 @@ test('navigation replays in the correct direction while data updates do not rest
   const f=fixture(),p=f.page;p.setData({tab:'route'});assert.equal(p.data.motionNav,'next-a');
   p.setData({busy:true});assert.equal(p.data.motionNav,'next-a');
   p.setData({tab:'today'});assert.equal(p.data.motionNav,'previous-b');
+  p.setData({tab:'list'});p.setData({tab:'outfit'});assert.equal(p.data.motionNav,'next-b');
+  p.setData({tab:'list'});assert.equal(p.data.motionNav,'previous-a');
   p.setData({selectedDate:'2026-10-11'});assert.equal(p.data.motionSection,'a');
   p.setData({selectedDate:'2026-10-12'});assert.equal(p.data.motionSection,'b');
   p.setData({modal:{type:'trip'}});p.setData({modal:null});f.dispose();assert.equal(f.timers.size,0);

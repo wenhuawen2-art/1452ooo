@@ -20,6 +20,13 @@
       "timeout": 60
     },
     {
+      "name": "suixing-ai-worker",
+      "description": "向野旅行助手后台生成任务，仅服务端签名调用，默认关闭",
+      "dir": "cloudfunctions/suixing-ai-worker",
+      "timeout": 120,
+      "envVariables": { "AI_ENABLED": "false" }
+    },
+    {
       "name": "suixing-backup",
       "description": "向野每日数据库快照",
       "dir": "cloudfunctions/suixing-backup",

@@ -27,3 +27,6 @@
 
 @import "./sticky-header.wxss";
 @import "./onboarding.wxss";
+@import "./ai-entry.wxss";
+@import "./compact-controls.wxss";
+@import "./reading-layout.wxss";

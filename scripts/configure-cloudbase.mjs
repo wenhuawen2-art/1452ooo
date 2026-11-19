@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
+import aiContract from "../shared/ai-contract.cjs";
 
 const envId = "zdata-d4g6l75lwebf2dbb0";
 const cli = "node_modules/@cloudbase/cli/bin/tcb";
@@ -37,7 +38,7 @@ run(["policy", "set", policy, "-e", envId, "--json"], "y\n");
 writeFileSync(".cloudbase-bootstrap.json", JSON.stringify({ operation: "listTrips", data: {} }));
 run(["fn", "invoke", "suixing-api", "-e", envId, "-d", "@.cloudbase-bootstrap.json", "--json"]);
 
-for (const Resource of ["trips", "trip_members", "trip_invites", "trip_route_overviews", "recovery_codes", "delete_challenges", "weather_cache", "user_accounts", "web_login_sessions"])
+for (const Resource of ["trips", "trip_members", "trip_invites", "trip_route_overviews", "route_place_geocodes", "trip_expenses", "trip_settlements", "trip_expense_settings", "recovery_codes", "delete_challenges", "weather_cache", "user_accounts", "web_login_sessions", ...aiContract.AI_COLLECTIONS])
   api("ModifyResourcePermission", {
     EnvId: envId,
     ResourceType: "collection",
@@ -47,3 +48,4 @@ for (const Resource of ["trips", "trip_members", "trip_invites", "trip_route_ove
 
 console.log("CloudBase 云函数和数据库权限已配置；匿名登录已关闭。");
 console.log("请在云开发控制台确认当前小程序 AppID 已关联此环境，并启用微信小程序 OpenID 登录与自动注册。");
+console.log("AI 私有集合禁止客户端直连，worker 禁止客户端调用。本脚本不会升级套餐、开通模型或启用 AI。");

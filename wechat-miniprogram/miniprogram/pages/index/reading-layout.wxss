@@ -1,0 +1,102 @@
+/* Keep display numbers distinct from labels, using the same lighter numerals across modules. */
+.mg-home .mg-count-number>text:first-child,
+.xy-list-page .xy-progress-big,
+.ee-page .ee-home-total {
+  font-family:'Alibaba PuHuiTi 2.0',-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;
+  font-size:46px;
+  font-weight:600;
+  line-height:56px;
+  font-variant-numeric:tabular-nums;
+}
+
+.rg-module-title .rg-greeting{font-size:24px;line-height:32px}
+.mg-trip-head{margin-top:28px}
+.mg-trip-head>text{font-weight:600;line-height:38px}
+.mg-member-row{margin-top:12px}
+.mg-type{font-size:14px;line-height:22px}
+.mg-countdown{margin-top:24px}
+.mg-count-number{height:56px;margin-top:6px}
+.mg-count-number .unit,.xy-progress-unit{font-size:20px;line-height:28px}
+.mg-trip-overview{gap:8px;margin-top:12px}
+.mg-days{height:72px}
+.mg-date-row{height:76px}
+.mg-days .number,.mg-days>view>text{font-weight:500;line-height:22px}
+.mg-home .mg-date-card .date,.mg-home .mg-prep-grid .value,.ee-page .ee-num{
+  font-family:'Alibaba PuHuiTi 2.0',-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;
+  font-variant-numeric:tabular-nums;
+}
+.mg-home .mg-date-card .date{font-weight:500;line-height:22px}
+.mg-home .mg-prep-grid .value{font-weight:600;line-height:30px}
+.mg-content-panel{margin-top:20px;padding-left:15px;padding-right:15px}
+.mg-section-title,.rg-period-head,.ee-section-title{font-size:17px;line-height:24px}
+.mg-prep-grid{gap:8px;margin-top:12px}
+.mg-weather-section{margin-top:24px}
+.mg-weather-caption{font-size:12px}
+
+/* Day is the main cue in each tile. The active date carries the stronger weight. */
+.rg-date-row{gap:12px}
+.rg-date .rg-day,.ee-page .rg-date .rg-day{
+  font-family:inherit;
+  font-size:22px;
+  font-weight:500;
+  font-variant-numeric:tabular-nums;
+}
+.rg-date.selected .rg-day,.ee-page .rg-date.selected .rg-day{font-weight:600}
+.rg-segment{margin-top:22px}
+.rg-date-title{font-size:17px}
+.rg-main{margin-top:14px}
+.rg-period,.rg-event-card{padding:12px}
+.rg-event-card{gap:8px}
+.rg-time{font-size:14px;line-height:22px}
+.rg-event-title,.rg-hotel-name,.rg-ticket-type{font-size:16px;line-height:22px}
+.rg-event-title,.morning .rg-event-title{margin-top:2px}
+.rg-stay-dates{margin-top:4px}
+.rg-stay-dates>view>text:first-child{font-size:16px;font-weight:600;line-height:26px}
+
+/* Give lists room for long labels within the existing touch targets. */
+.xy-list-mode button:first-child{font-weight:600}
+.xy-list-summary{margin-top:18px}
+.xy-list-title{font-size:18px;font-weight:500;line-height:26px}
+.xy-progress-label{margin-top:12px}
+.xy-progress-numbers{height:56px;margin-top:6px}
+.xy-progress-fraction{height:44px;font-size:24px;font-weight:600;line-height:32px}
+.xy-list-page .xy-progress-fraction text:first-child{font-family:inherit}
+.xy-progress-fraction text:last-child{font-size:16px;font-weight:400;line-height:24px}
+.xy-progress-track{margin-top:12px}
+.xy-list-groups{margin-top:20px;padding:14px 15px 16px}
+.xy-category-head{margin-bottom:12px}
+.xy-category-title,.xy-outfit-head>text{font-size:16px;line-height:24px}
+.xy-category-count{font-size:13px;font-weight:500}
+.xy-item-row{gap:10px;margin-bottom:6px}
+.xy-item-main{gap:10px}
+.xy-item-name{font-weight:400}
+.xy-item-name.done{color:#617185}
+.xy-outfit-groups{margin-top:16px}
+.xy-outfit-group{padding:10px}
+.xy-outfit-head{height:48px;padding-bottom:10px;margin-bottom:12px}
+
+.ee-book,.ee-total-label{margin-top:24px}
+.ee-total-line{min-height:56px;margin-top:6px}
+.ee-page .ee-home-total.compact{font-size:40px}
+.ee-currency{font-size:20px}
+.ee-budget{margin-left:0;font-size:16px;line-height:24px;font-weight:400}
+.ee-budget-track{margin-top:12px}
+.ee-tabs{margin-top:20px}
+.ee-dates,.ee-detail-days{margin-top:18px}
+.ee-day{padding:10px}
+.ee-day-head{gap:8px;font-size:17px;margin-bottom:10px}
+.ee-day-count{font-size:14px}
+.ee-day-total{gap:2px;padding:0 10px}
+.ee-page .ee-num,.ee-member-net,.ee-blue{font-weight:600}
+.ee-entry-title{font-size:15px}
+.ee-category{font-size:12px;font-weight:400;line-height:18px}
+.ee-entry-amount{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.ee-my-summary,.ee-stats-summary{margin-top:22px}
+
+@media(max-width:374px){
+  .rg-module-title .rg-greeting{font-size:20px}
+  .mg-trip-head>text{font-size:26px}
+  .mg-home .mg-date-card .date{font-size:13px}
+  .rg-date-title{font-size:16px}
+  .rg-stay-dates>view>text:first-child{font-size:14px}
+}

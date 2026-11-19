@@ -1,5 +1,6 @@
 {
   "*": { "invoke": false },
   "suixing-api": { "invoke": true },
+  "suixing-ai-worker": { "invoke": false },
   "suixing-backup": { "invoke": false }
 }

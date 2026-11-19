@@ -23,7 +23,7 @@ module.exports = function applyListDesign(page, mode = 'list-design') {
     start: '2026-10-10T08:00', end: '2026-10-15T18:00', categories, items,
     outfits: empty ? [] : [4, 2].map((count, n) => ({ id: `design-outfit-${n}`, date, owner, title: '逛街', scene: '逛街', items: Array.from({ length: count }, (_, i) => ({ id: `design-piece-${n}-${i}`, typeName: '上装', name: '白色衬衫', photoUrl: '/assets/mastergo-list/outfit/demo-look.jpg', photoSrc: '/assets/mastergo-list/outfit/demo-look.jpg', garmentIcon: 'top' })) })),
   });
-  page.data.trip.members.find(member => member.id === owner).avatarData = '/assets/mastergo-list/design-avatar.png';
+  page.data.trip.members.find(member => member.id === owner).avatarData = '/assets/avatars/avatar-01-alpaca.png';
   Object.assign(page.data, { selectedDate: date, tab: outfit ? 'outfit' : 'list', listSection: outfit ? 'outfit' : personal ? 'personal' : 'public', scope: personal ? '我的' : '公共', weather: { available: true, location: '四姑娘山', condition: '晴', high: 26, low: 6, code: 0 }, weatherLoading: false });
   page.data.account.nickname = 'Zero';
   page.derive();

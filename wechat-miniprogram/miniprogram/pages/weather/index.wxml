@@ -1,11 +1,13 @@
 <view class="wc-page {{reducedMotion ? 'reduced-motion' : ''}}" style="padding-top:{{systemContentTop + 64}}px;--wc-top:{{systemContentTop}}px;--safe-bottom:{{safeBottomInset}}px">
- <view class="wc-header"><button bindtap="back" aria-label="返回上一页"><image src="/assets/mastergo-profile/svg_28f66596.svg" mode="aspectFit"/></button><text>城市天气</text><view></view></view>
+ <view class="wc-header"><button bindtap="back" aria-label="返回上一页"><image src="/assets/mastergo-profile/svg_28f66596.svg" mode="aspectFit"/></button><text>行程天气</text><view></view></view>
+ <text class="wc-demo">按行程地点与出行日期展示；超出预报范围时不显示估算天气。</text>
  <text wx:if="{{guestMode}}" class="wc-demo">游客示例天气</text>
  <view class="wc-cards">
   <view wx:for="{{cities}}" wx:key="id" class="wc-card {{item.theme}}" data-index="{{index}}" bindtap="retryCity" hover-class="motion-pressed" hover-stop-propagation="true">
    <image class="wc-sky" src="/assets/mastergo/weather-cloud.webp" mode="aspectFill"/><view class="wc-shade"></view>
-   <view class="wc-city"><text>{{item.cityName}}</text><text>{{item.conditionLabel}}</text></view>
+   <view class="wc-city"><text>{{item.cityName}}</text><text class="wc-place" wx:if="{{item.placeLabel}}">{{item.placeLabel}}</text><text class="wc-date">{{item.dateLabel}}</text><text>{{item.conditionLabel}}</text><text class="wc-source">{{item.source || '天气服务'}}{{item.updatedLabel ? ' · 更新 ' + item.updatedLabel : ''}}</text></view>
    <view class="wc-temperatures"><text class="wc-current">{{item.temperature}}°</text><text>{{item.highLabel}}° / {{item.lowLabel}}°</text></view>
+   <text wx:if="{{item.sourceUrl}}" class="wc-source-link" data-url="{{item.sourceUrl}}" catchtap="openWeatherSource" selectable>{{item.sourceUrl}}</text>
   </view>
  </view>
  <view wx:if="{{loading}}" class="wc-state" role="status">正在获取城市天气…</view>

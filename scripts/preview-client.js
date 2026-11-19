@@ -1,4 +1,6 @@
 let sid, queue = Promise.resolve();
+let aiOpen=false, aiBusy=false, aiVersion=-1, aiRefreshPending=false;
+setInterval(()=>{if(aiOpen&&!document.hidden&&!aiRefreshPending&&!document.activeElement?.matches('input,textarea,select')){aiRefreshPending=true;request({aiRefresh:true}).finally(()=>aiRefreshPending=false);}},900);
 let pressedControl, pressStart, pressRelease;
 const clearPress = () => { pressedControl?.classList.remove('motion-pressed'); pressedControl=null; pressStart=null; };
 document.addEventListener('pointerdown', event => {
@@ -15,8 +17,44 @@ const positions = {};
 let headerScrollFrame;
 function updateProfileHeader(){document.querySelectorAll('.pp-header,.system-header').forEach(header=>header.style.setProperty('--header-progress',Math.min(1,Math.max(0,scrollY)/64)));}
 addEventListener('scroll',()=>{if(!headerScrollFrame)headerScrollFrame=requestAnimationFrame(()=>{headerScrollFrame=null;updateProfileHeader();});},{passive:true});
+const aiScrollPanes=[
+  {key:'chat',selector:'.ai-chat-scroll',root:'.ai-page',header:'.ai-header'},
+  {key:'reader',selector:'.ai-plan-reader-scroll',root:'.ai-plan-reader',header:'.ai-preview-header'},
+  {key:'preview',selector:'.ai-preview-scroll',root:'.ai-preview',header:'.ai-preview-header'},
+];
+function aiScrollSnapshot(){
+  const positions={};
+  for(const descriptor of aiScrollPanes){const pane=document.querySelector(descriptor.selector);if(pane)positions[descriptor.key]={left:pane.scrollLeft,top:pane.scrollTop};}
+  return positions;
+}
+function updateAiHeader(pane,descriptor){
+  pane.closest(descriptor.root)?.querySelector(descriptor.header)?.style.setProperty('--header-progress',Math.round(Math.min(1,Math.max(0,pane.scrollTop)/64)*100)/100);
+}
+// Native scroll-view events do not bubble. Update only the header paint locally;
+// scroll state is sent alongside the next existing request, never per frame.
+document.addEventListener('scroll',event=>{const descriptor=aiScrollPanes.find(item=>event.target.matches?.(item.selector));if(descriptor)updateAiHeader(event.target,descriptor);},{capture:true,passive:true});
+function restoreAiScrolls(previous,data){
+  const method=data.binding?.methods?.bindtap||data.binding?.methods?.catchtap;
+  for(const descriptor of aiScrollPanes){
+    const pane=document.querySelector(descriptor.selector);if(!pane)continue;
+    const reset=data.mode||data.reset||(descriptor.key==='reader'&&method==='openPlan')||(descriptor.key==='chat'&&method==='newConversation'&&!document.querySelector('.ai-message'));
+    const position=!reset&&previous[descriptor.key]||{left:0,top:Number(pane.dataset.scrollTop)||0};
+    pane.scrollLeft=position.left;pane.scrollTop=position.top;updateAiHeader(pane,descriptor);
+  }
+}
+function aiMessageSignature(){return [...document.querySelectorAll('.ai-message')].map(element=>element.textContent).join('\u0000');}
+function fitAutoHeightTextarea(element){
+  if(!element.matches('textarea[data-auto-height]'))return;
+  element.style.height='0px';
+  const style=getComputedStyle(element),minimum=parseFloat(style.minHeight)||0,maximum=parseFloat(style.maxHeight)||Infinity;
+  const border=style.boxSizing==='border-box'?(parseFloat(style.borderTopWidth)||0)+(parseFloat(style.borderBottomWidth)||0):0;
+  const height=Math.min(maximum,Math.max(minimum,element.scrollHeight+border));
+  element.style.height=height+'px';element.style.overflowY=element.scrollHeight>height?'auto':'hidden';
+}
+function fitAutoHeightTextareas(){document.querySelectorAll('textarea[data-auto-height]').forEach(fitAutoHeightTextarea);}
+addEventListener('resize',fitAutoHeightTextareas);
 // Refresh the open preview after returning from editing without resetting its tab or scroll.
-addEventListener('focus',()=>{if(sid&&!document.querySelector('.modal-mask'))request({});});
+addEventListener('focus',()=>{if(sid&&!aiOpen&&!document.querySelector('.modal-mask'))request({});});
 addEventListener('pageshow',()=>requestAnimationFrame(updateProfileHeader));
 let sheetState, sheetObserver, sheetGesture, sheetSkipClick=0;
 function fitFormSheet(target){
@@ -50,27 +88,37 @@ function unit() { document.documentElement.style.setProperty('--unit', document.
 unit(); addEventListener('resize', unit);
 function binding(element) { return JSON.parse(element.dataset.binding || '{}'); }
 // Mirror native onHide/onShow without rerendering or restarting the loading loop.
-document.addEventListener('visibilitychange',()=>document.querySelector('.page')?.classList.toggle('motion-paused',document.hidden));
+document.addEventListener('visibilitychange',()=>{document.querySelector('.page')?.classList.toggle('motion-paused',document.hidden);if(aiOpen)request({aiVisible:!document.hidden});});
 function request(data) {
   queue = queue.then(async () => {
     if(data.mode||data.preset||data.reset)sheetState=null;
     const tab = document.querySelector('.nav-item.active')?.getAttribute('aria-label');
     const section = document.querySelector('.xy-list-page,.ee-page')?.id || tab;
     positions[section] = scrollY;
-    const response = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sid, scrollTop:scrollY, device: new URLSearchParams(location.search).get("device"), ...data }) }).then(r => r.json());
+    const aiScrollPositions=Object.fromEntries(Object.entries(aiScrollSnapshot()).map(([key,position])=>[key,position.top]));
+    const response = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sid, scrollTop:scrollY, aiScrollPositions, device: new URLSearchParams(location.search).get("device"), ...data }) }).then(r => r.json());
     if (response.error) throw Error(response.error);
     sid = response.sid;
-    if (data.type !== 'input') {
+    const aiChanged=response.aiVersion!==aiVersion||response.aiOpen!==aiOpen;
+    aiOpen=!!response.aiOpen;aiBusy=!!response.aiBusy;aiVersion=response.aiVersion;
+    if(data.type==='input'&&aiOpen){const send=document.querySelector('.ai-send');if(send)send.disabled=aiBusy||!document.querySelector('.ai-composer textarea')?.value.trim();const count=document.querySelector('.ai-composer-meta span:last-child');if(count)count.textContent=(document.querySelector('.ai-composer textarea')?.value.length||0)+' / 2000';}
+    const preserveAiInput=aiOpen&&data.aiRefresh&&document.activeElement?.matches('input,textarea,select');
+    if(preserveAiInput&&aiChanged)aiVersion=-1;
+    if (data.type !== 'input' && !preserveAiInput && (!data.aiRefresh || aiChanged)) {
       const scrolls = [...document.querySelectorAll('[data-scroll]')].map(e => [e.scrollLeft, e.scrollTop]);
+      const aiScrolls=aiScrollSnapshot(), previousAiMessages=aiMessageSignature(), wasAiPage=!!document.querySelector('.ai-page');
       const motionBefore = motionSnapshot();
       document.getElementById('app').innerHTML = response.html;
       document.querySelector('.page')?.classList.toggle('motion-paused',document.hidden);
       document.getElementById('theme').textContent = response.css;
-      document.querySelectorAll('[data-scroll]').forEach((e, i) => { if (scrolls[i]) { e.scrollLeft = scrolls[i][0]; e.scrollTop = scrolls[i][1]; } });
+      fitAutoHeightTextareas();
+      if(aiOpen)restoreAiScrolls(aiScrolls,data);
+      else if(!wasAiPage)document.querySelectorAll('[data-scroll]').forEach((e, i) => { if (scrolls[i]) { e.scrollLeft = scrolls[i][0]; e.scrollTop = scrolls[i][1]; } });
+      if(aiOpen&&!document.querySelector('.ai-preview,.ai-plan-reader')&&aiMessageSignature()!==previousAiMessages)requestAnimationFrame(()=>{const pane=document.querySelector('.ai-chat-scroll');if(pane){pane.scrollTop=pane.scrollHeight;updateAiHeader(pane,aiScrollPanes[0]);}});
       const next = document.querySelector('.nav-item.active')?.getAttribute('aria-label');
       const nextSection = document.querySelector('.xy-list-page,.ee-page')?.id || next;
       scrollTo(0, data.reset ? 0 : response.scrollTop ?? positions[nextSection] ?? 0);
-      document.body.classList.toggle('overlay-open', !!document.querySelector('.modal-mask'));
+      document.body.classList.toggle('overlay-open', !!document.querySelector('.modal-mask')||aiOpen);
       setupFormSheet();
       updateProfileHeader();
       requestAnimationFrame(updateProfileHeader);
@@ -99,16 +147,38 @@ function request(data) {
       el.append(box); document.body.append(el);
     }
   }).catch(error => { console.error(error); });
+  return queue;
+}
+function choosePreviewAvatar(control) {
+  const input = document.createElement('input'); input.type='file'; input.accept='image/*'; input.hidden=true;
+  const discard=()=>input.remove(); input.addEventListener('cancel',discard,{once:true});
+  input.addEventListener('change',async()=>{
+    const file=input.files?.[0];if(!file){discard();return;}
+    const url=URL.createObjectURL(file);
+    try{
+      const image=new Image();image.src=url;await image.decode();
+      const scale=Math.min(1,384/Math.max(image.naturalWidth,image.naturalHeight));
+      const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+      const context=canvas.getContext('2d');context.fillStyle='#fff';context.fillRect(0,0,canvas.width,canvas.height);context.drawImage(image,0,0,canvas.width,canvas.height);
+      const value=canvas.toDataURL('image/jpeg',.8);
+      if(value.length>220000)throw new Error('照片过大，请裁剪后重新选择');
+      await request({binding:binding(control),type:'tap',value});
+    }catch(error){const toast=document.createElement('div');toast.id='toast';toast.textContent=error.message||'头像读取失败';document.body.append(toast);setTimeout(()=>toast.remove(),2400);}
+    finally{URL.revokeObjectURL(url);discard();}
+  },{once:true});document.body.append(input);input.click();
 }
 document.addEventListener('click', event => {
   if(event.target.closest('.form-drag-handle')){if(sheetState&&Date.now()>sheetSkipClick){sheetState.expanded=!sheetState.expanded;fitFormSheet();}return;}
   if (event.target.closest('input,textarea,select')) return;
   const el = event.target.closest('[data-binding]');
+  if(el?.disabled)return;
+  if(el&&binding(el)?.methods?.bindtap==='chooseCustomAvatar'){choosePreviewAvatar(el);return;}
   if (el) request({ binding: binding(el), type: 'tap' });
 });
 document.addEventListener('input', event => {
   const el = event.target;
-  if (el.matches('input:not([data-picker]):not([type=checkbox]),textarea')) request({ binding: binding(el), type: 'input', value: el.value });
+  if(el.matches('textarea[data-auto-height]'))fitAutoHeightTextarea(el);
+  if (el.matches('input:not([data-picker]):not([type=checkbox]):not([type=file]),textarea')) request({ binding: binding(el), type: 'input', value: el.value });
 });
 document.addEventListener('change', event => {
   const el = event.target;

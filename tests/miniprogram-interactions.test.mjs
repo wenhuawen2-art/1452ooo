@@ -5,11 +5,12 @@ import test from "node:test";
 
 const source = await readFile("wechat-miniprogram/miniprogram/pages/index/index.js", "utf8");
 
-function pageFor(trip, call) {
+function pageFor(trip, call, wxOverrides = {}) {
   let definition;
   const wx = {
     showLoading() {}, hideLoading() {}, showToast() {}, setStorageSync() {},
     cloud: { callFunction() {} },
+    ...wxOverrides,
   };
   runInNewContext(source, { Page: (value) => { definition = value; }, wx, setTimeout, require: () => ({ createDemoExperience: () => ({}) }) });
   const page = {
@@ -26,6 +27,21 @@ function pageFor(trip, call) {
   };
   return page;
 }
+
+test('profile trip selection does not concurrently refresh the previous trip',()=>{
+  const page=pageFor({id:'old'},async()=>{}, {getStorageSync:key=>key==='xiangye-profile-trip'?'selected':'',removeStorageSync(){}});
+  page.data.loading=false;let selected,refreshes=0;
+  page.loadTrip=async id=>{selected=id;};page.refreshTrip=()=>refreshes++;
+  page.onShow();assert.equal(selected,'selected');assert.equal(refreshes,0);
+});
+
+test('a late previous trip response cannot overwrite the latest selected trip',async()=>{
+  const pending={};const page=pageFor(null,(_op,{tripId})=>new Promise(resolve=>pending[tripId]=resolve));
+  page.data.tab='route';
+  const trip=id=>({id,name:id,start:'2026-11-10T08:00',end:'2026-11-12T18:00',members:[],events:[],items:[],categories:[],hotels:[],outfits:[],tickets:[]});
+  const a=page.loadTrip('a'),b=page.loadTrip('b');pending.b(trip('b'));await b;pending.a(trip('a'));await a;
+  assert.equal(page.data.trip.id,'b');
+});
 
 test("logged-in users without a trip can navigate and adding content opens trip creation", () => {
   const page = pageFor(null, async () => { throw new Error("cloud writes must not run"); });
@@ -68,18 +84,48 @@ test("guest write action opens a dismissible login prompt without changing demo 
   assert.equal(page.data.loginPrompt, false);
 });
 
+test("shared AI entry requires login from every primary module without invoking cloud generation", async () => {
+  const page = pageFor({ id: "demo-trip" }, async () => { throw new Error("guest must not call AI"); });
+  page.data.guestMode = true;
+  for (const tab of ["today", "route", "list", "outfit", "expenses"]) {
+    page.data.tab = tab; await page.openAiAssistant();
+    assert.equal(page.data.loginPrompt, true); assert.equal(page.pendingAuthIntent, "aiAssistant");
+    assert.equal(page.data.tab, tab); page.dismissLogin();
+  }
+});
+
+test("AI entry distinguishes closed service from accounts without beta access and only reads capability", async () => {
+  for (const [capability, message] of [[{ enabled: false, allowed: false, canUse: false }, /暂未开放/], [{ enabled: true, allowed: false, canUse: false }, /暂无资格/]]) {
+    const calls = [], notices = [], navigations = [];
+    const page = pageFor({ id: "trip-a" }, async operation => { calls.push(operation); return capability; }, { navigateTo: input => navigations.push(input) });
+    page.data.guestMode = false; page.data.account = { profileComplete: true }; page.notify = value => notices.push(value);
+    await page.openAiAssistant();
+    assert.deepEqual(calls, ["getAiCapabilities"]); assert.equal(navigations.length, 0); assert.match(notices[0], message);
+  }
+});
+
+test("qualified users open the same AI page from all modules with the current trip context", async () => {
+  const navigations = [], calls = [];
+  const page = pageFor({ id: "trip-a" }, async operation => { calls.push(operation); return { enabled: true, allowed: true, canUse: true }; }, { navigateTo: input => navigations.push(input.url) });
+  page.data.guestMode = false; page.data.account = { profileComplete: true };
+  for (const tab of ["today", "route", "list", "outfit", "expenses"]) { page.data.tab = tab; await page.openAiAssistant(); }
+  assert.deepEqual(navigations, Array(5).fill("/subpackages/ai/pages/chat/index?tripId=trip-a"));
+  assert.deepEqual(calls, Array(5).fill("getAiCapabilities"));
+});
+
 test("one-tap WeChat activation does not require avatar, nickname or phone number", async () => {
   const trip = { id: "demo-trip", revision: 1, me: "demo-owner", creator: "demo-owner", start: "2026-09-20T08:00", end: "2026-09-23T18:00", events: [], hotels: [], items: [], categories: [], members: [] };
   const calls = [];
   const page = pageFor(trip, async (operation) => {
     calls.push(operation);
+    if (operation === "getAiCapabilities") return { enabled: false, allowed: false, canUse: false, dailyLimit: 20, remainingToday: 20 };
     return { account: { id: "wx-user", nickname: "旅行者", avatarId: "avatar-01", profileComplete: true }, trips: [] };
   });
   page.data.guestMode = true;
   page.data.authState = "guest";
   page.derive = () => {};
   await page.startLogin({ currentTarget: { dataset: { intent: "login" } } });
-  assert.deepEqual(calls, ["activateAccount"]);
+  assert.deepEqual(calls, ["activateAccount", "getAiCapabilities"]);
   assert.equal(page.data.guestMode, false);
   assert.equal(page.data.account.nickname, "旅行者");
   assert.equal(page.data.authState, "authenticated");

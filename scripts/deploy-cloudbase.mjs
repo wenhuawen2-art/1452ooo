@@ -7,6 +7,7 @@ const run = (command, args) => {
 };
 
 run(process.execPath, ["scripts/build.mjs"]);
+run(process.execPath, [cli, "fn", "deploy", "suixing-ai-worker", "--force"]);
 run(process.execPath, [cli, "fn", "deploy", "suixing-api", "--force"]);
 run(process.execPath, [cli, "fn", "deploy", "suixing-backup", "--force"]);
 run(process.execPath, [

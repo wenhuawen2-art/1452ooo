@@ -1,4 +1,5 @@
 const { installMotion, disposeMotion } = require('../../utils/interaction-motion');
+const { chooseAvatarImage, prepareAvatar } = require('../../utils/profile-avatar');
 const { weatherStops, cachedWeather, demoCityWeather } = require('../../utils/weather-cities');
 const AVATARS = [
   ["avatar-01", "羊驼", "avatar-01-alpaca.png"], ["avatar-02", "公鸡", "avatar-02-rooster.png"],
@@ -47,28 +48,29 @@ const minorFromInput = (value) => Math.round(Number(String(value || "0").replace
 const routeDistance = (meters) => Number(meters || 0) >= 1000 ? `${(Number(meters) / 1000).toFixed(Number(meters) >= 100000 ? 0 : 1)} 公里` : `${Number(meters || 0)} 米`;
 const decorateRouteOverview = (overview) => {
   const rawPoints = overview?.points || [];
-  const points = rawPoints.filter((point) => !point.unresolved && Number.isFinite(Number(point.latitude)) && Number.isFinite(Number(point.longitude)));
+  const points = rawPoints.filter((point) => !point.unresolved && point.latitude!=null && point.longitude!=null && point.latitude!=='' && point.longitude!=='' && Number.isFinite(Number(point.latitude)) && Number.isFinite(Number(point.longitude)));
   const markers = points.map((point, index) => ({ id: index + 1, pointId: point.id, latitude: Number(point.latitude), longitude: Number(point.longitude), iconPath: "/assets/icons/route-marker.png", width: 28, height: 34, label: { content: `${point.role === "return" ? "返" : point.number || index + 1} ${point.label}`, color: "#17243f", fontSize: 10, borderRadius: 8, bgColor: "#ffffff", padding: 4, anchorX: -12, anchorY: -42 } }));
   const polylines = (overview?.segments || []).filter((segment) => (segment.points || []).length > 1).map((segment) => ({ points: segment.points, color: segment.color || "#4f8ee8", width: segment.width || 6, dottedLine: !!segment.dottedLine, arrowLine: !!segment.arrowLine, borderColor: segment.borderColor || "#ffffff", borderWidth: segment.borderWidth || 1 }));
   const modeSummary = [...new Set((overview?.segments || []).map((segment) => `${segment.icon || ""}${segment.label || ""}`))].join(" · ");
   const includePoints = points.length >= 2 ? (overview?.includePoints || points.map(({ latitude, longitude }) => ({ latitude, longitude }))) : [];
-  return { ...overview, rawPoints, points, pointCount: points.length, startLabel: points[0]?.label || "", endLabel: points.at(-1)?.label || "", markers, polylines, includePoints, mapScale: points.length < 2 ? 8 : 5, centerLatitude: Number(points[0]?.latitude || 35), centerLongitude: Number(points[0]?.longitude || 105), distanceLabel: overview?.distanceMeters ? routeDistance(overview.distanceMeters) : "", modeSummary };
+  return { ...overview, rawPoints, points, pointCount: points.length, startLabel: points[0]?.label || "", endLabel: points.at(-1)?.label || "", markers, polylines, includePoints, mapScale: points.length < 2 ? 14 : 5, centerLatitude: Number(points[0]?.latitude || 35), centerLongitude: Number(points[0]?.longitude || 105), distanceLabel: overview?.distanceMeters ? routeDistance(overview.distanceMeters) : "", modeSummary };
 };
 
 Page({
   ...formSheetMethods,
   data: {
+    avatarChoosing: false,
     loadingFragments: require("../../utils/loading-fragments"),
     loadingPhotoFragments: require("../../utils/loading-photo-fragments"), loadingVersion: "v4",
-    loading: true, error: "", account: null, trip: null, trips: [], tab: "today", scope: "公共", listSection: "public", routeSection: "planning", routeMenu: null, routeDateScroll: 0,
+    loading: true, error: "", account: null, trip: null, trips: [], aiAvailable: false, tab: "today", scope: "公共", listSection: "public", routeSection: "planning", routeMenu: null, routeDateScroll: 0,
     selectedDate: todayKey(), dates: [], dateLabel: "", tripStartDate: "", tripEndDate: "", daysUntil: 0, tripDays: 0, me: null, isOwner: false,
     publicProgress: { done: 0, total: 0, percent: 0 }, mineProgress: { done: 0, total: 0, percent: 0 },
     weather: null, weatherLoading: false, routeOverview: null, routeLoading: false, routeMapOpen: false, routeEditing: false, routeEditorPoints: [], routeSearchIndex: -1, routeSearchKeyword: "", routeSearchResults: [], transportModes: TRANSPORT_MODES, periods: [], hotel: null, selectedTickets: [], selectedOutfits: [], outfitScenes: OUTFIT_SCENES, outfitTypes: DEFAULT_OUTFIT_TYPES, checklistGroups: [], templates: [], categoryMenuId: "", listItemMenuId: "", outfitMenu: null, expenses: [], settlements: [], expenseMembers: [], expenseSettings: {}, expenseSegment: "details", expenseMenuId: "", expenseSettlementsOpen: false, expenseView: {}, expenseGroups: [], expenseCategories: EXPENSE_CATEGORIES, expenseCurrencies: EXPENSE_CURRENCIES, splitModes: SPLIT_MODES, expenseFilters: { date: "all", category: "all", payer: "all" }, expenseSummary: { totalYuan: "0.00", myNetMinor: 0, myNetLabel: "¥0.00", todayTotal: "¥0.00", myPaidToday: "¥0.00", myOwedToday: "¥0.00", budgetProgress: 0, categoryStats: [], dailyStats: [], memberStats: [], plan: [] },
-    avatars: AVATARS, tripTypes: TRIP_TYPES, modal: null, busy: false, invite: "", loginPrompt: false,
+    avatars: AVATARS, profileAvatars: AVATARS.slice(0, 7), tripTypes: TRIP_TYPES, modal: null, busy: false, invite: "", loginPrompt: false,
     guestMode: false, authState: "checking", statusBarHeight: 24, headerHeight: 68, systemContentTop: 16, systemHeaderHeight: 72, listSafeInset: 0, safeBottomInset: 0, listMenuCategoryId: "", pageHidden: false, reducedMotion: false, editorActive: false, fieldErrors: {}, saveError: "", detail: null,
   },
   onLoad(options) { this.installPresentation(); const listSection = wx.getStorageSync("xiangye-list-section"); this.lastChecklistSection = (listSection === "personal" || wx.getStorageSync("xiangye-checklist-section") === "personal") ? "personal" : "public"; if (["public","personal","outfit"].includes(listSection)) this.setData({ listSection, scope: listSection === "personal" ? "我的" : "公共" }); this.pendingInvite = options.invite || ""; this.bootstrap(); },
-  onShow() { this.setData({ pageHidden: false }); const requestedTrip = wx.getStorageSync("xiangye-profile-trip"); if (requestedTrip) { wx.removeStorageSync("xiangye-profile-trip"); if (requestedTrip !== this.data.trip?.id) this.loadTrip(requestedTrip).catch(error => this.notify(error.message)); } if (!this.data.editorActive && !this.data.guestMode && this.data.trip && !this.data.loading && !this.pendingChecklistActions?.size && !this.data.busy) this.refreshTrip(false); },
+  onShow() { this.setData({ pageHidden: false }); const requestedTrip = wx.getStorageSync("xiangye-profile-trip"); if (requestedTrip) { wx.removeStorageSync("xiangye-profile-trip"); if (requestedTrip !== this.data.trip?.id) { this.loadTrip(requestedTrip).catch(error => this.notify(error.message)); return; } } if (!this.data.editorActive && !this.data.guestMode && this.data.trip && !this.data.loading && !this.pendingChecklistActions?.size && !this.data.busy) this.refreshTrip(false); },
 
   installPresentation() {
     this.keyboardListener=event=>this.setData({keyboardHeight:event.height||0}); wx.onKeyboardHeightChange?.(this.keyboardListener);
@@ -107,10 +109,10 @@ Page({
   onHide() { clearTimeout(this.metricTimer); this.setData({ pageHidden: true }); },
   onPageScroll(event) { this.currentScroll = event.scrollTop;const progress=Math.round(Math.min(1,Math.max(0,event.scrollTop||0)/64)*100)/100;if(progress!==(this.data.headerScrollProgress||0))this.setData({headerScrollProgress:progress}); },
   closeHeaderMenus(){this.setData({routeMenu:null,listItemMenuId:'',listMenuCategoryId:'',categoryMenuId:'',outfitMenu:null,expenseMenuId:''});},
-  onUnload() { disposeMotion(this);disposeFormSheet(this);wx.offKeyboardHeightChange?.(this.keyboardListener); clearTimeout(this.metricTimer); this.editorChannel = null; },
+  onUnload() { disposeMotion(this);disposeFormSheet(this);wx.offKeyboardHeightChange?.(this.keyboardListener); clearTimeout(this.metricTimer); clearTimeout(this.loadingCompletionTimer); this.editorChannel = null; },
   toggleReducedMotion(event) { const reducedMotion = !!event.detail.value; wx.setStorageSync("xiangye-reduced-motion", reducedMotion); clearTimeout(this.metricTimer); this.setData({ reducedMotion, visualProgress: (this.data.scope === "公共" ? this.data.publicProgress : this.data.mineProgress).percent }); },
   isDraftDirty() { return !!this.data.modal && !!this.draftBaseline && JSON.stringify(this.data.modal) !== this.draftBaseline; },
-  editorSnapshot() { const { modal, busy, fieldErrors, saveError, trip, avatars, tripTypes, outfitTypes, outfitScenes, selectedDate, tripStartDate, tripEndDate, statusBarHeight, headerHeight, systemContentTop, systemHeaderHeight, safeBottomInset } = this.data; return { modal, busy, fieldErrors, saveError, trip, avatars, tripTypes, outfitTypes, outfitScenes, selectedDate, tripStartDate, tripEndDate, statusBarHeight, headerHeight, systemContentTop, systemHeaderHeight, safeBottomInset, dirty: this.isDraftDirty() }; },
+  editorSnapshot() { const { modal, busy, avatarChoosing, fieldErrors, saveError, trip, avatars, profileAvatars, tripTypes, outfitTypes, outfitScenes, selectedDate, tripStartDate, tripEndDate, statusBarHeight, headerHeight, systemContentTop, systemHeaderHeight, safeBottomInset } = this.data; return { modal, busy, avatarChoosing, fieldErrors, saveError, trip, avatars, profileAvatars, tripTypes, outfitTypes, outfitScenes, selectedDate, tripStartDate, tripEndDate, statusBarHeight, headerHeight, systemContentTop, systemHeaderHeight, safeBottomInset, dirty: this.isDraftDirty() }; },
   presentEditor(patch) {
     patch.modal.fullPage = false; this.setData({...patch,editorActive:false}); this.draftBaseline=JSON.stringify(this.data.modal);
   },
@@ -141,6 +143,8 @@ Page({
     return envelope.data;
   },
   async bootstrap() {
+    if (typeof clearTimeout === "function") clearTimeout(this.loadingCompletionTimer);
+    this.loadingStartedAt = Date.now();
     this.setData({ loading: true, error: "" });
     try {
       const result = await this.call("bootstrapAccount");
@@ -152,15 +156,41 @@ Page({
         return;
       }
       this.setData({ guestMode: false, authState: "authenticated", trip: null, expenses: [], expenseSummary: { totalYuan: "0.00", myNetMinor: 0, myNetLabel: "¥0.00" } });
-      if (this.pendingInvite) { await this.prepareInvite(this.pendingInvite); this.setData({ loading: false }); return; }
+      this.refreshAiCapabilities();
+      if (this.pendingInvite) { await this.prepareInvite(this.pendingInvite); this.finishLoading(); return; }
       const stored = wx.getStorageSync("xiangye-current-trip");
       const chosen = result.trips.find((entry) => entry.id === stored && !entry.archived) || result.trips.find((entry) => !entry.archived) || result.trips[0];
       if (chosen) await this.loadTrip(chosen.id);
-      this.setData({ loading: false });
+      this.finishLoading();
     } catch (error) { this.loadGuestLanding(); this.notify("登录连接暂不可用，可稍后重试"); }
   },
   retry() { this.bootstrap(); },
-  loadGuestLanding() { this.setData({loading:false,error:"",guestMode:true,authState:"guest",account:null,trip:null,trips:[],expenses:[],loginPrompt:false}); },
+  finishLoading() {
+    // Keep the first native frame visible long enough to paint even when a
+    // cached bootstrap resolves before WeChat renders the page.
+    const remaining = Math.max(0, 650 - (Date.now() - (this.loadingStartedAt || Date.now())));
+    if (typeof clearTimeout === "function") clearTimeout(this.loadingCompletionTimer);
+    if (typeof setTimeout === "function") this.loadingCompletionTimer = setTimeout(() => this.setData({ loading: false }), remaining);
+    else this.setData({ loading: false });
+  },
+  loadGuestLanding() { this.setData({error:"",guestMode:true,authState:"guest",account:null,trip:null,trips:[],expenses:[],loginPrompt:false,aiAvailable:false}); this.finishLoading(); },
+  async refreshAiCapabilities() {
+    if (this.data.guestMode || !this.data.account?.profileComplete) { this.setData({ aiAvailable: false, aiUnavailableReason: "请先登录后使用旅行助手" }); return false; }
+    try {
+      const capability = await this.call("getAiCapabilities"), allowed = !!capability.canUse && !this.data.guestMode;
+      const reason = !capability.enabled ? "旅行助手暂未开放" : !capability.allowed ? "旅行助手仅向内测账号开放，当前账号暂无资格" : capability.reason || "旅行助手暂不可用";
+      this.setData({ aiAvailable: allowed, aiUnavailableReason: allowed ? "" : reason }); return allowed;
+    } catch { this.setData({ aiAvailable: false, aiUnavailableReason: "暂时无法连接旅行助手，请稍后再试" }); return false; }
+  },
+  async openAiAssistant() {
+    if (!this.requireLogin("aiAssistant") || this.aiOpening) return;
+    this.aiOpening = true;
+    try {
+      if (!await this.refreshAiCapabilities()) { this.notify(this.data.aiUnavailableReason || "旅行助手暂不可用"); return; }
+      const tripId = this.data.trip?.id;
+      wx.navigateTo({ url: "/subpackages/ai/pages/chat/index" + (tripId ? "?tripId=" + encodeURIComponent(tripId) : ""), success: result => result.eventChannel?.on("aiApplied", ({ tripId: id }) => { wx.setStorageSync("xiangye-profile-trip", id); }), fail: () => this.notify("旅行助手未能打开，请重试") });
+    } finally { this.aiOpening = false; }
+  },
   confirmWechatLogin() { if(this.data.busy)return;this.pendingAuthIntent="login";this.setData({loginPrompt:true,authState:"login"}); },
   loadGuestExperience() {
     const demo = createDemoExperience();
@@ -199,12 +229,14 @@ Page({
       const intent = this.pendingAuthIntent || "";
       this.pendingAuthIntent = "";
       this.setData({ account, outfitTypes: activeOutfitTypes(account), loginPrompt: false, guestMode: false, authState: "authenticated", trip: null, trips: (result.trips || []).map(decorateTripSummary), modal: null });
+      this.refreshAiCapabilities();
       if (this.pendingInvite) await this.prepareInvite(this.pendingInvite);
       else {
         const chosen = this.data.trips.find((entry) => !entry.archived) || this.data.trips[0];
         if (chosen) await this.loadTrip(chosen.id);
         if (intent === "createTrip") this.openCreateTrip();
         else if (intent === "profilePage") this.openProfilePage();
+        else if (intent === "aiAssistant") this.openAiAssistant();
         else if (intent && intent !== "login") this.notify("登录成功，请先创建旅行");
       }
     } catch (error) {
@@ -215,8 +247,9 @@ Page({
   },
   async loadTrip(id) {
     const loadVersion = this.localChangeVersion || 0;
+    const requestVersion = this.tripLoadVersion = (this.tripLoadVersion || 0) + 1;
     let trip = await this.call("getTrip", { tripId: id });
-    if (loadVersion !== (this.localChangeVersion || 0)) return;
+    if (loadVersion !== (this.localChangeVersion || 0) || requestVersion !== this.tripLoadVersion) return;
     trip = decorateTrip(trip);
     wx.setStorageSync("xiangye-current-trip", id);
     this.setData({ trip, selectedDate: this.clampDate(this.data.selectedDate, trip), invite: trip.invite || "" });
@@ -359,7 +392,12 @@ Page({
   bindCustomShare(event) { this.setData({ [`modal.members[${Number(event.currentTarget.dataset.index)}].amount`]: event.detail.value }); },
   async chooseExpenseReceipt() { try { const media = await wx.chooseMedia({ count: 1, mediaType: ["image"], sourceType: ["album", "camera"], sizeType: ["compressed"] }); const path = media.tempFiles?.[0]?.tempFilePath; if (path) this.setData({ "modal.receiptLocalPath": path, "modal.values.removeReceipt": false }); } catch (error) { if (!/cancel/i.test(error.errMsg || "")) this.notify("票据读取失败"); } },
   removeExpenseReceipt() { this.setData({ "modal.receiptLocalPath": "", "modal.values.removeReceipt": true }); },
-  openExpenseSettings() { if (!this.requireWritableTrip("expenseSettings")) return; const settings = this.data.expenseSettings || {}, baseCurrency = settings.baseCurrency || "CNY"; this.setData({ modal: { type: "expenseSettings", title: "记账设置", currencies: EXPENSE_CURRENCIES, currencyLabels: EXPENSE_CURRENCY_LABELS, currencyLabel: currencyLabel(baseCurrency), currencyIndex: Math.max(0, EXPENSE_CURRENCIES.indexOf(baseCurrency)), values: { baseCurrency, budget: settings.budgetMinor == null ? "" : (settings.budgetMinor / 100).toFixed(2), categories: (settings.expenseCategories?.length ? settings.expenseCategories : EXPENSE_CATEGORIES).join("、") } } }); },
+  openExpenseSettings() {
+    if (!this.requireWritableTrip("expenseSettings")) return;
+    if (!this.data.isOwner) { this.notify("只有创建者可以管理记账设置"); return; }
+    const settings = this.data.expenseSettings || {}, baseCurrency = settings.baseCurrency || "CNY";
+    this.setData({ modal: { type: "expenseSettings", title: "记账设置", currencies: EXPENSE_CURRENCIES, currencyLabels: EXPENSE_CURRENCY_LABELS, currencyLabel: currencyLabel(baseCurrency), currencyIndex: Math.max(0, EXPENSE_CURRENCIES.indexOf(baseCurrency)), values: { baseCurrency, budget: settings.budgetMinor == null ? "" : (settings.budgetMinor / 100).toFixed(2), categories: (settings.expenseCategories?.length ? settings.expenseCategories : EXPENSE_CATEGORIES).join("、") } } });
+  },
   bindSettingsCurrency(event) { const index = Number(event.detail.value), currency = this.data.modal.currencies[index]; this.setData({ "modal.currencyIndex": index, "modal.currencyLabel": currencyLabel(currency), "modal.values.baseCurrency": currency }); },
   async deleteExpense(event) { if (!this.requireWritableTrip("deleteExpense") || this.data.busy) return; const id = event.currentTarget.dataset.id; const confirmed = await new Promise((resolve) => wx.showModal({ title: "删除费用", content: "删除后分账和统计会同步更新，确认删除？", success: (result) => resolve(result.confirm) })); if (!confirmed) return; this.setData({ busy: true }); try { const result = await this.call("deleteExpense", { tripId: this.data.trip.id, id, revision: this.data.trip.revision }); this.setData({ "trip.revision": result.revision }); await this.loadExpenses(); this.notify("费用已删除"); } catch (error) { this.notify(error.message); } finally { this.setData({ busy: false }); } },
   async saveSettlement(event) { if (!this.requireWritableTrip("settlement") || this.data.busy) return; const { from, to, amount } = event.currentTarget.dataset; this.setData({ busy: true }); try { const result = await this.call("saveSettlement", { tripId: this.data.trip.id, revision: this.data.trip.revision, date: this.clampDate(todayKey()), fromMemberId: from, toMemberId: to, amountMinor: Number(amount), currency: this.data.expenseSettings.baseCurrency || "CNY", note: "按建议方案结清" }); this.setData({ "trip.revision": result.revision }); await this.loadExpenses(); this.notify("已标记结清"); } catch (error) { this.notify(error.message); } finally { this.setData({ busy: false }); } },
@@ -375,11 +413,12 @@ Page({
   },
   async loadWeather() {
     if(!this.data.trip)return;const home=this.data.tab==='today',tripId=this.data.trip.id,token=this.weatherToken=(this.weatherToken||0)+1;
-    const stop=home?weatherStops(this.data.trip,this.data.routeOverview)[0]:{place:'',date:this.data.selectedDate};
+    const stops=weatherStops(this.data.trip,this.data.routeOverview);
+    const stop=home?stops[0]:(stops.find(entry=>entry.date===this.data.selectedDate)||{place:'',date:this.data.selectedDate});
     if(!stop){this.setData({weather:{available:false,reason:'missing_place'},weatherLoading:false});return;}
     if(this.data.guestMode){if(home)this.setData({weather:demoCityWeather(stop.place),weatherLoading:false});return;}
     this.setData({weatherLoading:true});
-    try{const weather=await cachedWeather(this.call.bind(this),tripId,stop,home);if(this.weatherToken===token&&this.data.trip?.id===tripId)this.setData({weather:home?{...weather,location:weather.cityName||stop.cityName||weather.location}:weather});}
+    try{const weather=await cachedWeather(this.call.bind(this),tripId,stop,false);if(this.weatherToken===token&&this.data.trip?.id===tripId)this.setData({weather:home?{...weather,location:weather.cityName||stop.cityName||weather.location}:weather});}
     catch(error){if(this.weatherToken===token)this.setData({weather:{available:false,reason:error.message}});}
     finally{if(this.weatherToken===token)this.setData({weatherLoading:false});}
   },
@@ -413,7 +452,7 @@ Page({
   moveRoutePoint(event) { const index = Number(event.currentTarget.dataset.index), target = event.currentTarget.dataset.direction === "up" ? index - 1 : index + 1, points = [...this.data.routeEditorPoints]; if (target < 0 || target >= points.length) return; [points[index], points[target]] = [points[target], points[index]]; this.setData({ routeEditorPoints: points, routeSearchIndex: -1, routeSearchResults: [] }); },
   beginRouteSearch(event) { const index = Number(event.currentTarget.dataset.index), point = this.data.routeEditorPoints[index]; this.setData({ routeSearchIndex: index, routeSearchKeyword: point.address || point.label || "", routeSearchResults: [] }); },
   bindRouteSearch(event) { this.setData({ routeSearchKeyword: event.detail.value }); },
-  async searchRoutePlaces() { const keyword = String(this.data.routeSearchKeyword || "").trim(); if (!keyword) return this.notify("请输入地点名称"); try { this.setData({ busy: true }); const routeSearchResults = await this.call("searchRoutePlaces", { tripId: this.data.trip.id, keyword }); this.setData({ routeSearchResults }); if (!routeSearchResults.length) this.notify("没有找到匹配地点"); } catch (error) { this.notify(error.message); } finally { this.setData({ busy: false }); } },
+  async searchRoutePlaces() { const keyword = String(this.data.routeSearchKeyword || "").trim(); if (!keyword) return this.notify("请输入地点名称"); try { this.setData({ busy: true }); const point=this.data.routeEditorPoints[this.data.routeSearchIndex],hotel=(this.data.trip.hotels||[]).find(h=>h.checkin<=point?.date&&point?.date<h.checkout); const routeSearchResults = await this.call("searchRoutePlaces", { tripId: this.data.trip.id, keyword, region:point?.addressComponents?.city||hotel?.city||'全国' }); this.setData({ routeSearchResults }); if (!routeSearchResults.length) this.notify("没有找到匹配地点"); } catch (error) { this.notify(error.message); } finally { this.setData({ busy: false }); } },
   selectRoutePlace(event) { const index = this.data.routeSearchIndex, result = this.data.routeSearchResults[Number(event.currentTarget.dataset.index)]; if (index < 0 || !result) return; this.setData({ [`routeEditorPoints[${index}].label`]: result.title, [`routeEditorPoints[${index}].address`]: result.address, [`routeEditorPoints[${index}].latitude`]: result.latitude, [`routeEditorPoints[${index}].longitude`]: result.longitude, [`routeEditorPoints[${index}].poiId`]: result.id, routeSearchIndex: -1, routeSearchResults: [] }); },
   async saveRouteEditor(reset = false) {
     if (this.data.busy || this.data.guestMode) return;
@@ -528,24 +567,24 @@ Page({
     const path = event.detail?.avatarUrl;
     if (!path) return;
     try {
-      const compressed = await wx.compressImage({ src: path, quality: 72 }).catch(() => ({ tempFilePath: path }));
-      const data = wx.getFileSystemManager().readFileSync(compressed.tempFilePath || path, "base64");
-      this.setData({ "modal.values.avatarId": "", "modal.values.avatarData": `data:image/jpeg;base64,${data}` });
+      const data = await prepareAvatar(wx, path);
+      this.setData({ "modal.values.avatarId": "", "modal.values.avatarData": data });
     } catch { this.notify("头像读取失败"); }
   },
   async chooseCustomAvatar() {
-    if (this.avatarChoosing) return;
+    if (this.avatarChoosing || this.data.modal?.type !== 'profile') return;
+    const modal = this.data.modal;
     this.avatarChoosing = true;
+    this.setData({ avatarChoosing: true });
     try {
-      const media = await wx.chooseMedia({ count: 1, mediaType: ["image"], sourceType: ["album", "camera"], sizeType: ["compressed"] });
-      const path = media.tempFiles?.[0]?.tempFilePath;
-      if (!path) return;
-      const data = wx.getFileSystemManager().readFileSync(path, "base64");
-      this.setData({ "modal.values.avatarId": "", "modal.values.avatarData": `data:image/jpeg;base64,${data}` });
+      const data = await chooseAvatarImage(wx);
+      if (data && this.data.modal === modal) this.setData({ "modal.values.avatarId": "", "modal.values.avatarData": data });
     } catch (error) {
-      if (!/cancel/i.test(error.errMsg || "")) this.notify("头像读取失败");
+      const message = error.errMsg || error.message || '';
+      if (!/cancel/i.test(message)) this.notify(/auth|privacy|deny|permission/i.test(message) ? '请在微信中允许相册或相机权限后重试' : error.message || '头像读取失败，请重新选择');
     } finally {
       this.avatarChoosing = false;
+      this.setData({ avatarChoosing: false });
     }
   },
   async chooseOutfitItemPhoto(event) {
@@ -563,7 +602,7 @@ Page({
   },
   removeOutfitItemPhoto(event) { const index = Number(event.currentTarget.dataset.index); this.setData({ [`modal.values.items[${index}].photoLocalPath`]: "", [`modal.values.items[${index}].removePhoto`]: true }); },
   async submitModal() {
-    const modal = this.data.modal; if (!modal || this.data.busy) return; if (!this.validateDraft()) return; this.setData({ busy: true, saveError: "" }); wx.showLoading({ title: "正在保存" });
+    const modal = this.data.modal; if (!modal || this.data.busy || this.avatarChoosing) return; if (!this.validateDraft()) return; this.setData({ busy: true, saveError: "" }); wx.showLoading({ title: "正在保存" });
     try {
       if (this.data.guestMode) throw new Error("请先登录后保存");
       const values = modal.values;
@@ -740,7 +779,30 @@ Page({
   async prepareInvite(invite) { const preview = await this.call("previewInvite", { invite }); this.setData({ modal: { type: "join", title: `加入 · ${preview.tripName}`, invite, values: {} } }); },
   onShareAppMessage() { const trip = this.data.trip; return trip?.invite ? { title: `加入“${trip.name}”的旅行准备`, path: `/pages/index/index?invite=${trip.invite}` } : { title: "向野 · 自驾旅行助手", path: "/pages/index/index" }; },
   copyInvite() { if (this.data.trip?.invite) wx.setClipboardData({ data: `https://zdata-d4g6l75lwebf2dbb0-1485288642.tcloudbaseapp.com/?invite=${this.data.trip.invite}` }); },
-  async openMap(event) { const place = event.currentTarget.dataset.place; if (!place) return this.notify("请先填写地址"); if (this.data.guestMode) return wx.openLocation({ latitude: 31.091, longitude: 102.849, name: place, address: place, scale: 12 }).catch(() => this.notify("地图暂不可用")); wx.showLoading({ title: "正在定位" }); try { const location = await this.call("resolveLocation", { tripId: this.data.trip.id, place }); await wx.openLocation({ latitude: Number(location.latitude), longitude: Number(location.longitude), name: location.name || place, address: location.address || place, scale: 15 }); } catch (error) { this.notify(error.message); } finally { wx.hideLoading(); } },
+  openRouteMarker(event) {
+    const marker=(this.data.routeOverview?.markers||[]).find(entry=>entry.id===Number(event.detail.markerId));
+    const point=(this.data.routeOverview?.rawPoints||this.data.routeOverview?.points||[]).find(entry=>entry.id===marker?.pointId);
+    if(point)this.openMap({currentTarget:{dataset:{place:point.address||point.label,pointId:point.id,date:point.date}}});
+  },
+  askMapNavigation(location) {
+    if(wx.__localPreview){wx.showModal({title:'地点导航 · 网页演示',content:(location.name||'目的地')+'\n'+(location.address||'')+'\n手机小程序中确认后可选择地图导航或复制高德链接；网页预览不会打开手机地图。',showCancel:false});return;}
+    wx.showModal({title:location.approximate?'确认目的地（行政区中心）':'前往这个地点？',content:(location.name||'目的地')+'\n'+(location.address||'')+(location.approximate?'\n当前定位为城市或区县中心，建议先修正为具体地点。':'')+'\n打开位置页后，可在手机支持的导航方式中选择高德地图。',confirmText:'选择导航',success:result=>{
+      if(!result.confirm)return;
+      wx.showActionSheet({itemList:['打开地图导航','复制高德导航链接'],success:selection=>{
+        if(selection.tapIndex===1){const url='https://uri.amap.com/marker?position='+Number(location.longitude)+','+Number(location.latitude)+'&name='+encodeURIComponent(location.name||'目的地')+'&coordinate=gaode&callnative=1&src=xiangye';wx.setClipboardData({data:url,success:()=>this.notify('链接已复制，可在手机浏览器打开高德')});return;}
+        wx.openLocation({latitude:Number(location.latitude),longitude:Number(location.longitude),name:location.name||'',address:location.address||'',scale:15,fail:()=>this.notify('地图暂不可用，请重试或复制高德链接')});
+      }});
+    }});
+  },
+  async openMap(event) {
+    const {place,pointId,date}=event.currentTarget.dataset;if(!place)return this.notify('请先填写地址');
+    if(this.data.guestMode)return this.notify('游客地点为示例，请登录并填写真实行程后导航');
+    wx.showLoading({title:'正在确认地点'});
+    let location;
+    try{location=await this.call('resolveLocation',{tripId:this.data.trip.id,place,pointId,date:date||this.data.selectedDate});}
+    catch(error){this.notify(error.message);}finally{wx.hideLoading();}
+    if(location)this.askMapNavigation(location);
+  },
   async addTicket() { if (!this.requireWritableTrip("ticket")) return; try { const media = await wx.chooseMedia({ count: 1, mediaType: ["image"], sourceType: ["album", "camera"] }); const file = media.tempFiles[0]; const compressed = await wx.compressImage({ src: file.tempFilePath, quality: 72 }); this.ticketPath = compressed.tempFilePath; this.setData({ modal: { type: "ticket", title: "添加票据", values: { type: "门票", useDate: this.data.selectedDate, useClock: "09:00" } } }); } catch (error) { if (!/cancel/i.test(error.errMsg || "")) this.notify("选择图片失败"); } },
   async submitTicket() { if (!this.requireWritableTrip("ticket")) return; if (!this.ticketPath || this.data.busy) return; this.setData({ busy: true }); wx.showLoading({ title: "正在上传" }); let fileID = ""; try { const fs = wx.getFileSystemManager(); const info = fs.statSync(this.ticketPath); if (info.size > 10 * 1024 * 1024) throw new Error("图片过大，请选择 10MB 以内的图片"); const suffix = (this.ticketPath.match(/\.(png|webp|jpe?g)$/i)?.[1] || "jpg").replace("jpeg", "jpg"); const uploaded = await wx.cloud.uploadFile({ cloudPath: `tickets/${this.data.trip.id}/${Date.now()}-${Math.random().toString(16).slice(2)}.${suffix}`, filePath: this.ticketPath }); fileID = uploaded.fileID; const values = this.data.modal.values; const result = await this.call("mutateTrip", { tripId: this.data.trip.id, revision: this.data.trip.revision, action: "ticket", type: values.type, startTime: `${values.useDate}T${values.useClock}`, fileId: fileID, mime: `image/${suffix === "jpg" ? "jpeg" : suffix}`, size: info.size }); this.ticketPath = ""; this.setData({ trip: decorateTrip(result.trip), modal: null }); this.derive(); this.notify("票据已添加"); } catch (error) { if (fileID) wx.cloud.deleteFile({ fileList: [fileID] }).catch(() => {}); this.notify(error.message || "票据上传失败"); } finally { wx.hideLoading(); this.setData({ busy: false }); } },
   async previewTicket(event) { const ticket = this.data.trip.tickets.find((entry) => entry.id === event.currentTarget.dataset.id); if (!ticket) return; try { let src = ticket.imageUrl || ticket.fileId; if (src?.startsWith("cloud://")) src = (await wx.cloud.downloadFile({ fileID: src })).tempFilePath; if (!src) throw new Error("票据图片暂不可用"); await wx.previewImage({ current: src, urls: [src] }); } catch (error) { this.notify(error.message || "票据预览失败"); } },

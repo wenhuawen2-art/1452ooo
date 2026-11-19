@@ -13,17 +13,17 @@ const icons = path.join(root, 'icons');
 
 await mkdir(loading, { recursive: true });
 
-await sharp(path.join(source, 'loading-new-source/kite-landscape-full.webp'), { animated: true })
-  .resize({ width: 192 })
-  .webp({ quality: 30, effort: 2, loop: 0 })
-  .toFile(path.join(loading, 'kite-landscape.webp'));
-await sharp(path.join(source, 'loading-new-source/kite-landscape-still-full.png'))
-  .resize({ width: 320 })
-  .webp({ quality: 72, effort: 4 })
-  .toFile(path.join(loading, 'kite-landscape-still.webp'));
+// Use native-compatible, compact images for the first painted frame. Full
+// resolution and animated sources stay in design-assets outside the package.
 await sharp(path.join(source, 'loading-new-source/clean-background-full.png'))
-  .webp({ quality: 75, effort: 4 })
-  .toFile(path.join(loading, 'clean-background.webp'));
+  .flatten({ background: '#eaf4ff' })
+  .resize({ width: 786 })
+  .jpeg({ quality: 78, mozjpeg: true })
+  .toFile(path.join(loading, 'clean-background.jpg'));
+await sharp(path.join(source, 'loading-new-source/kite-landscape-still-full.png'))
+  .resize({ width: 512 })
+  .png({ palette: true, colours: 128, dither: 0, effort: 8 })
+  .toFile(path.join(loading, 'kite-landscape-still.png'));
 
 for (const relative of [
   'mastergo/route-fallback.jpg',

@@ -3,15 +3,21 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import weather from '../shared/weather-cities.cjs';
+import provider from '../shared/weather-provider.cjs';
 const {weatherStops,cityIdentity,cityWeathers,cachedWeather,weatherCard}=weather;
 const trip={id:'weather-trip',start:'2026-10-01T08:00',end:'2026-10-07T18:00'};
+test('weather stops can load before the first route overview resolves',()=>{
+  const itinerary={...trip,events:[{id:'first',date:'2026-10-01',startTime:'09:00',address:'成都市人民公园'}]};
+  assert.deepEqual(weatherStops(itinerary,null),weatherStops(itinerary));
+  assert.equal(weatherStops(itinerary,null)[0].place,'成都市人民公园');
+});
 test('weather stops follow itinerary time, deduplicate city aliases and ignore generic activities',()=>{
   const stops=weatherStops({...trip,events:[
     {id:'3',date:'2026-10-03',startTime:'09:00',address:'西安市'},
     {id:'1',date:'2026-10-01',startTime:'09:00',startPlace:'咸阳',endPlace:'西安'},
     {id:'2',date:'2026-10-02',startTime:'09:00',address:'陕西省丹凤县中心广场'},
     {id:'4',date:'2026-10-04',startTime:'12:00',title:'午饭'}]});
-  assert.deepEqual(stops.map(s=>s.cityName),['咸阳','西安','丹凤县']);
+  assert.deepEqual(stops.map(s=>s.cityName),['咸阳','西安','丹凤县','西安市']);
   assert.equal(stops[0].date,'2026-10-01');
 });
 test('county destinations stay counties while urban landmarks resolve to their city',()=>{
@@ -24,10 +30,10 @@ test('lodging-only cities use a valid trip date and ignore lodging outside the t
   const stops=weatherStops({...trip,events:[],hotels:[{city:'西安市',checkin:'2026-09-30',checkout:'2026-10-02'},{city:'成都市',checkin:'2026-10-20',checkout:'2026-10-21'}]});
   assert.equal(stops.length,1);assert.equal(stops[0].cityName,'西安市');assert.equal(stops[0].date,'2026-10-01');
 });
-test('multiple landmarks use their resolved city once, preserve first appearance, and cap at seven',async()=>{
+test('same-day landmarks merge by city without truncating a longer trip at seven cities',async()=>{
   const stops=Array.from({length:12},(_,i)=>({place:'place-'+i,date:'2026-10-01'}));
   const cities=await cityWeathers(stops,async stop=>{const i=Number(stop.place.split('-')[1]),city=i<3?'西安市':'city-'+i;return {available:true,cityName:city,cityKey:city,current:12,high:14,low:8};});
-  assert.equal(cities.length,7);assert.equal(cities[0].cityName,'西安市');assert.equal(cities[1].place,'place-3');
+  assert.equal(cities.length,10);assert.equal(cities[0].cityName,'西安市');assert.equal(cities[1].place,'place-3');
   assert.deepEqual((await cityWeathers(stops.slice(0,2),async()=>({available:true,cityName:'西安市',cityKey:'西安'}))).map(c=>c.cityName),['西安市']);
 });
 test('zero and failed weather remain distinct and an empty trip invents no cards',async()=>{
@@ -49,12 +55,12 @@ test('home and city pages share cached requests, and failed requests remain retr
 });
 
 const source=readFileSync('cloudfunctions/suixing-api/index.js','utf8');
-function weatherService(){
+function weatherService(env={}){
   const code=source.slice(source.indexOf('async function getWeather('),source.indexOf('\nconst first =',source.indexOf('async function getWeather(')));
   let memberships=0;const module={exports:{}};
   const fixed=Date.parse('2026-10-26T04:00:00Z');class Clock extends Date{constructor(...args){super(...(args.length?args:[fixed]));}static now(){return fixed;}}
   vm.runInNewContext(code+'\nmodule.exports=getWeather;',{
-    module,Date:Clock,AbortSignal,encodeURIComponent,cityIdentity,
+    module,Date:Clock,AbortSignal,encodeURIComponent,cityIdentity,weatherCoordinates:provider.weatherCoordinates,process:{env},
     fail:(status,message)=>{throw Object.assign(new Error(message),{status});},
     membership:async()=>{memberships++;return {};},db:{},loadTrip:async()=>trip,weatherKey:(p,d)=>p+d,
     collections:{weather:{doc:()=>({set:async()=>{}})}},first:async()=>null,
@@ -64,11 +70,40 @@ function weatherService(){
   });
   return {get:module.exports,memberships:()=>memberships};
 }
-test('current city weather can be queried for a past itinerary while travel-date weather keeps its semantics',async()=>{
+test('a legacy current flag cannot replace a travel date with todays weather',async()=>{
   const service=weatherService(),input={tripId:'t',date:'2026-10-01',place:'西安市'};
   const current=await service.get('member',{...input,current:true});
-  assert.equal(current.available,true);assert.equal(current.date,'2026-10-26');assert.equal(current.cityName,'西安市');
+  assert.equal(current.available,false);assert.equal(current.date,'2026-10-01');assert.equal(current.reason,'out_of_range');
   const dated=await service.get('member',input);assert.equal(dated.available,false);assert.equal(dated.reason,'out_of_range');
   await assert.rejects(service.get('member',{...input,date:'2026-11-01',current:true}),/天气日期不在旅行范围内/);
   assert.equal(service.memberships(),3);
+});
+
+test('switching weather provider never reuses an Open-Meteo server cache entry',async()=>{
+ const code=source.slice(source.indexOf('async function getWeather('),source.indexOf('\nconst first =',source.indexOf('async function getWeather(')));
+ const env={},records=new Map(),keys=[];let calls=0;
+ const service=vm.runInNewContext(code+'\ngetWeather',{
+   process:{env},Date,AbortSignal,encodeURIComponent,cityIdentity,weatherCoordinates:provider.weatherCoordinates,
+   fail:(status,message)=>{throw Error(message);},membership:async()=>({}),db:{},loadTrip:async()=>trip,
+   weatherKey:(place,date)=>{const key=place+'|'+date;keys.push(key);return key;},
+   collections:{weather:{doc:key=>({key,set:async value=>records.set(key,value)})}},first:async reference=>records.get(reference.key)||null,
+   geocodePlace:async()=>({name:'西安',latitude:34,longitude:108,addressComponents:{city:'西安市'}}),
+   fetch:async()=>{calls++;return {ok:true,json:async()=>({daily:{time:['2026-10-01'],weather_code:[0],temperature_2m_max:[20],temperature_2m_min:[8],uv_index_max:[3]}})};},
+   fetchQweather:async()=>{calls++;return {available:true,date:'2026-10-01',source:'和风天气 QWeather',high:16,low:6,humidity:60,uvIndex:2};},
+   weatherCodeText:()=> '晴',uvLevelText:()=> '中等'
+ });
+ const input={tripId:'t',date:'2026-10-01',place:'西安市'};
+ assert.equal((await service('member',input)).source,'Open-Meteo');
+ env.WEATHER_PROVIDER='qweather';
+ assert.equal((await service('member',input)).source,'和风天气 QWeather');
+ assert.notEqual(keys[0],keys[1]);assert.equal(calls,2);
+ assert.equal((await service('member',input)).source,'和风天气 QWeather');assert.equal(calls,2);
+});
+
+test('the same city on different travel dates remains two dated weather cards',async()=>{
+  const dates=['2026-10-01','2026-10-02'];
+  const stops=weatherStops({...trip,events:dates.map((date,index)=>({id:String(index),date,address:'西安市'}))});
+  assert.equal(stops.length,2);
+  const rows=await cityWeathers(stops,async stop=>({available:true,cityName:'西安市',cityKey:'西安',date:stop.date,high:stop.date.endsWith('01')?20:14}));
+  assert.equal(rows.length,2);assert.deepEqual(rows.map(row=>row.date),dates);assert.equal(rows[1].temperature,'14');
 });

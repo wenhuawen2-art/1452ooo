@@ -1,0 +1,7 @@
+/* Shared switches have equal columns and 4px on every side and between items. */
+.rg-segment,.xy-list-segment,.ee-tabs{height:44px;padding:4px;gap:4px;box-sizing:border-box;align-items:stretch}
+.rg-segment button,.xy-list-segment button,.ee-tabs button{flex:1 1 0%;width:0;height:auto;min-height:0;align-self:stretch;margin:0}
+/* Shared dock follows the content spacing reduction. */
+.page .bottom-dock{gap:10px}
+.page .bottom-dock .master-nav{padding:6px}
+.page .bottom-dock .master-nav .nav-item{padding:8px 4px}

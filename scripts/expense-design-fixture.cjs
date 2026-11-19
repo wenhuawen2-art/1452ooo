@@ -2,7 +2,7 @@
 module.exports = function(page,mode) {
  const date='2026-10-11',owner=page.data.trip.me;
  page.data.trip.start='2026-10-10T08:00';page.data.trip.end='2026-10-16T18:00';
- page.data.trip.members=[{id:owner,name:'用户昵称',avatarData:'/assets/mastergo-expenses/avatar-dog.png'},{id:'design-other',name:'用户昵称',avatarData:'/assets/mastergo-expenses/avatar-animal.png'},{id:'design-third',name:'用户昵称',avatarData:'/assets/mastergo-expenses/avatar-orb.png'}];
+ page.data.trip.members=[{id:owner,name:'用户昵称',avatarData:'/assets/avatars/avatar-08-dog.png'},{id:'design-other',name:'用户昵称',avatarData:'/assets/avatars/avatar-01-alpaca.png'},{id:'design-third',name:'用户昵称',avatarData:'/assets/avatars/avatar-06-capybara.png'}];
  page.data.account.nickname='Zero';page.data.selectedDate=date;page.data.tab='expenses';page.data.expenseSegment=mode==='expense-design-split'?'split':mode==='expense-design-stats'?'stats':'details';page.data.expenseFilters={date:'all',category:'all',payer:'all'};
  page.data.expenseSettings={baseCurrency:'CNY',budgetMinor:192000};page.data.expenseMembers=page.data.trip.members;
  page.data.expenses=Array.from({length:12},(_,i)=>({id:'design-expense-'+i,date,title:'门票',category:'景点活动',amountMinor:1200,baseAmountMinor:1200,currency:'CNY',payerMemberId:owner,splitMode:'equal',note:'这是一段备注文本',participants:page.data.trip.members.map(m=>({memberId:m.id,amountMinor:400}))}));
